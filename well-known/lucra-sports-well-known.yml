@@ -1,0 +1,101 @@
+generated: '2026-08-25'
+method: probed
+source: live GET probes of every apis.yml host and every OpenAPI servers[] host
+hit_count: 0
+hosts:
+- host: https://forge.lucrasports.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://api.lucrasports.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://api.sandbox.lucrasports.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://www.playlucra.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://docs.lucrasports.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 307
+  - path: /.well-known/openid-configuration
+    status: 307
+  - path: /.well-known/oauth-authorization-server
+    status: 307
+  - path: /.well-known/api-catalog
+    status: 307
+  - path: /.well-known/ai-plugin.json
+    status: 307
+  - path: /.well-known/agent-card.json
+    status: 307
+  - path: /.well-known/agent.json
+    status: 307
+  note: >-
+    GitBook catch-all. Every /.well-known/* path returns an identical 15-byte "Redirecting..." 307 to
+    the docs root — a redirect shell, not a document. Treated as a miss.
+finding: >-
+  Lucra serves no /.well-known/ discovery surface at all. Every path on every host returned 404 (or,
+  on the GitBook docs host, an identical catch-all 307). No pointer of type WellKnown, SecurityTxt or
+  APICatalog is emitted from this probe, because a recorded absence must not be scored as a presence.
+notable_absences:
+- >-
+  No security.txt. For a platform that holds identity documents, SSNs, bank connections and real
+  money, the lack of an RFC 9116 contact is the single cheapest gap on this profile to close.
+- >-
+  No api-catalog. Lucra runs two API generations across four hosts (forge / forge.sandbox /
+  api / api.sandbox) plus a Hasura GraphQL endpoint, and nothing at a well-known path tells a machine
+  that any of them exist.
+checked: '2026-08-25'

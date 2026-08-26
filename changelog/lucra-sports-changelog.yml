@@ -1,0 +1,117 @@
+generated: '2026-08-25'
+method: searched
+source: https://docs.lucrasports.com/lucra-sdk/release-notes
+docs: https://docs.lucrasports.com/lucra-sdk/release-notes
+scheme: semver per SDK, notes keyed on version (dates come from the git tag / GitHub Release, not the notes)
+dated: false
+dated_note: >-
+  The published release notes carry version headings but no dates. The dates recorded below were read
+  from the corresponding git tags and GitHub Releases on https://github.com/Lucra-Sports, which is why
+  each entry names its date source.
+api_changelog:
+  published: false
+  note: The Forge REST API has no changelog of its own; only the client SDKs are tracked.
+streams:
+- name: Android SDK
+  current_version: 6.9.1
+  current_date: '2026-08-19'
+  url: https://docs.lucrasports.com/lucra-sdk/release-notes/android
+  source: https://github.com/Lucra-Sports/lucra-android-sdk/blob/main/docs/SDK_RELEASE_NOTES.md
+  entries:
+  - version: 6.9.1
+    date: '2026-08-19'
+    breaking: false
+    highlights:
+    - Minigames profile menu hides Withdraw when real-money actions are disabled.
+    - Practice-only support on the Minigames Home screen.
+  - version: 6.9.0
+    date: '2026-08-19'
+    breaking: true
+    highlights:
+    - 'BREAKING: ClientTheme.colorStyle removed; replaced by lightColorStyle and darkColorStyle.'
+    - Light-mode support added to the SDK UI; supplying both palettes follows system appearance.
+    - Optional includePrivateViewableTournaments on queryRecommendedTournaments.
+  - version: 6.8.0
+    date: '2026-07-20'
+    breaking: false
+    highlights:
+    - New headless retrieveTournamentDetails backed by the ui_tournament_details API.
+    - Deprecated retrieveTournament in favour of retrieveTournamentDetails; the old call keeps working.
+  - version: 6.6.2
+    date: '2026-06-24'
+    breaking: false
+    highlights:
+    - Removed the Go button from the achievements screen.
+  - version: 6.6.1
+    date: '2026-06-10'
+    breaking: false
+    highlights:
+    - Fixed a sporadic off-main-thread addObserver exception.
+- name: iOS SDK
+  current_version: 5.8.2
+  current_date: '2026-08-19'
+  url: https://docs.lucrasports.com/lucra-sdk/release-notes/ios
+  source: https://github.com/Lucra-Sports/lucra-ios-sdk/tags
+  entries:
+  - version: 5.8.2
+    date: '2026-08-19'
+  - version: 5.8.1
+    date: '2026-08-18'
+  - version: 5.8.0
+    date: '2026-08-15'
+  - version: 5.7.0
+    date: '2026-07-17'
+  note: >-
+    Version dates are from git tags. The iOS notes page in GitBook was headed "UPCOMING RELEASE" at
+    the time of this pass, so per-version highlights are not recorded here rather than guessed.
+- name: React Native SDK
+  current_version: 5.10.0
+  current_date: '2026-08-24'
+  url: https://docs.lucrasports.com/lucra-sdk/release-notes/react-native
+  source: https://github.com/Lucra-Sports/lucra-react-native-sdk/releases
+  entries:
+  - version: 5.10.0
+    date: '2026-08-24'
+    breaking: false
+    highlights:
+    - Wraps iOS 5.8.1 and Android 6.9.1.
+    - Light/dark theme support via theme.light and theme.dark; flat color keys still valid.
+    - Theme colors validated in JS before reaching the native bridge.
+    - 'Fix: onTournamentJoined now also receives gameId as an optional second argument.'
+    - Added allowRewardSheetToDisplay and minigameEnabled parameters.
+  - version: 5.9.0
+    date: '2026-07-24'
+    breaking: false
+    highlights:
+    - Wraps iOS 5.7.0 and Android 6.8.0.
+  - version: 5.8.0
+    date: '2026-07-10'
+    breaking: false
+- name: Web (JavaScript) SDK
+  current_version: 1.11.0
+  current_date: '2026-08-18'
+  url: https://docs.lucrasports.com/lucra-sdk/release-notes/web
+  source: https://github.com/Lucra-Sports/lucra-web-sdk/blob/main/docs/CHANGELOG.md
+  format: Keep a Changelog style (Added / Changed sections)
+  entries:
+  - version: 1.11.0
+    date: '2026-08-18'
+    breaking: false
+    highlights:
+    - Added LucraApiErrorCode.apiError (API_ERROR) catch-all; failed joinTournament now reports a typed LucraApiError instead of rejecting on a 15s timeout string.
+  - version: 1.10.0
+    date: '2026-08-18'
+    breaking: false
+    highlights:
+    - Added locationGrant() navigation and the LOCATION_NEEDED error code.
+    - Added the locationGranted event.
+  - version: 1.9.0
+    date: '2026-06-30'
+    breaking: false
+    highlights:
+    - api.tournaments() can now be called before the user is logged in.
+  - version: 1.8.0
+    date: '2026-06-30'
+    breaking: false
+    highlights:
+    - Added demographic() navigation and the demographicComplete event.

@@ -1,0 +1,209 @@
+generated: '2026-08-25'
+method: searched
+source: https://forge.lucrasports.com/swagger-json
+docs: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+summary: >-
+  Cross-cutting runtime semantics for the Lucra Forge API, read from the published OpenAPI and the
+  Lucra SDK documentation. Forge is a tenant-scoped REST gateway: every call is authenticated with a
+  single tenant API key, mutations on the v2 surface are asynchronous and confirmed by webhook, and
+  reads are offset-paginated with RFC 8288 Link relations.
+authentication:
+  style: api-key-header
+  header: X-Lucra-Api-Key
+  scoping: tenant
+  self_service: false
+  detail: authentication/lucra-sports-authentication.yml
+idempotency:
+  supported: false
+  request_key_header: null
+  detail: >-
+    Forge publishes no request idempotency key. There is no Idempotency-Key header, no client-supplied
+    request token, and no documented replay-safe retry contract on any write operation. The only place
+    the word "idempotency" appears in Lucra's material is advice to the INTEGRATOR to handle duplicate
+    WEBHOOK deliveries gracefully — that is inbound-event de-duplication on the partner's side, not an
+    idempotency guarantee on Lucra's API. Retrying POST /api/tournaments or POST
+    /api/recreational-games/{id}/complete after a timeout has no documented safe behaviour.
+  partial_mitigations:
+  - >-
+    Identifier-matched writes (PATCH /api/tournaments, POST /api/tournaments/complete, PATCH
+    /api/tournaments/rewards) resolve a target by matchupMetadata / matchupId / gameId / locationId
+    and require the identifier to resolve to exactly one tournament, which makes a repeated call
+    target-stable even though it is not declared idempotent.
+  - >-
+    PUT /api/tournaments/{id}/rewards and PUT /api/tournaments/{id}/tags are full replacements, so
+    repeating the same body converges on the same state.
+  source: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/2.0_webhook_setup.md
+pagination:
+  style: limit-offset
+  params:
+    limit: Page size.
+    offset: Zero-based record offset.
+  response_headers:
+    Link: 'RFC 8288 pagination links. Relations: next, prev, first.'
+  example_link: '</tournaments/abc/leaderboard?limit=25&offset=25>; rel="next", </tournaments/abc/leaderboard?limit=25&offset=0>; rel="first"'
+  applies_to:
+  - TournamentLeaderboardController_getTournamentLeaderboard
+  - TournamentsApiController_getTournaments
+  - LocationsController_findAll_v1
+  cursor: false
+  source: openapi/lucra-sports-forge-openapi.json
+filtering:
+  supported: true
+  params:
+  - gameId
+  - locationId
+  - status
+  - userId
+  - state
+  - city
+  - name
+  - abbreviation
+  expansion: null
+  sparse_fieldsets: false
+  note: >-
+    No field-expansion or sparse-fieldset mechanism. The v2 design deliberately splits what the legacy
+    API returned in one payload into separate resources (tournament, leaderboard, rewards) so clients
+    fetch only what they need.
+metadata:
+  supported: true
+  mechanism: >-
+    Partner-defined matchupMetadata / userMetadata objects are carried on tournaments, scores and
+    payment structures and can be used as lookup identifiers, so a partner can address Lucra records
+    by its own keys rather than storing Lucra UUIDs.
+request_tracing:
+  header: X-Request-Id
+  direction: response
+  description: Unique request identifier for tracing and debugging, returned on responses including errors.
+  client_supplied: false
+  occurrences_in_spec: 51
+versioning:
+  scheme: path-prefix + generation
+  detail: >-
+    Two generations coexist on one gateway. The v2 resources live at /api/<resource> (for example
+    /api/tournaments, /api/recreational-games), the preserved legacy surface at
+    /api/rest/pool-tournament/*, and two endpoints carry an explicit /api/v1/ prefix (locations,
+    states). info.version is "1.0". Client SDKs version independently with semver.
+  detail_file: lifecycle/lucra-sports-lifecycle.yml
+error_envelope:
+  format: custom-json
+  rfc9457: false
+  media_type: application/json
+  shape:
+    code: Machine-readable HTTP error code (for example NOT_FOUND).
+    errCode: Machine-readable business error code (for example TOURNAMENT_NOT_FOUND).
+    message: Human-readable error message.
+  required:
+  - code
+  - errCode
+  - message
+  detail: errors/lucra-sports-problem-types.yml
+rate_limit_signaling:
+  documented_limit: 100 requests per 10-second fixed window, per API key
+  exhaustion_status: 429
+  response_headers: []
+  note: >-
+    The limit and the 429 status are stated in info.description of the published spec, but no
+    RateLimit-* / X-RateLimit-* / Retry-After response headers are documented and no 429 response is
+    declared on any operation. An agent cannot read remaining budget at runtime; it can only
+    pre-compute against the fixed window or react to a 429 body.
+  detail: rate-limits/lucra-sports-rate-limits.yml
+async_semantics:
+  pattern: accepted-then-webhook
+  status: 202
+  operations:
+  - TournamentsApiController_ingestScores
+  - TournamentsApiController_completeMatchingTournament
+  - TournamentsApiController_completeTournament
+  - RecreationalGamesController_ingestScores
+  - ScoreIngestionController_ingestScores
+  detail: >-
+    The v2 completion and score-ingestion endpoints return 202 Accepted immediately and finish
+    asynchronously. The result is only observable on the webhook stream — TournamentCompleted on
+    success, TournamentCompletionFailed on processing error, TournamentComplianceLimitExceeded when
+    the tournament is placed on hold. An integrator that does not subscribe to webhooks cannot learn
+    the outcome of its own write.
+  source: openapi/lucra-sports-forge-openapi.json
+dry_run_mode:
+  supported: false
+  grade: na
+  note: >-
+    No dry-run, preview, simulate or validate-only mode on any write operation. The rehearsal surface
+    Lucra does provide is a whole separate sandbox environment
+    (https://forge.sandbox.lucrasports.com) with its own credentials — see
+    sandbox/lucra-sports-sandbox.yml. That is environment-level rehearsal, not per-request rehearsal.
+reversibility:
+  grade: verified
+  write_surface: true
+  summary: >-
+    Every money-moving Lucra entity has an explicit reversal that refunds participants, and the spec
+    states the window as an enumerated status precondition rather than a clock — which is the correct
+    window for this domain, because a contest becomes irreversible when it settles, not after N days.
+    Settlement itself (complete) is declared irreversible in the spec text.
+  operations:
+  - action: Create a tournament
+    operation_id: TournamentsApiController_createTournament
+    reversal: cancel
+    reversal_operation_id: TournamentsApiController_cancelTournament
+    effect: All participant entry fees are refunded; status changes to CANCELED.
+    window: >-
+      Before the tournament is completed. Completion is terminal — the spec states of both cancel and
+      complete "This action is irreversible."
+    window_stated: true
+    source: openapi/lucra-sports-forge-openapi.json
+  - action: Create a recreational game (Games You Play matchup)
+    operation_id: RecreationalGamesController_getRecreationalGame
+    reversal: cancel
+    reversal_operation_id: RecreationalGamesController_cancelRecreationalGame
+    effect: All participant entry fees are refunded; status changes to CANCELED_THROUGH_API.
+    window: >-
+      "Allowed only when status is OPEN, CONFIRMED, LOCKED, or PENDING_OUTCOMES." Once the game has
+      settled outside those states the cancel is rejected.
+    window_stated: true
+    source: openapi/lucra-sports-forge-openapi.json
+  - action: Complete a tournament / distribute payouts
+    operation_id: TournamentsApiController_completeTournament
+    reversal: none
+    effect: Payout distribution is triggered; status changes to COMPLETED.
+    window: 'None — the spec states: "This action is irreversible."'
+    window_stated: true
+    source: openapi/lucra-sports-forge-openapi.json
+  - action: Complete a recreational game
+    operation_id: RecreationalGamesController_completeRecreationalGame
+    reversal: none
+    effect: Prize pool is settled to the winning group(s); a declared tie refunds buy-in minus fee share.
+    window: >-
+      Status must be OPEN, CONFIRMED, LOCKED or PENDING_OUTCOMES to complete at all; games configured
+      with track_results = AUTOMATED cannot be completed manually. Settlement is terminal.
+    window_stated: true
+    source: openapi/lucra-sports-forge-openapi.json
+  - action: Create a webhook subscription
+    operation_id: WebhooksController_createWebhook
+    reversal: delete
+    reversal_operation_id: WebhooksController_deleteWebhook
+    effect: Subscription removed; 204 No Content.
+    window: Any time. Subscriptions also accept an optional expirationDate for self-expiry.
+    window_stated: true
+    source: openapi/lucra-sports-forge-openapi.json
+  - action: Create a tenant tag group / add a tag
+    operation_id: TenantTagsApiController_createTagGroup
+    reversal: delete
+    reversal_operation_id: TenantTagsApiController_deleteTagGroup
+    effect: Tag group or individual tag removed.
+    window: Any time. No documented retention or restore path after deletion.
+    window_stated: false
+    source: openapi/lucra-sports-forge-openapi.json
+  not_reversible:
+  - Payout distribution once a tournament or recreational game is completed.
+  - Score ingestion — scores can be updated (PATCH .../users-scores on the legacy surface) but there
+    is no documented delete or rollback of an ingested score.
+  caution: >-
+    No time-based reversal window (no "refund within N days") is stated anywhere in Lucra's public
+    material, and none is asserted here. The windows recorded above are the status preconditions the
+    spec itself enumerates.
+cross_references:
+  errors: errors/lucra-sports-problem-types.yml
+  lifecycle: lifecycle/lucra-sports-lifecycle.yml
+  authentication: authentication/lucra-sports-authentication.yml
+  rate_limits: rate-limits/lucra-sports-rate-limits.yml
+  webhooks: asyncapi/lucra-sports-webhooks.yml
+  sandbox: sandbox/lucra-sports-sandbox.yml

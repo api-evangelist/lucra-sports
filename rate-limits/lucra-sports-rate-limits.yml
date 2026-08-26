@@ -1,0 +1,45 @@
+generated: '2026-08-25'
+method: searched
+source: 'https://forge.lucrasports.com/swagger-json (info.description, section "Rate Limiting")'
+docs: https://forge.lucrasports.com/docs/
+limit_count: 1
+rate_limits:
+- name: Forge API key limit
+  scope: per-api-key
+  strategy: fixed-window
+  window: 10s
+  limit: 100
+  burst: null
+  applies_to: all Forge endpoints
+  exhaustion_status: 429
+  exhaustion_body: '{ code, errCode, message } error envelope'
+  response_headers: []
+  retry_after: false
+  quote: >-
+    "All API requests are rate-limited per API key using a fixed-window strategy. Each key is allowed
+    up to 100 requests per 10-second window. When the limit is exceeded, the API responds with 429 Too
+    Many Requests."
+  source: 'https://forge.lucrasports.com/swagger-json (info.description)'
+response_headers:
+  documented: []
+  note: >-
+    This is the gap that matters for an agent. Lucra publishes the NUMBER (100 per 10s) but not the
+    RUNTIME SIGNAL: no RateLimit-Limit / RateLimit-Remaining / RateLimit-Reset (RFC 9331 draft), no
+    X-RateLimit-* pair, and no Retry-After on the 429. A client cannot read its remaining budget, and
+    on exhaustion cannot read how long to wait — it has to assume the 10-second window and back off
+    blind. The 429 is also not declared as a response on any of the 42 operations, so a generated
+    client will not model it at all.
+observed:
+  probed: false
+  note: >-
+    Not verified against a live response. Every Forge endpoint requires a tenant API key, so an
+    unauthenticated probe cannot observe rate-limit headers without misrepresenting an
+    authentication failure as a limit observation.
+legacy_surface:
+  host: https://api.lucrasports.com
+  documented_limits: false
+  note: >-
+    The legacy API setup page publishes no numbers and instead says "Monitor rate limits: Contact
+    Lucra team for rate limit information." The Forge gateway is the first place Lucra put a concrete
+    limit in writing.
+  source: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/1.0_api_setup.md

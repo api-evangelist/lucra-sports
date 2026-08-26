@@ -1,0 +1,134 @@
+generated: '2026-08-25'
+method: derived
+source: openapi/lucra-sports-forge-openapi.json
+docs: https://forge.lucrasports.com/docs/
+format: custom-json
+rfc9457: false
+media_type: application/json
+envelope:
+  schema: '#/components/schemas/Error'
+  required:
+  - code
+  - errCode
+  - message
+  fields:
+    code:
+      type: string
+      description: Machine-readable HTTP error code.
+      example: NOT_FOUND
+    errCode:
+      type: string
+      description: Machine-readable business error code.
+      example: TOURNAMENT_NOT_FOUND
+    message:
+      type: string
+      description: Human-readable error message.
+      example: Tournament not found
+  tracing_header: X-Request-Id
+  note: >-
+    Two-level error coding — a transport-level `code` plus a domain-level `errCode` — is the useful
+    part of this envelope for an agent, because it can branch on errCode without string-matching the
+    message. It is not RFC 9457: there is no type URI, no title/detail/instance, and the media type is
+    application/json rather than application/problem+json.
+problem_types:
+- status: 404
+  code: NOT_FOUND
+  err_code: TOURNAMENT_NOT_FOUND
+  title: Tournament not found
+  detail: The tournament id or matching identifier did not resolve to a tournament for this tenant.
+  remediation: >-
+    Verify the tournament id, or the matchupMetadata / matchupId / gameId / locationId identifier
+    resolves to exactly one tournament. Identifier-matched writes reject ambiguous matches.
+  operations:
+  - TournamentsApiController_getTournament
+  - TournamentsApiController_updateTournament
+  - TournamentsApiController_cancelTournament
+  - TournamentsApiController_completeTournament
+  - TournamentLeaderboardController_getTournamentLeaderboard
+  - TournamentRewardsController_getTournamentRewards
+  - TournamentRewardsController_updateTournamentRewards
+  - TournamentRewardsController_updateMatching
+  - TournamentsApiController_setTournamentTags
+  source: openapi/lucra-sports-forge-openapi.json
+- status: 404
+  code: NOT_FOUND
+  err_code: null
+  title: Recreational game not found
+  detail: The recreational game (Games You Play matchup) id did not resolve for this tenant.
+  remediation: Confirm the matchup id and that it belongs to the authenticated tenant.
+  operations:
+  - RecreationalGamesController_getRecreationalGame
+  - RecreationalGamesController_getRecreationalGameUsers
+  - RecreationalGamesController_cancelRecreationalGame
+  - RecreationalGamesController_completeRecreationalGame
+  source: openapi/lucra-sports-forge-openapi.json
+- status: 404
+  code: NOT_FOUND
+  err_code: null
+  title: Webhook configuration not found
+  detail: The webhook config id did not resolve for this tenant.
+  remediation: List configs with GET /api/rest/webhook/configs to recover the current id set.
+  operations:
+  - WebhooksController_updateWebhook
+  - WebhooksController_deleteWebhook
+  source: openapi/lucra-sports-forge-openapi.json
+- status: 404
+  code: NOT_FOUND
+  err_code: null
+  title: Tag group not found
+  detail: The tenant tag group id did not resolve.
+  remediation: List groups with GET /api/tenant-tag-groups.
+  operations:
+  - TenantTagsApiController_updateTagGroup
+  - TenantTagsApiController_deleteTagGroup
+  - TenantTagsApiController_addTag
+  source: openapi/lucra-sports-forge-openapi.json
+- status: 404
+  code: NOT_FOUND
+  err_code: null
+  title: Tag group or tag not found
+  detail: Neither the tag group nor the tag within it resolved.
+  remediation: Re-read the group to confirm the tag still exists before removing it.
+  operations:
+  - TenantTagsApiController_removeTag
+  source: openapi/lucra-sports-forge-openapi.json
+- status: 400
+  code: BAD_REQUEST
+  err_code: null
+  title: Tag limit exceeded
+  detail: The tag group has reached its maximum number of tags.
+  remediation: Remove an existing tag before adding another, or create a second tag group.
+  operations:
+  - TenantTagsApiController_addTag
+  source: openapi/lucra-sports-forge-openapi.json
+- status: 429
+  code: null
+  err_code: null
+  title: Too Many Requests
+  detail: >-
+    Rate limit exceeded — 100 requests per 10-second fixed window per API key.
+  remediation: >-
+    Back off and retry after the window rolls. No Retry-After or RateLimit-* header is documented, so
+    the retry delay must be assumed rather than read.
+  operations: []
+  declared_in_spec: false
+  source: 'https://forge.lucrasports.com/swagger-json (info.description)'
+gaps:
+- >-
+  No 401 / 403 response is declared on any of the 42 operations even though every operation requires
+  the X-Lucra-Api-Key header — an agent cannot distinguish "bad key" from "wrong tenant" from the
+  contract.
+- >-
+  The 429 documented in info.description is not declared as a response on any operation, so a
+  generated client will treat it as an unmodelled failure.
+- >-
+  No 5xx responses are declared anywhere in the spec.
+- >-
+  Only one errCode value (TOURNAMENT_NOT_FOUND) is published. The envelope declares errCode as
+  required on every error, but the registry of possible values is not documented, so the field that
+  makes this envelope machine-actionable cannot actually be branched on ahead of time.
+coverage:
+  operations_total: 42
+  operations_with_4xx: 19
+  operations_with_5xx: 0
+  distinct_problem_types: 7

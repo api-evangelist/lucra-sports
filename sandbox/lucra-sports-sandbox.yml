@@ -1,0 +1,90 @@
+generated: '2026-08-25'
+method: searched
+source: https://docs.lucrasports.com/lucra-sdk/readme/whats-included/implementation-support/testing.md
+docs: https://docs.lucrasports.com/lucra-sdk/readme/whats-included/implementation-support/testing
+available: true
+model: separate-environment
+environments:
+- name: sandbox
+  api_base: https://forge.sandbox.lucrasports.com
+  legacy_api_base: https://api.sandbox.lucrasports.com
+  graphql: https://api.sandbox.lucrasports.com/v1/graphql
+  docs_console: https://forge.sandbox.lucrasports.com/docs/
+  description: >-
+    Development and testing environment. Allows testing with accounts, transactions and matchups in a
+    non-production setting.
+- name: production
+  api_base: https://forge.lucrasports.com
+  legacy_api_base: https://api.lucrasports.com
+  docs_console: https://forge.lucrasports.com/docs/
+  description: Live use only.
+credentials:
+  separate_per_environment: true
+  self_service: false
+  key_prefixes: none published
+  note: >-
+    Sandbox and production keys are distinct and both are issued by a Lucra representative. There is
+    no test-mode/live-mode key prefix convention (no sk_test_-style discriminator), so a key cannot be
+    identified as sandbox or production by inspection — the environment is carried by the host, not
+    the credential. Lucra's own guidance is to store them as separate named variables per platform per
+    environment.
+  variables_documented:
+  - SANDBOX_LUCRA_API_KEY / PRODUCTION_LUCRA_API_KEY
+  - SANDBOX_LUCRA_WEB_KEY / PRODUCTION_LUCRA_WEB_KEY
+  - SANDBOX_LUCRA_MOBILE_KEY / PRODUCTION_LUCRA_MOBILE_KEY
+test_identity:
+  description: >-
+    Published fixture identity that is configured to pass Lucra's KYC verification flow in testing
+    environments. Mobile only.
+  values:
+    firstName: John
+    lastName: Doe
+    street: Appleton Street
+    building: '2'
+    city: Boston
+    state: MA
+    zip: '02116'
+    dobMonth: '07'
+    dobDay: '22'
+    dobYear: '1982'
+  web_note: >-
+    On web, Lucra recommends testing with real personal information and phone number, then asking the
+    Implementation Manager to configure the account for test usage — there is no self-service web test
+    identity.
+test_cards:
+  description: Published test card numbers for payment testing. Any future expiry and any 3-digit CVV.
+  values:
+  - brand: Visa
+    number: '4761344136141390'
+    exp: any future date
+    cvv: any 3 digits
+  - brand: Mastercard
+    number: '5101081046006034'
+    exp: any future date
+    cvv: any 3 digits
+test_bank_accounts:
+  provider: Plaid
+  description: >-
+    Bank funding is tested through Plaid's sandbox. Lucra publishes the full walkthrough — the Plaid
+    sandbox phone number (415) 555-0011, MFA code 123456, institution "First Bank", username
+    user_custom, and a JSON override payload pasted into the password field to mint checking and
+    savings accounts with set starting balances and routing numbers.
+  source: https://docs.lucrasports.com/lucra-sdk/readme/whats-included/implementation-support/testing.md
+geolocation_testing:
+  requirement: >-
+    Testers outside the United States must have their country or location whitelisted by their Lucra
+    implementation manager, or user verification and other requests will fail. This is a consequence
+    of the GeoComply geolocation SDK bundled into the mobile clients.
+  self_service: false
+time_simulation:
+  supported: false
+  note: No test clocks or time-travel fixtures are documented.
+trigger_tooling:
+  supported: false
+  note: >-
+    No fixture generator, event-trigger CLI or webhook replay tool. Webhook events are produced by
+    performing the real action in sandbox.
+gaps:
+- No self-service sandbox signup — sandbox access requires a Lucra representative, same as production.
+- No test-mode key prefix, so environment cannot be inferred from a credential.
+- No documented way to trigger a specific webhook event on demand for integration testing.

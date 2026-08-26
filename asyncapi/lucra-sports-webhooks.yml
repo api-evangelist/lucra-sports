@@ -1,0 +1,126 @@
+generated: '2026-08-25'
+method: searched
+source: https://docs.lucrasports.com/lucra-sdk/server-to-server/webhook-subscriptions.md
+docs: https://docs.lucrasports.com/lucra-sdk/server-to-server/webhook-subscriptions
+asyncapi_spec_published: false
+asyncapi_note: >-
+  Lucra publishes no AsyncAPI document. The event surface is real and well documented in prose and in
+  the Forge OpenAPI (subscriptions are managed through REST), so this artifact captures the webhook
+  catalog rather than fabricating a spec.
+transport: https-webhook
+delivery:
+  direction: outbound
+  method: POST
+  content_type: application/json
+  target: partner-supplied HTTPS URL per subscription
+  custom_headers: 'Optional partner-supplied headers, set as a JSON string on the subscription record.'
+  retries: undocumented
+  ordering: undocumented
+  duplicate_delivery: >-
+    Possible — Lucra instructs integrators to "handle duplicate webhook deliveries gracefully". No
+    delivery-id header is documented for de-duplication, so partners must de-duplicate on the event
+    payload itself.
+security:
+  signature_header: X-Lucra-Signature
+  algorithm: HMAC-SHA256
+  encoding: hex digest, sha256= prefixed
+  signed_over: raw request body
+  secret_distribution: >-
+    Per-webhook-configuration shared secret, issued out of band by a Lucra representative (for example
+    via a single-use secret link) after the webhook is registered. Not retrievable through the API.
+  rotation: >-
+    No rotation endpoint. To rotate, create a new configuration record and delete the compromised one,
+    then obtain the new secret from a Lucra representative.
+  guidance:
+  - Verify against the raw body — do not parse and re-stringify the JSON.
+  - Use a constant-time comparison to prevent timing attacks.
+  - Accept webhooks over HTTPS only.
+  source: https://docs.lucrasports.com/lucra-sdk/server-to-server/webhook-subscriptions/request-verification.md
+management:
+  api: Forge REST
+  operations:
+  - operation_id: WebhooksController_createWebhook
+    method: POST
+    path: /api/rest/webhook/configs
+  - operation_id: WebhooksController_listWebhooks
+    method: GET
+    path: /api/rest/webhook/configs
+  - operation_id: WebhooksController_updateWebhook
+    method: PUT
+    path: /api/rest/webhook/configs/{id}
+  - operation_id: WebhooksController_deleteWebhook
+    method: DELETE
+    path: /api/rest/webhook/configs/{id}
+  constraints:
+  - Maximum of 5 webhook configuration records per tenant.
+  - A configuration may carry all subscriptions or a chosen subset.
+  - >-
+    Single-instance subscriptions (for example C2CWithdrawal) can exist in only one configuration
+    record at a time.
+  - Subscriptions accept an optional expirationDate and an active flag.
+event_count: 14
+events:
+- name: UserSignedUp
+  category: user
+  description: Fires the first time a user record is inserted, just after the user completes SMS login.
+  payload_fields: [event, userId, email, username, phoneNumber]
+- name: UserKYCVerified
+  category: user
+  description: >-
+    Fires when a user is successfully verified in the KYC flow. Fires only on FIRST verification — a
+    user who becomes unverified and later reverifies does not produce a second event.
+  payload_fields: [event, userId]
+- name: FundsDeposited
+  category: payments
+  description: Fires whenever a user deposits money into their Lucra account, for all deposit methods.
+  payload_fields: [event, userId, tenantId, 'properties.method', 'properties.amount', 'properties.fee', 'properties.transactionStatus', 'properties.transactionId', 'properties.email', 'properties.phone']
+- name: C2CWithdrawal
+  category: payments
+  single_instance: true
+  description: >-
+    Convert to Credit withdrawal — lets a partner grant its own credit when a user withdraws Lucra
+    funds as partner credit rather than cash. Transactional; may be bound to only one endpoint.
+- name: TournamentCreated
+  category: tournaments
+- name: TournamentEdited
+  category: tournaments
+- name: TournamentCanceled
+  category: tournaments
+- name: TournamentCompleted
+  category: tournaments
+  description: >-
+    Terminal confirmation for the asynchronous 202 completion flow. Required to observe the outcome of
+    POST /api/tournaments/{id}/complete.
+- name: TournamentUserJoined
+  category: tournaments
+- name: RecreationalGameCreated
+  category: recreational-games
+- name: RecreationalGameJoined
+  category: recreational-games
+- name: RecreationalGameStarted
+  category: recreational-games
+- name: RecreationalGameCanceled
+  category: recreational-games
+- name: RecreationalGameCompleted
+  category: recreational-games
+additional_events_referenced_in_spec:
+- name: TournamentCompletionFailed
+  status: referenced-not-catalogued
+  source: 'openapi/lucra-sports-forge-openapi.json (completeTournament description)'
+- name: TournamentComplianceLimitExceeded
+  status: referenced-not-catalogued
+  description: Fires when a tournament is placed on hold for a compliance limit.
+  source: 'openapi/lucra-sports-forge-openapi.json (completeTournament description)'
+- name: FtpMatchupCreated
+  status: referenced-not-catalogued
+  description: Free-to-Play matchup created; used as the worked example in the subscriptions docs.
+  source: https://docs.lucrasports.com/lucra-sdk/server-to-server/webhook-subscriptions.md
+gaps:
+- >-
+  The subscription list published on the Webhook Subscriptions page (14 names) does not include
+  FtpMatchupCreated, TournamentCompletionFailed or TournamentComplianceLimitExceeded, all three of
+  which are named as subscribable elsewhere in Lucra's own material. The catalog and the reference
+  are out of sync, and the two missing tournament events are precisely the failure paths of the
+  asynchronous completion flow.
+- No delivery-attempt id, timestamp header or retry policy is documented.
+- No AsyncAPI or JSON Schema is published for any event payload.

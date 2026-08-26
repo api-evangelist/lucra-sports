@@ -1,0 +1,130 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Lucra Forge API
+  version: 1.0.0
+x-provenance:
+  generated: '2026-08-25'
+  method: generated
+  source: openapi/lucra-sports-forge-openapi.json
+  extends: openapi/lucra-sports-forge-openapi.json
+  upstream: https://forge.lucrasports.com/swagger-json
+  note: >-
+    Captures API Evangelist's enrichment of the published contract without mutating it. Everything
+    added here is traceable to something Lucra states somewhere in its own material — the limit and
+    429 come from info.description of this same spec, the error envelope from components.schemas.Error,
+    and the reversibility annotations from the operation descriptions. Nothing is invented.
+actions:
+- target: $.info
+  description: Record where the contract was retrieved and the environments it serves.
+  update:
+    x-api-evangelist:
+      retrieved: '2026-08-25'
+      retrieved_from: https://forge.lucrasports.com/swagger-json
+      discovery_path: >-
+        Not at any conventional location. The Scalar reference at /docs/ declares its spec URL as
+        /swagger-json; /openapi.json, /openapi.yaml and /swagger.json all 404 on this host.
+      contact_absent: info.contact is an empty object in the published spec.
+- target: $.info
+  description: Add the machine-readable rate limit Lucra states in prose in info.description.
+  update:
+    x-rate-limit:
+      scope: per-api-key
+      strategy: fixed-window
+      window_seconds: 10
+      limit: 100
+      exhaustion_status: 429
+      response_headers: []
+      source: 'info.description, section "Rate Limiting"'
+- target: $.info
+  description: Declare the event surface that completes the asynchronous write operations.
+  update:
+    x-event-surface:
+      transport: https-webhook
+      catalog: asyncapi/lucra-sports-webhooks.yml
+      signature_header: X-Lucra-Signature
+      signature_algorithm: HMAC-SHA256
+      asyncapi_published: false
+- target: $.info
+  description: Declare authentication provisioning reality, which the securityScheme alone does not convey.
+  update:
+    x-authentication:
+      self_service: false
+      provisioning: Keys are issued by a Lucra representative per tenant per environment.
+      environments:
+        sandbox: https://forge.sandbox.lucrasports.com
+        production: https://forge.lucrasports.com
+      legacy_query_param_auth: Removed on Forge; supported only on api.lucrasports.com.
+- target: $.components.schemas.Error
+  description: Annotate the error envelope with its standards position.
+  update:
+    x-error-envelope:
+      rfc9457: false
+      media_type: application/json
+      tracing_header: X-Request-Id
+      levels:
+        code: transport-level
+        errCode: domain-level
+      published_err_codes:
+      - TOURNAMENT_NOT_FOUND
+      note: >-
+        errCode is required on every error but only one value is published, so the field cannot be
+        branched on ahead of time.
+- target: "$.paths['/api/tournaments/{id}/cancel'].post"
+  description: Annotate the reversal semantics and window for tournament cancellation.
+  update:
+    x-reversibility:
+      role: reversal
+      reverses: TournamentsApiController_createTournament
+      effect: refunds all participant entry fees
+      window: before completion; completion is terminal
+      window_stated: true
+      irreversible_itself: true
+- target: "$.paths['/api/recreational-games/{id}/cancel'].post"
+  description: Annotate the reversal semantics and status window for recreational game cancellation.
+  update:
+    x-reversibility:
+      role: reversal
+      effect: refunds all participant entry fees
+      window: status must be OPEN, CONFIRMED, LOCKED or PENDING_OUTCOMES
+      window_stated: true
+      irreversible_itself: true
+- target: "$.paths['/api/tournaments/{id}/complete'].post"
+  description: Flag settlement as terminal and asynchronous.
+  update:
+    x-reversibility:
+      role: terminal
+      reversal: none
+      note: 'Spec states "This action is irreversible." Payout distribution is triggered.'
+    x-async:
+      returns: 202
+      completion_events:
+      - TournamentCompleted
+      - TournamentCompletionFailed
+      - TournamentComplianceLimitExceeded
+- target: "$.paths['/api/recreational-games/{id}/complete'].post"
+  description: Flag settlement as terminal with its status precondition.
+  update:
+    x-reversibility:
+      role: terminal
+      reversal: none
+      window: status must be OPEN, CONFIRMED, LOCKED or PENDING_OUTCOMES
+      note: Games with track_results = AUTOMATED cannot be completed manually.
+- target: $.paths..post
+  description: Record that no request idempotency mechanism exists on any write operation.
+  update:
+    x-idempotency:
+      supported: false
+      key_header: null
+      note: >-
+        No Idempotency-Key or equivalent. A retry after a timeout has no documented safe behaviour.
+        Identifier-matched writes are target-stable but not declared idempotent.
+- target: $.tags
+  description: Mark the preserved legacy generation so consumers can tell the two apart.
+  update:
+    x-generations:
+      v2: /api/<resource>
+      legacy: /api/rest/pool-tournament/*
+      v1_prefixed: /api/v1/locations, /api/v1/states
+      note: >-
+        The "Tournaments (Legacy)" tag is documented elsewhere as legacy ("New integrations should use
+        Forge instead") but carries no `deprecated: true` and no Sunset date in the contract itself.

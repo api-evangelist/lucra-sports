@@ -1,0 +1,197 @@
+generated: '2026-08-25'
+method: derived
+source: openapi/lucra-sports-forge-openapi.json
+summary: >-
+  The Lucra domain graph read from the 89 component schemas of the Forge OpenAPI. One tenant owns
+  everything; contests come in two shapes (Tournament — many players against a leaderboard;
+  Recreational Game — a matchup between participant groups); users enter contests, submit scores, and
+  are paid out through a reward or payment structure. Locations and tag groups are tenant-scoped
+  organising dimensions, and webhook configurations are the tenant's event plumbing.
+schema_count: 89
+relationship_count: 87
+id_convention:
+  format: UUID v4
+  prefixed: false
+  note: >-
+    Identifiers are bare UUIDs with no type prefix (unlike Stripe's cus_/ch_ convention), so an id
+    alone does not disclose what it points at. The example ids in the docs are of the form
+    109387a1-45a9-4408-8998-1c0404a0a21c.
+alternate_keys:
+  supported: true
+  mechanism: >-
+    Most write paths accept a partner-supplied identifier instead of a Lucra UUID. TournamentIdentifierDto
+    resolves a tournament by matchupMetadata, matchupId, gameId or locationId; payment structure rows
+    resolve a recipient by userId, phoneNumber or userMetadata. Every such identifier must resolve to
+    exactly one record or the call is rejected.
+  significance: >-
+    This is the most useful property of the model for an integrator: a partner never has to persist
+    Lucra's UUIDs, and can address Lucra records by its own primary keys.
+entities:
+- name: Tenant
+  description: The integrating partner. Implicit — established by the API key, never passed as a parameter.
+  owns: [Tournament, RecreationalGame, TenantTagGroup, Location, WebhookConfig, Reward]
+  note: >-
+    Tenancy is ambient. There is no tenantId path or query parameter anywhere in the 42 operations;
+    the X-Lucra-Api-Key header carries it. tenantId does appear on outbound webhook payloads.
+- name: Tournament
+  description: >-
+    A many-player contest against a leaderboard, with a buy-in, a payout/reward structure and a
+    lifecycle (created, edited, users joined, canceled, completed).
+  primary_operations:
+  - TournamentsApiController_createTournament
+  - TournamentsApiController_getTournaments
+  - TournamentsApiController_getTournament
+  - TournamentsApiController_updateTournament
+  - TournamentsApiController_cancelTournament
+  - TournamentsApiController_completeTournament
+  relationships:
+  - has_many: TournamentLeaderboardEntry
+    via: leaderboard
+    operation: TournamentLeaderboardController_getTournamentLeaderboard
+  - has_many: TournamentReward
+    via: rewards
+    operation: TournamentRewardsController_getTournamentRewards
+  - has_many: TenantTag
+    via: tags
+    operation: TournamentsApiController_setTournamentTags
+  - belongs_to: Location
+    via: locationId
+  - belongs_to: Game
+    via: gameId
+  key_schemas: [TournamentResponseDto, TournamentCreateDto, TournamentUpdateDto, TournamentIdentifierDto, PaymentStructureRowDto]
+- name: RecreationalGame
+  description: >-
+    A Games You Play matchup between participant groups, with a buy-in, an outcome (sole winner, split
+    winners, or a declared tie) and its own status machine — OPEN, CONFIRMED, LOCKED,
+    PENDING_OUTCOMES, CANCELED_THROUGH_API.
+  primary_operations:
+  - RecreationalGamesController_getRecreationalGame
+  - RecreationalGamesController_getRecreationalGameUsers
+  - RecreationalGamesController_ingestScores
+  - RecreationalGamesController_cancelRecreationalGame
+  - RecreationalGamesController_completeRecreationalGame
+  relationships:
+  - has_many: RecreationalGameUser
+    via: users
+    operation: RecreationalGamesController_getRecreationalGameUsers
+  - has_many: ParticipantGroup
+    via: winningGroupIds
+  note: >-
+    Games configured with track_results = AUTOMATED cannot be completed through the API — settlement
+    is owned by the platform. That is a real constraint on any automation built over this entity.
+- name: User
+  description: A Lucra end user. Identity is owned by Lucra, not the partner, and is shared across tenants.
+  relationships:
+  - has_many: Score
+    via: userId
+  - has_many: TournamentLeaderboardEntry
+    via: userId
+  resolvable_by: [userId, phoneNumber, userMetadata]
+  note: >-
+    Users are never created through the Forge API — they are created in the client SDK via SMS login
+    (Auth0) and KYC. The partner learns about them through the UserSignedUp and UserKYCVerified
+    webhooks. A user who already exists on Lucra through another tenant is linked behind the scenes.
+- name: Score
+  description: A submitted result for a user in a contest. Ingested in batches, processed asynchronously.
+  primary_operations:
+  - ScoreIngestionController_ingestScores
+  - TournamentsApiController_ingestScores
+  - RecreationalGamesController_ingestScores
+  - TournamentsLegacyController_updateUserScores
+  relationships:
+  - belongs_to: User
+    via: userId
+  - belongs_to: Tournament
+    via: identifier
+  key_schemas: [IngestUserScoreDto, IngestUserScoreEntryDto, IngestScoresResponseDto]
+- name: TournamentReward
+  description: >-
+    A prize tier attached to a tournament payout position. Rewards may be cash (POOL_CASH_REWARD) or a
+    tangible catalog item (POOL_TENANT_REWARD).
+  primary_operations:
+  - TournamentRewardsController_getTournamentRewards
+  - TournamentRewardsController_updateTournamentRewards
+  - TournamentRewardsController_updateMatching
+  relationships:
+  - belongs_to: Tournament
+    via: tournamentId
+  key_schemas: [TournamentRewardResponseDto, NewRewardDto, TournamentRewardTierUpdateDto]
+- name: TournamentLeaderboardEntry
+  description: One participant's ranking and score within a tournament. Paginated with limit/offset + Link.
+  relationships:
+  - belongs_to: Tournament
+  - belongs_to: User
+    via: userId
+  key_schemas: [TournamentLeaderboardEntryResponseDto]
+- name: TenantTagGroup
+  description: A tenant-defined grouping dimension; holds TenantTags that can be attached to tournaments.
+  primary_operations:
+  - TenantTagsApiController_createTagGroup
+  - TenantTagsApiController_getTagGroups
+  - TenantTagsApiController_updateTagGroup
+  - TenantTagsApiController_deleteTagGroup
+  relationships:
+  - has_many: TenantTag
+    via: tags
+  constraint: A tag group has a maximum tag count; exceeding it returns 400 "Tag limit exceeded".
+- name: TenantTag
+  description: A single tag within a tag group; attachable to tournaments.
+  relationships:
+  - belongs_to: TenantTagGroup
+    via: tagGroupId
+  - has_many: Tournament
+    via: tags
+- name: Location
+  description: A tenant venue or place. Contests can be scoped to a location, and location doubles as a tournament identifier.
+  primary_operations:
+  - LocationsController_create_v1
+  - LocationsController_findAll_v1
+  relationships:
+  - has_many: Tournament
+    via: locationId
+  filterable_by: [state, city, name]
+  key_schemas: [LocationResponseDto, CreateLocationDto]
+- name: State
+  description: A U.S. state and its product availability. Read-only reference data.
+  primary_operations:
+  - StatesController_findAll_v1
+  filterable_by: [abbreviation]
+  note: >-
+    The compliance boundary exposed as data. Rather than making integrators hard-code the
+    state-by-state eligibility matrix, Lucra serves it, so an agent can check jurisdiction before
+    creating a contest.
+- name: Game
+  description: A game type in the tenant's catalog, with how-to-win and track-results labelling.
+  key_schemas: [GameDetailsResponseDto, GameHowToWinLabelResponseDto, GameTrackResultsLabelResponseDto]
+  relationships:
+  - has_many: Tournament
+    via: gameId
+  - has_many: RecreationalGame
+    via: gameId
+- name: WebhookConfig
+  description: A subscription record binding a set of event names to a partner HTTPS endpoint.
+  primary_operations:
+  - WebhooksController_createWebhook
+  - WebhooksController_listWebhooks
+  - WebhooksController_updateWebhook
+  - WebhooksController_deleteWebhook
+  constraints:
+  - Maximum 5 per tenant.
+  - Single-instance subscriptions (for example C2CWithdrawal) may live in only one config at a time.
+  key_schemas: [WebhookResponseDto, WebhookCreateDto, WebhookUpdateDto]
+  detail: asyncapi/lucra-sports-webhooks.yml
+legacy_shadow_entities:
+  note: >-
+    Roughly a third of the schema count is the preserved legacy generation — LegacyTournamentMatchupDto,
+    LegacyTournamentUserDto, LegacyTournamentRewardStructureDto and their wrappers. They model the SAME
+    domain objects with a different, more monolithic shape (the legacy tournament read returned
+    tournament + rewards + full leaderboard in one payload). They are listed here so the duplication is
+    not mistaken for two distinct domains.
+  schemas: [LegacyTournamentMatchupDto, LegacyTournamentUserDto, LegacyTournamentRewardStructureDto, LegacyActiveTournamentsResponseDto, LegacyCompleteTournamentObjectDto]
+envelope_convention:
+  pattern: wrapped-request-body
+  detail: >-
+    Legacy and webhook write operations wrap the payload in an `object` key alongside the apiKey
+    (WrappedWebhookResponseDto, WebhookCreateDto, LegacyTournamentCreateDto). The v2 resources send the
+    payload at the top level. Both shapes are live on the same gateway, which is the sharpest
+    ergonomic seam in the contract.

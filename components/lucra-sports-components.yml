@@ -1,0 +1,108 @@
+generated: '2026-08-25'
+method: searched
+source: https://docs.lucrasports.com/lucra-sdk/readme/whats-included/full-suite-of-ui-modules
+docs: https://docs.lucrasports.com/lucra-sdk/readme/whats-included
+summary: >-
+  Lucra's product IS an embeddable UI surface — the SDKs are not thin API wrappers but a rendered
+  contest experience dropped into a partner app. Two families exist: LucraFlows, full-screen
+  self-contained journeys the host app navigates to, and LucraComponents, smaller embeddable views
+  placed inside the host app's own screens. Both are themeable, and both have a headless counterpart
+  for partners who want to build their own UI against the same functions.
+families:
+- name: LucraFlows
+  kind: full-screen flows
+  description: >-
+    Self-contained Lucra-rendered journeys launched from the host app's navigation at the appropriate
+    moment. Each flow is a named destination.
+  platforms: [ios, android, react-native, web]
+  loaders:
+    android: LucraUiProvider.LucraFlow
+    ios: LucraClient flows
+    react_native: LucraSDK flows
+    web: 'client.open(element) | client.redirect() | client.dialog()'
+  documented_flows:
+  - Mini Games Home
+  - Mini Games Game Mode Selection
+  - MinigameMatchupDetails
+  - MinigamesProfile
+  - MinigamesRewards
+  - MatchupDetails
+  - Tournament details / join
+  - Profile
+  - Rewards / achievements
+  - Demographic collection form
+  - Location grant
+  docs:
+    android: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.7_lucraflows
+    ios: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.7_lucraflows
+    react_native: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.7_lucraflows
+    web: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.3_lucraflows
+- name: LucraComponents
+  kind: embeddable views
+  status: experimental
+  description: >-
+    Smaller Lucra-rendered views embedded inside the host app's own screens rather than presented as a
+    destination. Marked experimental in the docs on every platform.
+  platforms: [ios, android, react-native]
+  android_note: >-
+    Embedded Lucra views use Jetpack Compose, which react-native-screens does not support — so on
+    Android, React Native integrators needing embedded components must stay on the old architecture.
+  docs:
+    android: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.8_lucracomponents
+    ios: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.8_lucracomponents
+    react_native: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.8_lucracomponents
+- name: Reward Sheet
+  kind: automatic overlay
+  description: >-
+    A "you've won a reward" bottom sheet the SDK raises on its own. Globally suppressible with
+    allowRewardSheetToDisplay = false (Android 6.7.0+, React Native 5.10.0+) — worth knowing because
+    it is UI the partner did not explicitly place.
+  platforms: [ios, android, react-native]
+  docs: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.11_reward_sheet
+- name: Mini Games WebView
+  kind: hosted webview
+  description: A webview-hosted mini game surface for React Native integrations.
+  platforms: [react-native]
+  docs: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/6.4_mini_games_webview
+- name: Lucra Web (iframe)
+  kind: hosted iframe
+  description: >-
+    The web SDK is explicitly an iframe host — "a Javascript library to easily get LucraSports running
+    on your website in an iframe". Navigation is driven through open()/redirect()/dialog() and the
+    host page listens for events on the client.
+  platforms: [web]
+  loader: lucra-web-sdk (LucraClient)
+  install: bun install Lucra-Sports/lucra-web-sdk
+  initialization: 'Requires both tenantId and apiKey (tenantId alone is no longer supported).'
+  docs: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.2_initialize_client
+- name: Lucra Console
+  kind: hosted partner dashboard
+  description: >-
+    A Lucra-hosted console where partners create and manage the rewards attached to tournaments and
+    achievements. Referenced in the Reward Management docs; no public URL is published.
+  docs: https://docs.lucrasports.com/lucra-sdk/rewards/reward-management
+theming:
+  supported: true
+  mechanism: >-
+    ClientTheme / LucraTheme with light and dark color sets plus font families. Supplying both palettes
+    makes Lucra screens follow system appearance; supplying one locks the appearance.
+  partner_controlled: >-
+    Partners supply color tokens and fonts. Lucra retains control of background, surface, onBackground
+    and onSurface — partner values for those fields are ignored.
+  docs:
+    mobile: https://docs.lucrasports.com/lucra-sdk/readme/whats-included/branding-and-theming/mobile-theming-guide
+    web: https://docs.lucrasports.com/lucra-sdk/readme/whats-included/branding-and-theming/web-theming-guide
+headless_alternative:
+  available: true
+  description: >-
+    Every UI family has a headless counterpart, so a partner can build its own interface against the
+    same functions. Lucra describes this as two integration options: the API plus its UI, or an
+    API-only integration.
+  docs: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.9_headless_interactions
+event_bridge:
+  name: Lucra Event Listener
+  description: >-
+    The mechanism by which embedded Lucra UI reports back to the host app — tournamentJoined,
+    locationGranted, demographicComplete, matchup and reward events. This is how a partner keeps its
+    own state in sync with what the user did inside a Lucra-rendered screen.
+  docs: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.6_lucra_event_listener

@@ -1,0 +1,133 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  Maven Central metadata, GitHub Releases/tags and repository manifests on
+  https://github.com/Lucra-Sports, plus the published SDK project-setup docs.
+summary: >-
+  Lucra ships four first-party client SDKs — Android, iOS, React Native and JavaScript/web — and all
+  four are actively released: every one shipped a version in August 2026, within days of this probe.
+  Distribution is uneven, though: only the Android artifacts are on a public registry. iOS is a
+  binary xcframework hosted on Lucra's own S3, React Native is on GitHub Packages behind a personal
+  access token, and the web SDK is installed straight from the GitHub repository with no registry at
+  all. There is no first-party server-side SDK for the Forge REST API in any language.
+packages:
+- language: kotlin
+  platform: android
+  registry: maven
+  name: com.lucrasports.sdk:sdk-core
+  url: https://central.sonatype.com/artifact/com.lucrasports.sdk/sdk-core
+  install: implementation("com.lucrasports.sdk:sdk-core:6.9.1")
+  official: true
+  version: 6.9.1
+  published: '2026-08-19'
+  version_source: https://repo1.maven.org/maven2/com/lucrasports/sdk/sdk-core/maven-metadata.xml
+  public: true
+  note: >-
+    Surface-level APIs for the Lucra SDK. Publicly resolvable from Maven Central with no
+    authentication; the docs confirm "Android SDK artifacts are published to Maven Central and do not
+    require authentication."
+- language: kotlin
+  platform: android
+  registry: maven
+  name: com.lucrasports.sdk:sdk-ui
+  url: https://central.sonatype.com/artifact/com.lucrasports.sdk/sdk-ui
+  install: implementation("com.lucrasports.sdk:sdk-ui:6.9.1")
+  official: true
+  version: 6.9.1
+  published: '2026-08-19'
+  version_source: https://repo1.maven.org/maven2/com/lucrasports/sdk/sdk-ui/maven-metadata.xml
+  public: true
+  note: Optional Compose UI module; transitively includes sdk-core.
+- language: swift
+  platform: ios
+  registry: swift-package-manager
+  name: LucraSDK
+  url: https://github.com/Lucra-Sports/lucra-ios-sdk
+  install: 'Add package https://github.com/Lucra-Sports/lucra-ios-sdk (binary targets fetched from lucra-sdk.s3.amazonaws.com)'
+  official: true
+  version: 5.8.2
+  published: '2026-08-19'
+  version_source: https://github.com/Lucra-Sports/lucra-ios-sdk/tags
+  public: true
+  note: >-
+    No registry metadata endpoint exists for an SPM package, so the version is read from Package.swift
+    (`let version = "5.8.2"`) and confirmed by the 5.8.2 git tag dated 2026-08-19. Distribution is a
+    checksummed binaryTarget xcframework on Lucra's S3 bucket, bundling MobileIntelligence and
+    GeoComplySDK for fraud and geolocation compliance.
+- language: swift
+  platform: ios
+  registry: cocoapods
+  name: LucraSDK
+  url: https://github.com/Lucra-Sports/lucra-ios-sdk/blob/main/LucraSDK.podspec
+  install: "pod 'LucraSDK', '5.8.2'"
+  official: true
+  version: 5.8.2
+  published: '2026-08-19'
+  version_source: https://github.com/Lucra-Sports/lucra-ios-sdk/blob/main/LucraSDK.podspec
+  public: false
+  note: >-
+    Not on the public CocoaPods trunk — the React Native setup docs require a GitHub personal access
+    token for "the private iOS CocoaPods repository". The podspec in the public repo points at a zip
+    on lucra-sdk.s3.amazonaws.com.
+- language: javascript
+  platform: react-native
+  registry: github-packages
+  name: '@lucra-sports/lucra-react-native-sdk'
+  url: https://github.com/Lucra-Sports/lucra-react-native-sdk
+  install: npm i -S @lucra-sports/lucra-react-native-sdk react-native-haptic-feedback react-native-webview
+  official: true
+  version: 5.10.0
+  published: '2026-08-24'
+  version_source: https://github.com/Lucra-Sports/lucra-react-native-sdk/releases
+  public: false
+  note: >-
+    Published to npm.pkg.github.com, not the public npm registry — registry.npmjs.org returns
+    "Not found" for this name. Installation requires a classic GitHub PAT with read:packages in a
+    local .npmrc. Version read from package.json and the 5.10.0 GitHub Release; note the git TAGS on
+    this repo stop at v1.5.2 (2024-09), so tags are a misleading version signal here and releases are
+    the accurate one.
+- language: typescript
+  platform: web
+  registry: github
+  name: lucra-web-sdk
+  url: https://github.com/Lucra-Sports/lucra-web-sdk
+  install: bun install Lucra-Sports/lucra-web-sdk
+  official: true
+  version: 1.11.0
+  published: '2026-08-18'
+  version_source: https://github.com/Lucra-Sports/lucra-web-sdk/blob/main/package.json
+  public: true
+  note: >-
+    Not published to npm — the docs install it directly from the GitHub repository ("bun is shown but
+    installing from Github should be supported by any node package manager"). There is therefore no
+    registry metadata endpoint; version comes from package.json and is corroborated by the v1.11.0
+    tag dated 2026-08-18. A consumer pinning the default branch rather than the tag floats to latest.
+server_side_sdks:
+  count: 0
+  note: >-
+    The Forge REST API has no first-party server SDK in any language. Integrators call it with plain
+    HTTP and an X-Lucra-Api-Key header. The Scalar reference at https://forge.lucrasports.com/docs/
+    generates per-language snippets, and the OpenAPI in this repo can generate a client.
+registries_probed:
+- registry: npm
+  result: 'no first-party packages (registry.npmjs.org 404 for lucra-web-sdk, lucra-react-native-sdk and @lucra-sports/*)'
+- registry: maven-central
+  result: 2 artifacts under com.lucrasports.sdk
+- registry: cocoapods-trunk
+  result: not published (private repo per docs)
+- registry: pypi
+  result: none
+- registry: rubygems
+  result: none
+- registry: crates.io
+  result: none
+- registry: nuget
+  result: none
+- registry: pkg.go.dev
+  result: none
+currency_assessment:
+  stale_sdks: 0
+  note: >-
+    No abandonment signal. All four client SDKs released within the last week of this probe
+    (2026-08-18 to 2026-08-24), and the React Native release notes track the iOS and Android versions
+    they wrap, so the wrappers are not drifting behind the natives.

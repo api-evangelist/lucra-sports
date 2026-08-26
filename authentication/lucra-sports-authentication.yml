@@ -1,0 +1,77 @@
+generated: '2026-08-25'
+method: searched
+source: https://docs.lucrasports.com/lucra-sdk/readme/whats-included/lucra-api-keys.md
+docs: https://docs.lucrasports.com/lucra-sdk/readme/whats-included/lucra-api-keys
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+  oauth2: false
+  openid_connect: false
+  mutual_tls: false
+  note: >-
+    Lucra authenticates every server-to-server call with a tenant-scoped API key. There is no OAuth
+    flow and no self-service key management: keys are provisioned by a Lucra representative per
+    tenant per environment, and the docs state key generation and rotation are not currently
+    self-service. End-user identity inside the SDK is handled separately by Auth0 (SMS login) and is
+    not part of the partner API contract.
+schemes:
+- name: X-Lucra-Api-Key
+  type: apiKey
+  in: header
+  parameter: X-Lucra-Api-Key
+  description: Tenant API key. The only supported authentication on the Forge gateway.
+  applies_to: https://forge.lucrasports.com
+  sources:
+  - openapi/lucra-sports-forge-openapi.json
+  - https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference.md
+- name: apiKey (query parameter)
+  type: apiKey
+  in: query
+  parameter: apiKey
+  status: legacy
+  description: >-
+    The legacy api.lucrasports.com REST surface accepted the key as an `apiKey` query parameter (and
+    in the request body for webhook config calls). Forge explicitly removed this: "Unlike the legacy
+    API, query parameter and request body authentication are not supported."
+  applies_to: https://api.lucrasports.com
+  sources:
+  - https://docs.lucrasports.com/lucra-sdk/server-to-server/api-integration.md
+  - https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/1.0_api_setup.md
+key_types:
+- name: BACKEND
+  usage: Server-side API calls; supplied in the X-Lucra-Api-Key header.
+- name: WEB
+  usage: Lucra Web (JavaScript) SDK initialization; paired with a tenantId.
+- name: MOBILE
+  usage: Lucra iOS, Android and React Native SDK initialization, provided at runtime.
+environments:
+- name: sandbox
+  description: Development and testing keys; separate credentials from production.
+- name: production
+  description: Live keys only.
+provisioning:
+  self_service: false
+  note: >-
+    "Keys must be provided by your Lucra representative. API key generation and management is not
+    currently supported." Partners are onboarded through a sales/solutions conversation, not a
+    developer signup.
+rotation:
+  self_service: false
+  guidance: Contact the Lucra team if a key is suspected to be compromised.
+webhook_authentication:
+  outbound_signature_header: X-Lucra-Signature
+  algorithm: HMAC-SHA256 (hex digest, sha256= prefixed)
+  secret_distribution: Per-webhook shared secret issued by a Lucra representative out of band.
+  source: https://docs.lucrasports.com/lucra-sdk/server-to-server/webhook-subscriptions/request-verification.md
+graphql_surface:
+  endpoint: https://api.lucrasports.com/v1/graphql
+  probed: '2026-08-25'
+  http_status: 200
+  introspection: disabled
+  response: 'introspection is disabled for role: "anonymous"'
+  note: >-
+    A Hasura GraphQL endpoint backs the client SDKs and answers anonymously with an
+    introspection-disabled error. It is not a documented partner surface and no SDL could be
+    retrieved; nothing about its schema is recorded here.

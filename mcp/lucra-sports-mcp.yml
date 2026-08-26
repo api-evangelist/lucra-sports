@@ -1,0 +1,252 @@
+# DERIVED CANDIDATE ONLY - Lucra does not publish an MCP server.
+generated: '2026-08-25'
+method: derived
+source: openapi/lucra-sports-forge-openapi.json
+status: candidate
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: searched
+finding: Lucra ships no MCP server. No hosted endpoint, no stdio package, and no mention of MCP anywhere
+  in Lucra's documentation, GitHub organization or release notes. The tools below are a CANDIDATE surface
+  derived from the 42 published Forge operations to show what an MCP server over this API would expose;
+  nothing here is served by Lucra.
+probes:
+- url: https://mcp.lucrasports.com/mcp
+  status: 0
+  note: DNS does not resolve
+- url: https://forge.lucrasports.com/mcp
+  status: 404
+- url: https://api.lucrasports.com/mcp
+  status: 404
+- url: https://docs.lucrasports.com/mcp
+  status: 405
+  note: GitBook rejects POST; not an MCP endpoint
+registry_search:
+  npm: no @lucra*/mcp package on registry.npmjs.org
+  github: no MCP repository in the Lucra-Sports organization
+authentication_if_built:
+  scheme: X-Lucra-Api-Key header
+  scoping: tenant
+  note: A server would carry one tenant key, so every tool call is inherently scoped to a single partner
+    tenant. That is a good fit for MCP, but it also means the server cannot be multi-tenant without a
+    key per session.
+agent_safety_notes:
+- Six of these candidate tools move real money or settle real contests (cancel/complete on tournaments
+  and recreational games). Cancel refunds all participants; complete distributes payouts and the spec
+  states it is irreversible. Any real server MUST gate these behind confirmation rather than expose them
+  as ordinary tools.
+- The completion tools return 202 Accepted and finish asynchronously — a tool call returning success means
+  accepted, not done. The outcome only arrives on the webhook stream (TournamentCompleted / TournamentCompletionFailed
+  / TournamentComplianceLimitExceeded).
+- Forge publishes no idempotency key, so a retried tool call after a timeout has no documented safe behaviour.
+tool_count: 41
+tools:
+- name: lucra_ingest_scores
+  category: Recreational Games
+  rest:
+  - RecreationalGamesController_ingestScores
+  description: Ingest scores
+- name: lucra_get_recreational_game
+  category: Recreational Games
+  rest:
+  - RecreationalGamesController_getRecreationalGame
+  description: Get Recreational Game
+- name: lucra_cancel_recreational_game
+  category: Recreational Games
+  rest:
+  - RecreationalGamesController_cancelRecreationalGame
+  description: Cancel Recreational Game
+- name: lucra_complete_recreational_game
+  category: Recreational Games
+  rest:
+  - RecreationalGamesController_completeRecreationalGame
+  description: Complete Recreational Game
+- name: lucra_get_recreational_game_users
+  category: Recreational Games
+  rest:
+  - RecreationalGamesController_getRecreationalGameUsers
+  description: List Recreational Game Users
+- name: lucra_create_tournament
+  category: Tournaments (Legacy)
+  rest:
+  - TournamentsLegacyController_createTournament
+  description: Create Tournament
+- name: lucra_get_active_tournaments
+  category: Tournaments (Legacy)
+  rest:
+  - TournamentsLegacyController_getActiveTournaments
+  description: Query Active Tournaments
+- name: lucra_ingest_scores
+  category: Tournaments (Legacy)
+  rest:
+  - TournamentsLegacyController_ingestScores
+  description: Ingest Tournament Scores
+- name: lucra_get_tournament
+  category: Tournaments (Legacy)
+  rest:
+  - TournamentsLegacyController_getTournament
+  description: Get Tournament
+- name: lucra_update_tournament
+  category: Tournaments (Legacy)
+  rest:
+  - TournamentsLegacyController_updateTournament
+  description: Update Tournament
+- name: lucra_cancel
+  category: Tournaments (Legacy)
+  rest:
+  - TournamentsLegacyController_cancel
+  description: Cancel Tournament
+- name: lucra_complete
+  category: Tournaments (Legacy)
+  rest:
+  - TournamentsLegacyController_complete
+  description: Complete Tournament
+- name: lucra_update_user_scores
+  category: Tournaments (Legacy)
+  rest:
+  - TournamentsLegacyController_updateUserScores
+  description: Update User Scores
+- name: lucra_create_webhook
+  category: Webhooks
+  rest:
+  - WebhooksController_createWebhook
+  description: Create Webhook Configuration
+- name: lucra_list_webhooks
+  category: Webhooks
+  rest:
+  - WebhooksController_listWebhooks
+  description: List Webhook Configurations
+- name: lucra_update_webhook
+  category: Webhooks
+  rest:
+  - WebhooksController_updateWebhook
+  description: Update Webhook Configuration
+- name: lucra_delete_webhook
+  category: Webhooks
+  rest:
+  - WebhooksController_deleteWebhook
+  description: Delete Webhook Configuration
+- name: lucra_create_tag_group
+  category: TenantTagGroups
+  rest:
+  - TenantTagsApiController_createTagGroup
+  description: Create a tenant tag group.
+- name: lucra_get_tag_groups
+  category: TenantTagGroups
+  rest:
+  - TenantTagsApiController_getTagGroups
+  description: Get the tenant tag groups and their tags.
+- name: lucra_update_tag_group
+  category: TenantTagGroups
+  rest:
+  - TenantTagsApiController_updateTagGroup
+  description: Update the tag group label or selection type.
+- name: lucra_delete_tag_group
+  category: TenantTagGroups
+  rest:
+  - TenantTagsApiController_deleteTagGroup
+  description: Delete the tag group and its tags.
+- name: lucra_add_tag
+  category: TenantTagGroups
+  rest:
+  - TenantTagsApiController_addTag
+  description: Add a tag to the group (max 5).
+- name: lucra_remove_tag
+  category: TenantTagGroups
+  rest:
+  - TenantTagsApiController_removeTag
+  description: Remove a tag from the group.
+- name: lucra_create_tournament
+  category: Tournaments
+  rest:
+  - TournamentsApiController_createTournament
+  description: Create Tournament
+- name: lucra_get_tournaments
+  category: Tournaments
+  rest:
+  - TournamentsApiController_getTournaments
+  description: List Tournaments
+- name: lucra_update_matching_tournament
+  category: Tournaments
+  rest:
+  - TournamentsApiController_updateMatchingTournament
+  description: Update Tournament by Metadata
+- name: lucra_complete_matching_tournament
+  category: Tournaments
+  rest:
+  - TournamentsApiController_completeMatchingTournament
+  description: Complete Tournament by Metadata
+- name: lucra_update_matching
+  category: Tournaments
+  rest:
+  - TournamentRewardsController_updateMatching
+  description: Update Tournament Rewards by Metadata
+- name: lucra_ingest_scores
+  category: Tournaments
+  rest:
+  - TournamentsApiController_ingestScores
+  description: Ingest Scores
+- name: lucra_update_tournament
+  category: Tournaments
+  rest:
+  - TournamentsApiController_updateTournament
+  description: Update Tournament
+- name: lucra_get_tournament
+  category: Tournaments
+  rest:
+  - TournamentsApiController_getTournament
+  description: Get Tournament
+- name: lucra_cancel_tournament
+  category: Tournaments
+  rest:
+  - TournamentsApiController_cancelTournament
+  description: Cancel Tournament
+- name: lucra_complete_tournament
+  category: Tournaments
+  rest:
+  - TournamentsApiController_completeTournament
+  description: Complete Tournament
+- name: lucra_get_tournament_leaderboard
+  category: Tournaments
+  rest:
+  - TournamentLeaderboardController_getTournamentLeaderboard
+  description: Get Tournament Leaderboard
+- name: lucra_update_tournament_rewards
+  category: Tournaments
+  rest:
+  - TournamentRewardsController_updateTournamentRewards
+  description: Update Tournament Rewards
+- name: lucra_get_tournament_rewards
+  category: Tournaments
+  rest:
+  - TournamentRewardsController_getTournamentRewards
+  description: Get Tournament Rewards
+- name: lucra_set_tournament_tags
+  category: Tournaments
+  rest:
+  - TournamentsApiController_setTournamentTags
+  description: Set the tags assigned to a tournament.
+- name: lucra_ingest_scores
+  category: User Score
+  rest:
+  - ScoreIngestionController_ingestScores
+  description: Ingest Scores
+- name: lucra_create_v1
+  category: Locations
+  rest:
+  - LocationsController_create_v1
+  description: Create Location
+- name: lucra_find_all_v1
+  category: Locations
+  rest:
+  - LocationsController_findAll_v1
+  description: List Locations
+- name: lucra_find_all_v1
+  category: States
+  rest:
+  - StatesController_findAll_v1
+  description: List States

@@ -1,0 +1,245 @@
+# Lucra SDK
+
+## Lucra SDK (v2, synced)
+
+- [Getting Started](https://docs.lucrasports.com/lucra-sdk/readme.md): Welcome to Lucra's tech docs!
+- [What's Included](https://docs.lucrasports.com/lucra-sdk/readme/whats-included.md)
+- [Full Suite of UI Modules](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/full-suite-of-ui-modules.md)
+- [Risk Management Toolkit](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/risk-management-toolkit.md): Below is a detailed look into our Risk Management Toolkit and associated policies.
+- [Implementation Support](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/implementation-support.md)
+- [Testing](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/implementation-support/testing.md)
+- [End User Support](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/end-user-support.md)
+- [Branding & Theming](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/branding-and-theming.md)
+- [Mobile Theming Guide](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/branding-and-theming/mobile-theming-guide.md)
+- [Web Theming Guide](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/branding-and-theming/web-theming-guide.md)
+- [Payments](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/payments.md)
+- [Apple Pay Support](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/payments/apple-pay-support.md)
+- [iOS Apple Pay Support](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/payments/apple-pay-support/ios-apple-pay-support.md): Lets get Apple Pay support setup for your iOS Lucra SDK integration
+- [Lucra API Keys](https://docs.lucrasports.com/lucra-sdk/readme/whats-included/lucra-api-keys.md): Learn about the three primary key types for interacting with the Lucra API environments and best practices for their secure storage.
+- [Games You Play (GYP)](https://docs.lucrasports.com/lucra-sdk/games-you-play-gyp.md)
+- [Games You Play Implementation Guide](https://docs.lucrasports.com/lucra-sdk/games-you-play-gyp/gyp-sdks.md): Step by step approach to getting started with the Lucra Games You Play product
+- [Free to Play](https://docs.lucrasports.com/lucra-sdk/games-you-play-gyp/free-to-play.md): Reward based matchups
+- [Javascript (web) Integration](https://docs.lucrasports.com/lucra-sdk/games-you-play-gyp/free-to-play/web-integration.md): Web Implementation Guide for FTP Support
+- [Free to Play Mobile Integration](https://docs.lucrasports.com/lucra-sdk/games-you-play-gyp/free-to-play/free-to-play-mobile-integration.md): Android and iOS Implementation Guide for FTP support
+- [Free to Play Backend Integration](https://docs.lucrasports.com/lucra-sdk/games-you-play-gyp/free-to-play/free-to-play-backend-integration.md): In order to facilitate the ability for your system to grant users rewards they have won via Free To Play matchups we have implemented a few backend webhooks subscriptions.
+- [Tournaments](https://docs.lucrasports.com/lucra-sdk/tournaments.md): Headless and Lucra-owned tournaments are available.
+- [Tournaments Implementation Guide](https://docs.lucrasports.com/lucra-sdk/tournaments/gyp-sdks.md): Step by step approach to getting started with the Lucra Tournaments product
+- [User Linking & Score Ingestion](https://docs.lucrasports.com/lucra-sdk/tournaments/user-linking-and-score-ingestion.md): A streamlined approach for connecting your users to Lucra tournaments and delivering scores.
+- [Lucra-Owned Tournaments](https://docs.lucrasports.com/lucra-sdk/tournaments/lucra-owned-tournaments.md)
+- [Headless Tournaments](https://docs.lucrasports.com/lucra-sdk/tournaments/headless-tournaments.md)
+- [Headless Tournaments SDKs](https://docs.lucrasports.com/lucra-sdk/tournaments/headless-tournaments/headless-tournaments-sdks.md)
+- [User Demographic Collection](https://docs.lucrasports.com/lucra-sdk/tournaments/headless-tournaments/headless-tournaments-sdks/user-demographic-collection.md): Starting with version Android SDK 5.0.0, iOS SDK 4.0.0, RN SDK 4.0.0 the Lucra SDK includes a Headless Demographic Collection feature that allows integrators to collect demographic information.
+- [Headless Tournaments Backend Integration](https://docs.lucrasports.com/lucra-sdk/tournaments/headless-tournaments/headless-tournaments-backend-integration.md)
+- [Backend Metadata Driven Score Submission](https://docs.lucrasports.com/lucra-sdk/tournaments/headless-tournaments/metadata-driven-score-submission.md)
+- [On-Hold Tournaments](https://docs.lucrasports.com/lucra-sdk/tournaments/on-hold-tournaments.md)
+- [Mini Games](https://docs.lucrasports.com/lucra-sdk/mini-games.md)
+- [Mini Games Implementation Guide](https://docs.lucrasports.com/lucra-sdk/mini-games/mini-games-implementation-guide.md): Step-by-step guide for integrating Lucra's Mini Games product into your platform
+- [Mini Games Headless Implementation Guide](https://docs.lucrasports.com/lucra-sdk/mini-games/mini-games-headless-implementation-guide.md): Headless step-by-step guide for integrating Lucra's Mini Games product into your platform
+- [Sports You Watch (SYW)](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw.md)
+- [SYW SDKs](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks.md)
+- [iOS SDK (Sports)](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports.md)
+- [Project Setup](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/project-setup.md)
+- [Info.plist Permissions](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/project-setup/info.plist-permissions.md): The following keys will need to be set in Info.plist or the binary may be rejected and the app may crash.
+- [Module Integration](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/module-integration.md)
+- [Push Notifications](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/module-integration/push-notifications.md): We highly recommend enabling Lucra's Push Notifications in your app to provide a better experience for the end user.
+- [iOS Payments](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/module-integration/ios-payments.md): The LucraSDK offers various additional payment options via the following integrations:
+- [Apple Pay](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/module-integration/ios-payments/apple-pay.md): The Lucra iOS SDK offers support for Apple Pay, follow this guide to configure it in your application.
+- [PayPal](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/module-integration/ios-payments/paypal.md): The Lucra iOS SDK offers PayPal as a payment option. This is automatically included with newer versions, and if you're configured to use PayPal with the Lucra SDK.
+- [Venmo](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/module-integration/ios-payments/venmo.md): The Lucra iOS SDK offers Venmo as a payment option. This guide covers implementation steps.
+- [Aerosync SDK](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/module-integration/aerosync-sdk.md)
+- [UI Module](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/ui-module.md)
+- [UX Theming](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/ui-module/ux-theming.md): The Lucra SDK theme can be overridden to make the sdk flows feel more inline with your core app design. Support for light and dark modes is now also included.
+- [API Module](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/ios-sdk-sports/api-module.md)
+- [Android SDK (Sports)](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/android-sdk-sports.md)
+- [Project Setup](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/android-sdk-sports/project-setup.md)
+- [Module Integration](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/android-sdk-sports/module-integration.md)
+- [Payments](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/android-sdk-sports/module-integration/payments.md): The LucraSDK offers various additional payment options via Paypal and Venmo.
+- [Paypal/Venmo](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/android-sdk-sports/module-integration/payments/paypal-venmo.md): The Lucra Android SDK offers PayPal and Venmo as a payment option. This is automatically included with newer versions, and if you're configured to use PayPal with the Lucra SDK.
+- [UI Module](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/android-sdk-sports/ui-module.md): The UI module allows a method of launching all of the self contained modules the LucraSDK supports. These flows can be easily integrated into your app's navigation at the appropriate time.
+- [UX Theming](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/android-sdk-sports/ui-module/ux-theming.md): The Lucra SDK theme can be overridden to make the sdk flows feel more inline with your core app design.
+- [API Module](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/android-sdk-sports/api-module.md)
+- [React Native SDK (Sports)](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/react-native-sdk-sports.md)
+- [Project Setup](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/react-native-sdk-sports/project-setup.md)
+- [Module Integration](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/react-native-sdk-sports/module-integration.md)
+- [UI Module](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/react-native-sdk-sports/ui-module.md): The UI module allows a method of launching all of the self contained modules the LucraSDK supports. These flows can be easily integrated into your app's navigation at the appropriate time.
+- [UX Theming](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/react-native-sdk-sports/ui-module/ux-theming.md): The Lucra SDK theme can be overridden to make the sdk flows feel more inline with your core app design.
+- [API Module](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/syw-sdks/react-native-sdk-sports/api-module.md)
+- [Free to Play](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/free-to-play.md): Reward based matchups
+- [Free to Play Mobile Integration](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/free-to-play/free-to-play-mobile-integration.md): Android and iOS Implementation Guide for FTP support
+- [Free to Play Backend Integration](https://docs.lucrasports.com/lucra-sdk/sports-you-watch-syw/free-to-play/free-to-play-backend-integration.md): In order to facilitate the ability for your system to grant users rewards they have won via Free To Play matchups we have implemented a few backend webhooks subscriptions.
+- [Rewards](https://docs.lucrasports.com/lucra-sdk/rewards.md): Give your users something to play for—create rewards once and attach them to tournaments and achievements.
+- [Reward Management](https://docs.lucrasports.com/lucra-sdk/rewards/reward-management.md): Create and manage the rewards your users can earn, all from one place in the Lucra Console.
+- [Tournament Rewards](https://docs.lucrasports.com/lucra-sdk/rewards/tournament-rewards.md): Link rewards to tournament payout positions and see how users claim them in-app.
+- [Achievement Rewards](https://docs.lucrasports.com/lucra-sdk/rewards/achievement-rewards.md): Attach rewards to achievements and configure how they are earned across games.
+- [Convert to Credit](https://docs.lucrasports.com/lucra-sdk/convert-to-credit.md)
+- [Convert to Credit Backend Integration](https://docs.lucrasports.com/lucra-sdk/convert-to-credit/convert-to-credit-backend-integration.md): In order to facilitate the ability for your system to grant users "credits" when doing a Convert to Credit withdrawal we have implemented a backend webhook subscription.
+- [Deployment & Launch](https://docs.lucrasports.com/lucra-sdk/deployment-and-launch.md)
+- [App Store Submission](https://docs.lucrasports.com/lucra-sdk/deployment-and-launch/app-store-submission.md)
+- [Apple App Store Submission](https://docs.lucrasports.com/lucra-sdk/deployment-and-launch/app-store-submission/apple-app-store-submission.md)
+- [Google Play Store Submission](https://docs.lucrasports.com/lucra-sdk/deployment-and-launch/app-store-submission/google-play-store-submission.md): Guide to get approved by the Google Play store with the Lucra SDK integrated
+- [Post-Go Live Support](https://docs.lucrasports.com/lucra-sdk/deployment-and-launch/post-go-live-support.md)
+- [Server to Server](https://docs.lucrasports.com/lucra-sdk/server-to-server.md)
+- [API Integration](https://docs.lucrasports.com/lucra-sdk/server-to-server/api-integration.md)
+- [Webhook Subscriptions](https://docs.lucrasports.com/lucra-sdk/server-to-server/webhook-subscriptions.md): You can manage all your webhook subscriptions through the Lucra Webhook Subscriptions API. The full URL along with required API key will be provided by our Lucra account manager.
+- [General Events](https://docs.lucrasports.com/lucra-sdk/server-to-server/webhook-subscriptions/general-events.md): Most webhook event details will be co-located with the feature they support but here are some general events we support outside of our core features.
+- [Request Verification](https://docs.lucrasports.com/lucra-sdk/server-to-server/webhook-subscriptions/request-verification.md): Webhook Requests Signature Verification
+- [Release Notes](https://docs.lucrasports.com/lucra-sdk/release-notes.md): The subpages will be updated as new versions of the Lucra SDK are published.
+- [iOS](https://docs.lucrasports.com/lucra-sdk/release-notes/ios.md)
+- [Android](https://docs.lucrasports.com/lucra-sdk/release-notes/android.md)
+- [React Native](https://docs.lucrasports.com/lucra-sdk/release-notes/react-native.md)
+- [Web](https://docs.lucrasports.com/lucra-sdk/release-notes/web.md)
+- [README for this Gitbook space](https://docs.lucrasports.com/lucra-sdk/readme-1.md): This should forever stay hidden - it's an internal README only
+- [SDKs & APIs](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis.md)
+- [Client SDKs](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks.md)
+- [Android](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android.md)
+- [Lucra Android SDK](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/0.0.0_sdk_readme.md)
+- [Getting Started](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.0.0_project_setup.md)
+- [Initializing the LucraClient](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.0_initialize_client.md)
+- [Lucra Event Listener](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.10_lucra_event_listener.md)
+- [Reward Sheet](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.11_reward_sheet.md)
+- [LucraClient Theming/Appearance](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.1_theming.md)
+- [Deeplink Support](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.2_deeplinks.md)
+- [Setting up Push Notifications](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.3_push_notifications.md)
+- [Payment Integrations](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.4_payments.md)
+- [Setting up Convert to Credit](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.5_convert_to_credit.md)
+- [Free to Play support](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.6_free_to_play_support.md)
+- [Lucra Flows Setup and Usage](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.7_lucraflows.md)
+- [Showing Lucra Components (Experimental)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.8_lucracomponents.md)
+- [Interacting with Lucra Headless Functionality](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/1.2.9_headless_interactions.md)
+- [Games You Play](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/2.0.0_gyp.md)
+- [Games You Play Lucra Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/2.1_gyp_flows.md)
+- [Games You Play Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/2.2_gyp_events.md)
+- [Games (GYP) Headless Functions](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/2.3_gyp_headless_functions.md)
+- [Tournaments](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/3.0.0_tournaments.md)
+- [Tournaments Lucra Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/3.1_tournaments_flows.md)
+- [Tournament Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/3.2_tournaments_events.md)
+- [Tournament API](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/3.3_tournaments_headless.md)
+- [Sports You Watch](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/4.0.0_syw.md)
+- [Sports You Watch Lucra Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/4.1_syw_flows.md)
+- [Sports You Watch Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/4.2_syw_events.md)
+- [Sports You Watch Headless Functions](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/4.3_syw_headless_functions.md)
+- [Achievements (Android)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/5.0_achievements.md)
+- [Mini Games](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/6.0.0_mini_games.md)
+- [Mini Games Headless Functions](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/6.1_mini_games_headless.md)
+- [Mini Game Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/6.2_mini_game_events.md)
+- [Mini Games Lucra Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/6.3_mini_games_flows.md)
+- [6.8.0](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/sdk_release_notes.md)
+- [skills](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills.md)
+- [lucra-android-errors](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills/lucra-android-errors.md)
+- [Lucra Android — Runtime Error Diagnosis](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills/lucra-android-errors/skill.md): Diagnose runtime errors from the Lucra Android SDK — any LucraClient call that returns a Failure, a sealed error result (UserStateError, LocationError, APIError), a flow that misbehaves after successf
+- [lucra-android-events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills/lucra-android-events.md)
+- [Lucra Android — Events & Observing State](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills/lucra-android-events/skill.md): How to observe change in the Lucra Android SDK — when to use the LucraEvent listener vs re-fetching state vs server-side webhooks, what each event actually fires for (and the ones with known caveats),
+- [lucra-android-minigames](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills/lucra-android-minigames.md)
+- [Lucra Android — Mini Games](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills/lucra-android-minigames/skill.md): Integrate Lucra Mini Games on Android — both the SDK-rendered UI flows (Mini Games Home, game sessions, matchup details, profile, rewards) and the headless functions for fetching matchups/catalog and
+- [lucra-android-provisioning](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills/lucra-android-provisioning.md)
+- [Lucra Android — Tenant Provisioning](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills/lucra-android-provisioning/skill.md): Diagnose Lucra Android SDK features that render empty, hide options, or silently do nothing with NO error — the signature of a tenant-provisioning gap rather than a bug. Also the pre-flight checklist
+- [lucra-android-start](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills/lucra-android-start.md)
+- [Lucra Android — Starting Point](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills/lucra-android-start/skill.md): Entry point for integrating the Lucra Android SDK. Use at the very start of any Lucra Android integration, when SDK setup/initialization fails, or when unsure which Lucra flow or API to use. Routes by
+- [Integrating the Lucra Android SDK — Start Here (LLM & Engineer Guide)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/android/skills-1.md)
+- [iOS](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios.md)
+- [Lucra SDK](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/0.0.0_readme.md)
+- [Project Setup (iOS)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.0.0_project_setup.md)
+- [LucraClient Initialization (iOS)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.0_initialize_client.md)
+- [Lucra Event Listener (iOS)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.10_lucra_event_listener.md)
+- [Headless User Operations](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.11_headless_user_operations.md)
+- [Theming and Appearance (iOS)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.1_theming.md)
+- [Deep Links (iOS)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.2_deeplinks.md)
+- [Push Notifications (iOS)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.3_push_notifications.md)
+- [Payments (iOS)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.4_payments.md)
+- [Convert to Credit (C2C) Support — iOS](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.5_convert_to_credit.md)
+- [Free to Play (FTP) Support — iOS](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.6_free_to_play_support.md)
+- [Lucra Flows (iOS)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.7_lucraflows.md)
+- [Lucra Components (Experimental) — iOS](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.8_lucracomponents.md)
+- [Headless Functionality (iOS)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/1.2.9_headless_interactions.md)
+- [Games You Play](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/2.0_gyp.md)
+- [GYP Lucra Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/2.1_gyp_flows.md)
+- [GYP Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/2.2_gyp_events.md)
+- [Games (GYP) Headless Functions](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/2.3_gyp_headless_functions.md)
+- [Tournaments](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/3.0_tournaments.md)
+- [Tournaments Lucra Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/3.1_tournaments_flows.md)
+- [Tournament Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/3.2_tournaments_events.md)
+- [Tournament API](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/3.3_tournaments_headless.md)
+- [Sports You Watch](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/4.0_syw.md)
+- [Sports Lucra Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/4.1_syw_flows.md)
+- [SYW Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/4.2_syw_events.md)
+- [Sports You Watch Headless Functions](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/4.3_syw_headless_functions.md)
+- [Achievements (iOS)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/5.0_achievements.md)
+- [Mini Games](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/6.0.0_mini_games.md)
+- [Mini Games Headless Functions](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/6.1_mini_games_headless.md)
+- [Mini Game Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/6.2_mini_game_events.md)
+- [Mini Games Lucra Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/6.3_mini_games_flows.md)
+- [UPCOMING RELEASE](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/sdk_release_notes.md)
+- [skills](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/skills.md)
+- [lucra-ios-minigames](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/skills/lucra-ios-minigames.md)
+- [Lucra iOS — Mini Games](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/skills/lucra-ios-minigames/skill.md): Integrate Lucra Mini Games on iOS — both the SDK-rendered UI flows (Mini Games Home, game modes, matchup details, profile, rewards) and the headless functions for fetching matchups/records and launchi
+- [lucra-ios-start](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/skills/lucra-ios-start.md)
+- [Lucra iOS — Starting Point](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/skills/lucra-ios-start/skill.md): Entry point for integrating the Lucra iOS SDK. Use at the very start of any Lucra iOS integration, when SDK setup/initialization fails, or when unsure which Lucra flow or API to use. Routes by intent,
+- [Integrating the Lucra iOS SDK — Start Here (LLM & Engineer Guide)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/skills-1.md)
+- [Javascript (Web)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web.md)
+- [Lucra SDK](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/0.0_readme.md)
+- [Getting Started](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.0_project_setup.md)
+- [Initializing the LucraClient](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.2_initialize_client.md)
+- [Lucra Flows Setup and Usage](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.3_lucraflows.md)
+- [Deeplink Support](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.4_deeplinks.md)
+- [Listening for "Exit Lucra"](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.5_exiting_lucra.md)
+- [Lucra Event Listener](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.6_lucra_event_listener.md)
+- [Setting up Convert to Credit](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.7_convert_to_credit.md)
+- [Updating Users](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.8_updating_users.md)
+- [Rewards](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/1.9_rewards.md)
+- [CHANGELOG](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/javascript-web/changelog.md)
+- [React Native](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native.md)
+- [Lucra React Native SDK](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/0.0.0_sdk_readme.md)
+- [Getting Started](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.0.0_project_setup.md)
+- [LucraSDK Initialization](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.0_initialize_client.md)
+- [Lucra Event Listeners](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.10_lucra_event_listener.md)
+- [Reward Sheet](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.11_reward_sheet.md)
+- [Theming and Appearance](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.1_theming.md)
+- [Deeplinks](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.2_deeplinks.md)
+- [Push Notifications](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.3_push_notifications.md)
+- [Payments](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.4_payments.md)
+- [Convert to Credit](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.5_convert_to_credit.md)
+- [Free to Play Support](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.6_free_to_play_support.md)
+- [Lucra Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.7_lucraflows.md)
+- [Lucra Components (Experimental)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.8_lucracomponents.md)
+- [Headless Functionality](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/1.2.9_headless_interactions.md)
+- [Games You Play (GYP)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/2.0.0_gyp.md)
+- [GYP Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/2.1_gyp_flows.md)
+- [GYP Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/2.2_gyp_events.md)
+- [GYP Headless Functions](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/2.3_gyp_headless_functions.md)
+- [Tournaments](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/3.0.0_tournaments.md)
+- [Tournament Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/3.1_tournaments_flows.md)
+- [Tournament Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/3.2_tournaments_events.md)
+- [Tournament Headless Functions](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/3.3_tournaments_headless.md)
+- [Sports You Watch (SYW)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/4.0.0_syw.md)
+- [SYW Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/4.1_syw_flows.md)
+- [SYW Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/4.2_syw_events.md)
+- [SYW Headless Functions](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/4.3_syw_headless_functions.md)
+- [Rewards & Achievements](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/5.0_achievements.md)
+- [Mini Games](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/6.0.0_mini_games.md)
+- [Mini Games Headless Functions](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/6.1_mini_games_headless.md)
+- [Mini Game Events](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/6.2_mini_game_events.md)
+- [Mini Games Flows](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/6.3_mini_games_flows.md)
+- [Mini Games WebView](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/6.4_mini_games_webview.md)
+- [Unreleased](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/sdk_release_notes.md)
+- [skills](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/skills.md)
+- [lucra-react-native-expo](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/skills/lucra-react-native-expo.md)
+- [Expo Managed Workflow](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/skills/lucra-react-native-expo/skill.md): Integrate the Lucra React Native SDK in an Expo managed-workflow app (config plugin + prebuild). Use when the target app is Expo, when Expo Go fails with Lucra, or for prebuild/dev-client/build issues
+- [lucra-react-native-minigames](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/skills/lucra-react-native-minigames.md)
+- [Mini Games Integration](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/skills/lucra-react-native-minigames/skill.md): Integrate Lucra Mini Games in React Native — both the SDK-rendered UI flows (Mini Games Home, a full managed game session, profile, rewards, matchup details) and the headless path (catalog fetch, sess
+- [lucra-react-native-start](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/skills/lucra-react-native-start.md)
+- [Setup & Troubleshooting](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/skills/lucra-react-native-start/skill.md): Entry point for integrating the Lucra React Native SDK. Use at the very start of any Lucra React Native integration, when install/build/initialization fails, or when unsure which Lucra flow or API to
+- [Integrating the Lucra RN SDK — Start Here (LLM & Engineer Guide)](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/react-native/skills-1.md)
+- [API & Webhook Reference](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference.md)
+- [Legacy API Reference](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy.md)
+- [API Setup](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/1.0_api_setup.md)
+- [Webhook Setup](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/2.0_webhook_setup.md)
+- [Tournaments REST API](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/3.0_tournaments_rest_api.md)
+- [Tournaments Webhooks](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/3.1_tournaments_webhooks.md)
+- [Tournaments Metadata Matching](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/3.2_tournaments_metadata_matching.md)
+- [Games You Play REST API](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/4.0_gyp_rest_api.md)
+- [Games You Play Webhooks](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/4.1_gyp_webhooks.md)
+- [Games You Play Metadata Matching](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/4.2_gyp_metadata_matching.md)
+- [Free to Play REST API](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/5.0_free_to_play_rest_api.md)
+- [Free to Play Webhooks](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/5.1_free_to_play_webhooks.md)
+- [Convert to Credit Webhooks](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/6.0_convert_to_credit_webhooks.md)
+- [General Score Ingestion by Metadata](https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference/legacy/7.0_user_score_by_metadata.md)

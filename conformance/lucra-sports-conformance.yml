@@ -1,0 +1,142 @@
+generated: '2026-08-25'
+method: derived
+source: openapi/lucra-sports-forge-openapi.json
+searched_sources:
+- https://docs.lucrasports.com/lucra-sdk/readme/whats-included/risk-management-toolkit.md
+- https://www.playlucra.com/legal/responsible-gaming
+- https://docs.lucrasports.com/lucra-sdk/server-to-server/webhook-subscriptions/request-verification.md
+conformance:
+- id: openapi-3.0
+  conforms: true
+  evidence: >-
+    openapi field is "3.0.0"; the document parses, declares 32 paths / 42 operations / 89 component
+    schemas, and every operation carries a unique operationId, a tag and at least one declared
+    response.
+  source: openapi/lucra-sports-forge-openapi.json
+- id: rfc8288-web-linking
+  conforms: true
+  evidence: >-
+    Paginated reads return a Link response header documented as "Pagination links per RFC 8288.
+    Relations: next, prev, first" with a worked example.
+  source: openapi/lucra-sports-forge-openapi.json
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors use a custom { code, errCode, message } envelope served as application/json. No type URI,
+    no title/detail/instance members, and no application/problem+json media type anywhere in the spec.
+  source: errors/lucra-sports-problem-types.yml
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on every Lucra host probed 2026-08-25.
+  source: well-known/lucra-sports-well-known.yml
+- id: rfc8594-deprecation-header
+  conforms: false
+  evidence: >-
+    No Deprecation or Sunset response header is documented, and no operation in the spec is marked
+    deprecated, even though the legacy /api/rest/pool-tournament surface is described in the docs as
+    legacy.
+  source: lifecycle/lucra-sports-lifecycle.yml
+- id: oauth2
+  conforms: false
+  evidence: >-
+    The only securityScheme is an apiKey in the X-Lucra-Api-Key header. No OAuth flow, no
+    authorization server, no scopes. (Auth0 authenticates END USERS inside the client SDKs, but that
+    is not part of the partner API contract and exposes no OAuth surface to integrators.)
+  source: authentication/lucra-sports-authentication.yml
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 on every Lucra host probed 2026-08-25.
+  source: well-known/lucra-sports-well-known.yml
+- id: idempotency-key
+  conforms: false
+  evidence: >-
+    No Idempotency-Key header or equivalent request token on any of the 42 operations. See the
+    idempotency block in conventions for the partial mitigations Lucra does provide.
+  source: conventions/lucra-sports-conventions.yml
+- id: pagination
+  conforms: true
+  evidence: limit/offset query parameters plus RFC 8288 Link relations on collection reads.
+  source: conventions/lucra-sports-conventions.yml
+- id: webhook-signature-hmac
+  conforms: true
+  evidence: >-
+    Outbound webhooks carry X-Lucra-Signature, an HMAC-SHA256 hex digest over the raw body with a
+    per-configuration shared secret, and Lucra documents constant-time comparison and raw-body
+    verification. Modelled on GitHub's webhook delivery validation, which Lucra cites directly.
+  source: asyncapi/lucra-sports-webhooks.yml
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    A real event surface exists (14 catalogued webhook subscriptions) but no AsyncAPI document is
+    published for it.
+  source: asyncapi/lucra-sports-webhooks.yml
+- id: json-schema
+  conforms: partial
+  evidence: >-
+    Request and response bodies are fully schematised inside the OpenAPI (89 component schemas), but
+    no standalone JSON Schema documents are published, and webhook event payloads — which are
+    documented only as JSON5 examples in prose — have no schema at all.
+  source: openapi/lucra-sports-forge-openapi.json
+domain_standard:
+  applicable: false
+  market: real-money skill-based contests / competitive loyalty embedded in third-party apps
+  finding: >-
+    This market has no interoperability standard to conform to. There is no equivalent of FHIR, SCIM,
+    OpenRTB or ISO 20022 for embedded skill-based wagering: the constraints in this sector are
+    jurisdictional licensing and regulatory ones (state-by-state skill-gaming law, KYC/AML obligation,
+    geolocation integrity), not message-format ones. Nothing in the Forge contract declares a domain
+    schema, URN, or message type belonging to an external standards body, and none is invented here.
+  probed_regimes:
+  - regime: payments
+    result: >-
+      Lucra moves real money (card and ACH deposits, ACH withdrawals) but publishes no PCI DSS, EMV,
+      3-D Secure or ISO 20022 claim, and card capture is delegated to payment partners. No payments
+      standard is asserted on Lucra's behalf.
+compliance_program:
+  published: true
+  certifications_named: []
+  certifications_note: >-
+    No third-party certification is published anywhere on Lucra's public surface — no SOC 2, ISO
+    27001, PCI DSS attestation, HIPAA or FedRAMP claim, and no trust center. What Lucra publishes
+    instead is an operational compliance PROGRAM, described in detail and specific enough to audit
+    against, which is why this is recorded as a program rather than a certification.
+  controls:
+  - name: KYC / identity verification
+    detail: >-
+      Name, address, phone and date of birth collected in the SDK, with ID-scan fallback and a manual
+      processing queue. Prevents duplicate accounts; cross-tenant accounts are linked behind the
+      scenes. UserKYCVerified is emitted as a webhook event.
+  - name: AML / transaction monitoring
+    detail: >-
+      All deposits and withdrawals are monitored and potentially fraudulent transactions are failed.
+      Sardine is named as the real-time withdrawal transaction-monitoring vendor.
+  - name: Transaction limits
+    detail: >-
+      $500 per deposit, $3,500 per week, $14,000 per month; $500 per withdrawal; $500 per contest —
+      published explicitly as a fraud and money-laundering risk control.
+  - name: Geolocation integrity
+    detail: >-
+      GeoComplySDK is bundled as a binary dependency of the iOS SDK. Testing from outside the U.S.
+      requires the tester's location to be whitelisted by Lucra, confirming enforcement is live.
+  - name: Device / fraud intelligence
+    detail: MobileIntelligence is bundled alongside GeoComply in the iOS SDK binary distribution.
+  - name: Age verification
+    detail: Users must be at least 18 to interact with the Lucra SDK.
+  - name: Jurisdictional scope control
+    detail: >-
+      Availability is enumerated per product per U.S. state, and the Forge API exposes GET
+      /api/v1/states so an integrator can read the eligible jurisdiction list programmatically rather
+      than hard-coding it.
+    operation_id: StatesController_findAll_v1
+  - name: Responsible gaming
+    detail: A published responsible-gaming policy at https://www.playlucra.com/legal/responsible-gaming.
+  - name: Tax reporting
+    detail: SSN collected before withdrawal for tax reporting; documented as not stored after collection.
+  - name: Merchant of record
+    detail: >-
+      Lucra is the merchant of record for the real-money flows, which moves the licensing and
+      settlement obligation off the integrating partner. This is the core of the commercial offer.
+  sources:
+  - https://docs.lucrasports.com/lucra-sdk/readme/whats-included/risk-management-toolkit.md
+  - https://www.playlucra.com/legal/responsible-gaming
+  - https://www.playlucra.com/faq

@@ -1,0 +1,29 @@
+generated: '2026-08-25'
+method: searched
+source: https://www.playlucra.com/contact
+plan_count: 0
+pricing_model: enterprise-contact-only
+plans: []
+finding: >-
+  Lucra publishes no plans, tiers, list prices or usage rates anywhere on its public surface. There is
+  no /pricing page (https://www.playlucra.com/pricing returns 404), no pricing entry in the site
+  navigation or footer, and no pricing section in the developer documentation. Every commercial path
+  routes to a "Get Started" contact form, and the API keys documentation states plainly that keys
+  "must be provided by your Lucra representative" and that key generation is not self-service — so
+  there is no way to reach the API at any price without a sales conversation.
+commercial_notes:
+- >-
+  Lucra positions itself as merchant of record for the real-money flows it operates on a partner's
+  behalf, which implies a revenue-share or rake economic model rather than a per-call API price, but
+  Lucra does not publish the terms and none are asserted here.
+- >-
+  The published FAQ and marketing material describe state-by-state availability (SDK available in
+  49 states, real-money recreational games in 44, free-to-play in 49) as a scope constraint, not a
+  pricing tier.
+evidence:
+- url: https://www.playlucra.com/pricing
+  status: 404
+- url: https://www.playlucra.com/contact
+  status: 200
+- url: https://docs.lucrasports.com/lucra-sdk/readme/whats-included/lucra-api-keys
+  status: 200

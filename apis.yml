@@ -1,18 +1,74 @@
 aid: lucra-sports
 name: Lucra Sports
-description: 'Lucra Sports is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'Lucra (Lucra Sports, Inc.) is a competitive-loyalty and gamification platform that
+  embeds real-money, free-to-play and peer-to-peer contests into third-party consumer apps and
+  websites through a white-label SDK. Partners integrate Games You Play (head-to-head recreational
+  matchups), Sports You Watch (prediction contests), Tournaments, Mini Games and Achievements
+  without building the regulated infrastructure themselves: Lucra acts as merchant of record and
+  operates the KYC, geolocation, age verification, payments, fraud monitoring, prize settlement and
+  responsible-gaming controls behind the experience. The developer surface is a tenant-scoped
+  server-to-server REST API (the Forge gateway) plus iOS, Android, React Native and JavaScript
+  client SDKs, a signed webhook event stream, and a sandbox environment.'
+image: https://framerusercontent.com/images/ig8OHgXmBzrkMRo5krWVBCgcrhI.png
 url: https://raw.githubusercontent.com/api-evangelist/lucra-sports/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-25'
 modified: '2026-08-25'
 tags:
-- Company
-apis: []
+- Gaming
+- Sports
+- Gamification
+- Loyalty
+- Tournaments
+- Contests
+- Payments
+- Wagering
+- Embedded Finance
+- SDKs
+- Webhooks
+- Compliance
+apis:
+- aid: lucra-sports-forge-api
+  name: Lucra Forge API
+  description: 'Forge is Lucra''s unified server-to-server API gateway. It exposes tenant-scoped
+    tournament management (create, update, cancel, complete, leaderboard, rewards, tags),
+    recreational game (Games You Play) lifecycle and score ingestion, generic user score ingestion,
+    webhook subscription management, tenant tag groups, and location/state availability lookups.
+    Authentication is a tenant API key in the X-Lucra-Api-Key header. The gateway also carries the
+    preserved legacy /api/rest/pool-tournament surface alongside the v2 resources.'
+  humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  baseURL: https://forge.lucrasports.com
+  tags:
+  - Tournaments
+  - Recreational Games
+  - Webhooks
+  - Score Ingestion
+  - Locations
+  properties:
+  - type: OpenAPI
+    url: openapi/lucra-sports-forge-openapi.json
+  - type: Overlay
+    url: overlays/lucra-sports-forge-overlay.yaml
+  - type: Documentation
+    url: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  - type: APIReference
+    url: https://forge.lucrasports.com/docs/
+  - type: Console
+    url: https://forge.lucrasports.com/docs/
+  - type: Authentication
+    url: authentication/lucra-sports-authentication.yml
+  - type: ErrorCatalog
+    url: errors/lucra-sports-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lucra-sports-rate-limits.yml
+  - type: DataModel
+    url: data-model/lucra-sports-data-model.yml
+  - type: Webhooks
+    url: asyncapi/lucra-sports-webhooks.yml
+  - type: Sandbox
+    url: sandbox/lucra-sports-sandbox.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +76,75 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://www.playlucra.com/
+- type: DeveloperPortal
+  url: https://docs.lucrasports.com/lucra-sdk
+- type: Documentation
+  url: https://docs.lucrasports.com/lucra-sdk/readme
+- type: APIReference
+  url: https://forge.lucrasports.com/docs/
+- type: GettingStarted
+  url: https://docs.lucrasports.com/lucra-sdk/games-you-play-gyp/gyp-sdks
+- type: GitHubOrganization
+  url: https://github.com/Lucra-Sports
+- type: Support
+  url: https://www.playlucra.com/contact
+- type: HelpCenter
+  url: https://www.playlucra.com/faq
+- type: Blog
+  url: https://www.playlucra.com/newsroom
+- type: SignUp
+  url: https://www.playlucra.com/contact
+- type: TermsOfService
+  url: https://www.playlucra.com/legal/terms-of-service
+- type: PrivacyPolicy
+  url: https://www.playlucra.com/legal/privacy-policy
+- type: ResponsibleGaming
+  url: https://www.playlucra.com/legal/responsible-gaming
+- type: CaseStudies
+  url: https://www.playlucra.com/case-studies
+- type: Plans
+  url: plans/lucra-sports-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/lucra-sports-rate-limits.yml
+- type: Packages
+  url: packages/lucra-sports-packages.yml
+- type: SDKs
+  url: packages/lucra-sports-packages.yml
+- type: LLMsTxt
+  url: llms/lucra-sports-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+- type: MCPServer
+  url: mcp/lucra-sports-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/lucra-sports-tool-crosswalk.yml
+- type: Conventions
+  url: conventions/lucra-sports-conventions.yml
+- type: Conformance
+  url: conformance/lucra-sports-conformance.yml
+- type: Compliance
+  url: conformance/lucra-sports-conformance.yml
+- type: Lifecycle
+  url: lifecycle/lucra-sports-lifecycle.yml
+- type: ChangeLog
+  url: changelog/lucra-sports-changelog.yml
+- type: Components
+  url: components/lucra-sports-components.yml
+- type: DataModel
+  url: data-model/lucra-sports-data-model.yml
+- type: Sandbox
+  url: sandbox/lucra-sports-sandbox.yml
+- type: ErrorCatalog
+  url: errors/lucra-sports-problem-types.yml
+- type: Webhooks
+  url: asyncapi/lucra-sports-webhooks.yml
+- type: Authentication
+  url: authentication/lucra-sports-authentication.yml
+- type: DomainSecurity
+  url: security/lucra-sports-domain-security.yml
+x-enrichment:
+  date: '2026-08-25'
+  status: enriched
+  artifacts_added: 31
+  pass: local-v1

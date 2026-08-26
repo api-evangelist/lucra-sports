@@ -1,0 +1,103 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://github.com/Lucra-Sports/lucra-android-sdk/tree/main/docs/skills and
+  https://github.com/Lucra-Sports/lucra-react-native-sdk/tree/main/docs/skills, plus the iOS skill
+  pages published on docs.lucrasports.com
+authored_by: provider
+finding: >-
+  Lucra publishes its own Agent Skills. This is not a generated set — Lucra ships a docs/skills/
+  directory inside the public Android and React Native SDK repositories, each holding a SKILL.md with
+  real Agent Skill frontmatter (name + description), and the Android SDK README routes an LLM to them
+  explicitly: "Using an LLM, start here: SKILLS.md". The same skills are published as pages on the
+  documentation site. Every file below is saved verbatim; nothing was authored on Lucra's behalf.
+note: >-
+  These skills are scoped to the CLIENT SDK integration surface (initialization, flows, events,
+  provisioning, error diagnosis) rather than to the Forge REST API. There is no provider-published
+  skill for the server-to-server API.
+skill_count: 10
+skills:
+- name: lucra-android-start
+  file: lucra-sports-lucra-android-start.md
+  platform: android
+  frontmatter: true
+  description: >-
+    Entry point for integrating the Lucra Android SDK. Routes by intent, verifies initialization, and
+    troubleshoots common setup failures.
+  source: https://github.com/Lucra-Sports/lucra-android-sdk/blob/main/docs/skills/lucra-android-start/SKILL.md
+- name: lucra-android-errors
+  file: lucra-sports-lucra-android-errors.md
+  platform: android
+  frontmatter: true
+  description: >-
+    Diagnose runtime errors from the Lucra Android SDK — any LucraClient call returning a Failure or a
+    sealed error result (UserStateError, LocationError, APIError).
+  source: https://github.com/Lucra-Sports/lucra-android-sdk/blob/main/docs/skills/lucra-android-errors/SKILL.md
+- name: lucra-android-events
+  file: lucra-sports-lucra-android-events.md
+  platform: android
+  frontmatter: true
+  description: >-
+    How to observe change — when to use the LucraEvent listener vs re-fetching state vs server-side
+    webhooks, and which events have known caveats.
+  source: https://github.com/Lucra-Sports/lucra-android-sdk/blob/main/docs/skills/lucra-android-events/SKILL.md
+- name: lucra-android-provisioning
+  file: lucra-sports-lucra-android-provisioning.md
+  platform: android
+  frontmatter: true
+  description: >-
+    Diagnose features that render empty or silently do nothing with NO error — the signature of a
+    tenant-provisioning gap rather than a bug. Includes the pre-flight checklist.
+  source: https://github.com/Lucra-Sports/lucra-android-sdk/blob/main/docs/skills/lucra-android-provisioning/SKILL.md
+- name: lucra-android-minigames
+  file: lucra-sports-lucra-android-minigames.md
+  platform: android
+  frontmatter: true
+  description: Integrate Lucra Mini Games on Android — SDK-rendered UI flows and the headless functions.
+  source: https://github.com/Lucra-Sports/lucra-android-sdk/blob/main/docs/skills/lucra-android-minigames/SKILL.md
+- name: lucra-react-native-start
+  file: lucra-sports-lucra-react-native-start.md
+  platform: react-native
+  frontmatter: true
+  description: >-
+    Entry point for the React Native SDK — setup and troubleshooting when install, build or
+    initialization fails.
+  source: https://github.com/Lucra-Sports/lucra-react-native-sdk/blob/main/docs/skills/lucra-react-native-start/SKILL.md
+- name: lucra-react-native-expo
+  file: lucra-sports-lucra-react-native-expo.md
+  platform: react-native
+  frontmatter: true
+  description: >-
+    Integrate the SDK in an Expo managed-workflow app (config plugin + prebuild). Covers why Expo Go
+    fails and how to use a dev client.
+  source: https://github.com/Lucra-Sports/lucra-react-native-sdk/blob/main/docs/skills/lucra-react-native-expo/SKILL.md
+- name: lucra-react-native-minigames
+  file: lucra-sports-lucra-react-native-minigames.md
+  platform: react-native
+  frontmatter: true
+  description: Integrate Lucra Mini Games in React Native — UI flows and the headless path.
+  source: https://github.com/Lucra-Sports/lucra-react-native-sdk/blob/main/docs/skills/lucra-react-native-minigames/SKILL.md
+- name: lucra-ios-start
+  file: lucra-sports-lucra-ios-start.md
+  platform: ios
+  frontmatter: false
+  description: >-
+    Entry point for integrating the Lucra iOS SDK. Routes by intent and troubleshoots setup failures.
+  source: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/skills/lucra-ios-start/skill.md
+  note: >-
+    Saved from the documentation site rather than a repository, so the rendered page carries a GitBook
+    header line instead of Agent Skill frontmatter. The iOS SDK repository publishes no docs/skills/
+    directory, unlike Android and React Native.
+- name: lucra-ios-minigames
+  file: lucra-sports-lucra-ios-minigames.md
+  platform: ios
+  frontmatter: false
+  description: Integrate Lucra Mini Games on iOS — UI flows and headless functions.
+  source: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/client-sdks/ios/skills/lucra-ios-minigames/skill.md
+  note: Same caveat as lucra-ios-start.
+gaps:
+- >-
+  No skill covers the Forge server-to-server API. The published set is entirely client-SDK scoped, so
+  an agent asked to create a tournament or settle a contest server-side has no provider-authored
+  guidance — despite that being the surface where the money moves.
+- The iOS skills are not versioned in the iOS SDK repository the way the Android and RN ones are.

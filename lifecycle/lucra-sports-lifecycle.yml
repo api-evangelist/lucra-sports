@@ -1,0 +1,98 @@
+generated: '2026-08-25'
+method: searched
+source: https://docs.lucrasports.com/lucra-sdk/release-notes
+docs: https://docs.lucrasports.com/lucra-sdk/release-notes
+api_versioning:
+  scheme: generation + path prefix
+  current_version: '1.0'
+  current_version_source: 'openapi/lucra-sports-forge-openapi.json (info.version)'
+  detail: >-
+    Lucra runs two API generations side by side on the Forge gateway. The v2 resources live at
+    /api/<resource>; the previous REST surface is preserved verbatim at /api/rest/pool-tournament/*
+    and tagged "Tournaments (Legacy)" in the same document; two endpoints carry an explicit /api/v1/
+    prefix. There is no version header and no version negotiation — the path is the version.
+  breaking_change_policy: not published
+sdk_versioning:
+  scheme: semver, independent per platform
+  note: >-
+    The four client SDKs version independently and are NOT aligned — Android is on 6.x, iOS on 5.x,
+    React Native on 5.x and web on 1.x at the same point in time. The React Native release notes state
+    which iOS and Android versions each release wraps, which is the only published mapping between
+    them.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  spec_deprecated_operations: 0
+  practice: >-
+    Lucra deprecates in the SDK release notes and in migration hints inside the docs, not through a
+    published policy or HTTP signalling. Observed practice is generous and additive: the legacy REST
+    surface is still served on the new gateway rather than removed, deprecated SDK calls are
+    explicitly documented as continuing to work ("The deprecated call keeps working unchanged",
+    Android 6.8.0), and additive schema changes are labelled non-breaking in the notes.
+  evidence:
+  - >-
+    Forge docs mark the previous API "legacy documentation. New integrations should use Forge
+    instead" while continuing to serve it — a soft deprecation with no announced end date.
+  - >-
+    Android 6.8.0 deprecated LucraClient.retrieveTournament in favour of retrieveTournamentDetails and
+    stated the deprecated call keeps working.
+  - >-
+    Android 6.9.0 is a genuine breaking SDK change (ClientTheme.colorStyle removed in favour of
+    lightColorStyle/darkColorStyle) shipped in a minor version, with the migration described in the
+    release notes.
+  gap: >-
+    No deprecation policy page, no end-of-life dates for the legacy /api/rest surface, no Deprecation
+    or Sunset response headers, and no `deprecated: true` on any operation in the OpenAPI. An
+    integrator cannot learn from the contract that an operation is on its way out.
+breaking_changes_observed:
+- version: Android 6.9.0
+  date: '2026-08-19'
+  change: ClientTheme single colorStyle property removed; replaced by lightColorStyle + darkColorStyle.
+- version: SDK key migration (Web >0.20.2, Android 6.0+, iOS 5.0.0+, RN 5.0.0+)
+  date: null
+  change: >-
+    SDK initialization requires a new apiKey; previously issued mobile keys stop working on those
+    versions, and Web initialization now requires both tenantId and apiKey. Backend API keys are
+    unchanged, and integrations on earlier SDK versions keep working with prior keys.
+  source: https://docs.lucrasports.com/lucra-sdk/readme/whats-included/lucra-api-keys.md
+- version: Forge
+  date: null
+  change: >-
+    Query-parameter and request-body authentication, supported on the legacy API, are not supported on
+    Forge. Only the X-Lucra-Api-Key header works.
+status_page:
+  published: false
+  probed:
+  - url: https://status.lucrasports.com/
+    status: 000
+    note: DNS does not resolve.
+  note: >-
+    No status page, uptime history or incident feed on any Lucra host. Operational communication is
+    documented as running through the assigned Lucra representative and the Post-Go-Live Support
+    process instead.
+sla:
+  published: false
+  note: >-
+    No public SLA, uptime target or support-response commitment. The docs describe an Implementation
+    Support and Post-Go-Live Support model staffed by a named Lucra contact; terms are presumably in
+    the partner agreement, which is not public.
+support:
+  model: named-representative
+  pages:
+  - https://docs.lucrasports.com/lucra-sdk/readme/whats-included/implementation-support
+  - https://docs.lucrasports.com/lucra-sdk/deployment-and-launch/post-go-live-support
+  - https://www.playlucra.com/contact
+release_notes:
+  published: true
+  cadence: per SDK release
+  urls:
+    ios: https://docs.lucrasports.com/lucra-sdk/release-notes/ios
+    android: https://docs.lucrasports.com/lucra-sdk/release-notes/android
+    react_native: https://docs.lucrasports.com/lucra-sdk/release-notes/react-native
+    web: https://docs.lucrasports.com/lucra-sdk/release-notes/web
+  api_changelog: >-
+    None. The release notes cover the client SDKs only — there is no changelog for the Forge REST API
+    itself, so a server-side integrator has no record of when an endpoint changed.
+  detail: changelog/lucra-sports-changelog.yml

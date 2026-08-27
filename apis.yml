@@ -30,27 +30,890 @@ tags:
 - Webhooks
 - Compliance
 apis:
-- aid: lucra-sports-forge-api
-  name: Lucra Forge API
-  description: 'Forge is Lucra''s unified server-to-server API gateway. It exposes tenant-scoped
-    tournament management (create, update, cancel, complete, leaderboard, rewards, tags),
-    recreational game (Games You Play) lifecycle and score ingestion, generic user score ingestion,
-    webhook subscription management, tenant tag groups, and location/state availability lookups.
-    Authentication is a tenant API key in the X-Lucra-Api-Key header. The gateway also carries the
-    preserved legacy /api/rest/pool-tournament surface alongside the v2 resources.'
+- aid: lucra-sports:lucra-sports-health-api
+  name: Lucra Sports Health API
+  description: The Health API from Lucra Sports — 1 operation(s) for health.
+  humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  baseURL: https://forge.lucrasports.com
+  tags:
+  - Health
+  properties:
+  - type: OpenAPI
+    url: openapi/lucra-sports-health-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  - type: APIReference
+    url: https://forge.lucrasports.com/docs/
+  - type: Console
+    url: https://forge.lucrasports.com/docs/
+  - type: Authentication
+    url: authentication/lucra-sports-authentication.yml
+  - type: ErrorCatalog
+    url: errors/lucra-sports-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lucra-sports-rate-limits.yml
+  - type: DataModel
+    url: data-model/lucra-sports-data-model.yml
+  - type: Webhooks
+    url: asyncapi/lucra-sports-webhooks.yml
+  - type: Sandbox
+    url: sandbox/lucra-sports-sandbox.yml
+- aid: lucra-sports:lucra-sports-locations-api
+  name: Lucra Sports Locations API
+  description: The Locations API from Lucra Sports — 1 operation(s) for locations.
+  humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  baseURL: https://forge.lucrasports.com
+  tags:
+  - Locations
+  properties:
+  - type: OpenAPI
+    url: openapi/lucra-sports-locations-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  - type: APIReference
+    url: https://forge.lucrasports.com/docs/
+  - type: Console
+    url: https://forge.lucrasports.com/docs/
+  - type: Authentication
+    url: authentication/lucra-sports-authentication.yml
+  - type: ErrorCatalog
+    url: errors/lucra-sports-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lucra-sports-rate-limits.yml
+  - type: DataModel
+    url: data-model/lucra-sports-data-model.yml
+  - type: Webhooks
+    url: asyncapi/lucra-sports-webhooks.yml
+  - type: Sandbox
+    url: sandbox/lucra-sports-sandbox.yml
+- aid: lucra-sports:lucra-sports-recreational-games-api
+  name: Lucra Sports Recreational Games API
+  description: The Recreational Games API from Lucra Sports — 5 operation(s) for recreational games.
+  humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  baseURL: https://forge.lucrasports.com
+  tags:
+  - Recreational Games
+  properties:
+  - type: OpenAPI
+    url: openapi/lucra-sports-recreational-games-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  - type: APIReference
+    url: https://forge.lucrasports.com/docs/
+  - type: Console
+    url: https://forge.lucrasports.com/docs/
+  - type: Authentication
+    url: authentication/lucra-sports-authentication.yml
+  - type: ErrorCatalog
+    url: errors/lucra-sports-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lucra-sports-rate-limits.yml
+  - type: DataModel
+    url: data-model/lucra-sports-data-model.yml
+  - type: Webhooks
+    url: asyncapi/lucra-sports-webhooks.yml
+  - type: Sandbox
+    url: sandbox/lucra-sports-sandbox.yml
+- aid: lucra-sports:lucra-sports-states-api
+  name: Lucra Sports States API
+  description: The States API from Lucra Sports — 1 operation(s) for states.
+  humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  baseURL: https://forge.lucrasports.com
+  tags:
+  - States
+  properties:
+  - type: OpenAPI
+    url: openapi/lucra-sports-states-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  - type: APIReference
+    url: https://forge.lucrasports.com/docs/
+  - type: Console
+    url: https://forge.lucrasports.com/docs/
+  - type: Authentication
+    url: authentication/lucra-sports-authentication.yml
+  - type: ErrorCatalog
+    url: errors/lucra-sports-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lucra-sports-rate-limits.yml
+  - type: DataModel
+    url: data-model/lucra-sports-data-model.yml
+  - type: Webhooks
+    url: asyncapi/lucra-sports-webhooks.yml
+  - type: Sandbox
+    url: sandbox/lucra-sports-sandbox.yml
+- aid: lucra-sports:lucra-sports-tenanttaggroups-api
+  name: Lucra Sports Tenant Tag Groups API
+  description: The TenantTagGroups API from Lucra Sports — 4 operation(s) for tenanttaggroups.
+  humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  baseURL: https://forge.lucrasports.com
+  tags:
+  - TenantTagGroups
+  properties:
+  - type: OpenAPI
+    url: openapi/lucra-sports-tenanttaggroups-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  - type: APIReference
+    url: https://forge.lucrasports.com/docs/
+  - type: Console
+    url: https://forge.lucrasports.com/docs/
+  - type: Authentication
+    url: authentication/lucra-sports-authentication.yml
+  - type: ErrorCatalog
+    url: errors/lucra-sports-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lucra-sports-rate-limits.yml
+  - type: DataModel
+    url: data-model/lucra-sports-data-model.yml
+  - type: Webhooks
+    url: asyncapi/lucra-sports-webhooks.yml
+  - type: Sandbox
+    url: sandbox/lucra-sports-sandbox.yml
+- aid: lucra-sports:lucra-sports-tournaments-api
+  name: Lucra Sports Tournaments API
+  description: >-
+    Modular tournament management endpoints. Unlike the legacy API which returns everything in a single
+    call,
+
+    the v2 API separates concerns into dedicated resources:
+
+
+    | Resource | Path | Purpose |
+
+    |----------|------|---------|
+
+    | **Tournaments** | `/tournaments` | CRUD operations, cancel, complete |
+
+    | **Leaderboard** | `/tournaments/:id/leaderboard` | Paginated participant rankings and scores |
+
+    | **Rewards** | `/tournaments/:id/rewards` | Prize tier configuration and winner assignment |
+
+
+    ---
+
+
+    ## Key Differences from Legacy API
+
+
+    ### Separate Resources
+
+    The legacy `GET /pool-tournament/:id` returns the tournament, reward structure, and full user leaderboard
+    in one response.
+
+    The v2 API splits these into three independent endpoints so clients only fetch what they need.
+
+
+    ### Update and Complete are Separate
+
+    The legacy complete endpoint accepts tournament field updates (title, fee, etc.) in the same request
+    body as the completion action.
+
+    In v2, update the tournament first via `PATCH /tournaments/:id`, then complete via `POST /tournaments/:id/complete`.
+
+
+    ### Reward Assignment is Explicit
+
+    The legacy complete endpoint accepts a `paymentStructure` with `userId` to assign winners and complete
+    in one step.
+
+    In v2, assign rewards first via `PUT /tournaments/:id/rewards`, then complete the tournament separately.
+
+
+    ---
+
+
+    ## Tournament Types
+
+
+    ### CASH_FIXED
+
+    Prize pool is defined upfront. Values in the reward tiers represent absolute monetary amounts.
+
+
+    ### CASH_PERCENTAGE
+
+    Prize pool is calculated from total entry fees. Values in reward tiers represent percentages that
+    must sum to exactly 100.
+
+
+    ---
+
+
+    ## Sign-Up Window
+
+
+    Tournaments can optionally define a sign-up window using `signUpStart` and `signUpEnd`.
+
+    When set, participants can only join during this window. If omitted, sign-ups follow the
+
+    default behavior (open from creation until the tournament expires).
+
+
+    | Constraint | Rule |
+
+    |-----------|------|
+
+    | `signUpEnd` ≤ `expiresAt` | Sign-ups must close before tournament expiration |
+
+    | `signUpStart` < `signUpEnd` | Window must have a positive duration |
+
+
+    ---
+
+
+    ## Simplified Status Model
+
+
+    The v2 API exposes three statuses instead of the full internal status set:
+
+
+    | Status | Meaning |
+
+    |--------|---------|
+
+    | `ACTIVE` | Tournament is open or in progress |
+
+    | `COMPLETED` | Tournament is closed and rewards distributed |
+
+    | `CANCELED` | Tournament was canceled and participants refunded |
+
+
+    ---
+
+
+    ## Pagination
+
+
+    List endpoints (`GET /tournaments`, `GET /tournaments/:id/leaderboard`) support pagination via query
+    parameters:
+
+
+    | Parameter | Type | Default | Description |
+
+    |-----------|------|---------|-------------|
+
+    | `limit` | number | 25 | Number of items per page (1–100) |
+
+    | `offset` | number | 0 | Number of items to skip |
+
+
+    The response body is a **flat array** of items. Pagination metadata is returned in the `Link` HTTP
+    header following [RFC 5988](https://tools.ietf.org/html/rfc5988).
+
+
+    **Example response headers:**
+
+
+    ```
+
+    Link: </api/tournaments?limit=25&offset=25>; rel="next", </api/tournaments?limit=25&offset=0>; rel="first"
+
+    ```
+
+
+    **Available link relations:**
+
+
+    | Rel | Description |
+
+    |-----|-------------|
+
+    | `next` | Next page of results (omitted on the last page) |
+
+    | `prev` | Previous page of results (omitted on the first page) |
+
+    | `first` | First page of results |
+
+
+    **Parsing the Link header:**
+
+
+    ```typescript
+
+    function parseLinkHeader(header: string): Record<string, string> {
+      return Object.fromEntries(
+        header.split(', ').map((part) => {
+          const [url, rel] = part.split('; ');
+          return [
+            rel.replace('rel="', '').replace('"', ''),
+            url.slice(1, -1),
+          ];
+        }),
+      );
+    }
+
+
+    // Usage
+
+    const links = parseLinkHeader(response.headers.link);
+
+    if (links.next) {
+      // fetch next page
+    }
+
+    ```
   humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
   baseURL: https://forge.lucrasports.com
   tags:
   - Tournaments
-  - Recreational Games
-  - Webhooks
-  - Score Ingestion
-  - Locations
   properties:
   - type: OpenAPI
-    url: openapi/lucra-sports-forge-openapi.json
-  - type: Overlay
-    url: overlays/lucra-sports-forge-overlay.yaml
+    url: openapi/lucra-sports-tournaments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  - type: APIReference
+    url: https://forge.lucrasports.com/docs/
+  - type: Console
+    url: https://forge.lucrasports.com/docs/
+  - type: Authentication
+    url: authentication/lucra-sports-authentication.yml
+  - type: ErrorCatalog
+    url: errors/lucra-sports-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lucra-sports-rate-limits.yml
+  - type: DataModel
+    url: data-model/lucra-sports-data-model.yml
+  - type: Webhooks
+    url: asyncapi/lucra-sports-webhooks.yml
+  - type: Sandbox
+    url: sandbox/lucra-sports-sandbox.yml
+- aid: lucra-sports:lucra-sports-tournaments-legacy-api
+  name: Lucra Sports Tournaments (Legacy) API
+  description: >-
+    Drop-in replacement endpoints for the original tournament API operations.
+
+    Request/response shapes are identical.
+
+
+    ---
+
+
+    ## Tournament Types
+
+
+    ### CASH_FIXED
+
+
+    The total prize pool is defined upfront and has no relation to the amount collected from buy-ins.
+
+
+    - Reward amounts are fixed regardless of how many participants join
+
+    - The tenant bears the financial risk — if insufficient participants join, the tenant may pay out
+    more in prizes than collected in entry fees
+
+    - Prize values in `paymentStructure` represent absolute monetary amounts
+
+
+    ### CASH_PERCENTAGE
+
+
+    The prize pool is calculated from the total amount collected from entry fees, distributed according
+    to percentage allocations.
+
+
+    - The `value` in `paymentStructure` represents a percentage (e.g., 60 for 60%)
+
+    - **The sum of all percentage values must equal exactly 100**
+
+    - Actual payout amounts are calculated after fees are deducted from the collected pool
+
+
+    **Payout Calculation:**
+
+
+    ```
+
+    Pool Net Amount = MAX((Total Collected - Fee%), Min Payout Amount)
+
+    Prize Amount = Pool Net Amount × (Tier Percentage ÷ 100)
+
+    ```
+
+
+    ---
+
+
+    ## Replayable Tournaments
+
+
+    Replayable tournaments allow participants to join the same tournament multiple times, submitting new
+    scores in an attempt to improve their standing. Each time a user rejoins, they pay the buy-in amount
+    again (if applicable) and start a new attempt.
+
+
+    | Attribute | Type | Default | Description |
+
+    |-----------|------|---------|-------------|
+
+    | `maxAttempts` | number | 1 | Maximum number of times a user can join/rebuy |
+
+    | `attemptFinished` | boolean | false | When submitting scores, marks the attempt as completed |
+
+    | `omitAttemptCompletedCheck` | boolean | false | If true, allows rebuys even when the current attempt
+    is not finished |
+
+
+    **How It Works:**
+
+
+    1. **Initial Entry** — Users join by paying the buy-in amount (first attempt)
+
+    2. **Submitting Scores** — While an attempt is active, users can submit/update scores. Set `attemptFinished:
+    true` to lock the attempt
+
+    3. **Rebuying** — Users can rejoin if they haven't reached `maxAttempts` and their current attempt
+    is finished (unless `omitAttemptCompletedCheck: true`)
+
+    4. **Leaderboard** — The user's best score across all attempts determines their final position
+
+
+    Use the `canSubmitNewScore` field in the leaderboard response to check if a user can submit scores
+    or needs to rebuy.
+
+
+    ---
+
+
+    ## Position and Ranking
+
+
+    | Field | Type | Description |
+
+    |-------|------|-------------|
+
+    | `position` | number | Automatically calculated rank based on scores (1, 2, 3, …) |
+
+    | `positionOverride` | number | Optional manual position that overrides automatic ranking for reward
+    distribution |
+
+
+    **Automatic Position** is calculated based on scores and `scoringType` (`HIGHEST_SCORE` or `LOWEST_SCORE`).
+    Always unique — no ties.
+
+
+    **Position Override** uses rank-based logic that handles ties (1, 2, 2, 4, …). Can also be manually
+    set during tournament completion. Returns `null` when it equals `position`.
+
+
+    When completing without specifying winners (auto-complete), the system:
+
+    1. Sorts users by score according to `scoringType`
+
+    2. Calculates `position` using sequential numbering (1, 2, 3, …)
+
+    3. Calculates override position handling ties (1, 2, 2, 4, …)
+
+    4. Sets `positionOverride` to non-null only when it differs from `position`
+
+    5. Distributes rewards based on final positions
+
+
+    **Best Practice:** Always use `positionOverride ?? position` to display a user's final ranking.
+
+
+    ---
+
+
+    ## Scoring Types
+
+
+    - **HIGHEST_SCORE** — Higher scores rank better (e.g., points-based games)
+
+    - **LOWEST_SCORE** — Lower scores rank better (e.g., golf, racing)
+
+
+    ---
+
+
+    ## Sign-Up Window
+
+
+    Tournaments can optionally define a sign-up window using `signUpStart` and `signUpEnd`.
+
+    When set, participants can only join during this window. If omitted, sign-ups follow the
+
+    default behavior (open from creation until the tournament expires).
+
+
+    | Constraint | Rule |
+
+    |-----------|------|
+
+    | `signUpEnd` ≤ `expiresAt` | Sign-ups must close before tournament expiration |
+
+    | `signUpStart` < `signUpEnd` | Window must have a positive duration |
+
+
+    ---
+
+
+    ## Tournament Lifecycle
+
+
+    ```
+
+    OPEN → CONFIRMED → CLOSED
+      ↓        ↓
+     CANCELED ← ←
+    ```
+  humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  baseURL: https://forge.lucrasports.com
+  tags:
+  - Tournaments (Legacy)
+  properties:
+  - type: OpenAPI
+    url: openapi/lucra-sports-tournaments-legacy-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  - type: APIReference
+    url: https://forge.lucrasports.com/docs/
+  - type: Console
+    url: https://forge.lucrasports.com/docs/
+  - type: Authentication
+    url: authentication/lucra-sports-authentication.yml
+  - type: ErrorCatalog
+    url: errors/lucra-sports-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lucra-sports-rate-limits.yml
+  - type: DataModel
+    url: data-model/lucra-sports-data-model.yml
+  - type: Webhooks
+    url: asyncapi/lucra-sports-webhooks.yml
+  - type: Sandbox
+    url: sandbox/lucra-sports-sandbox.yml
+- aid: lucra-sports:lucra-sports-user-score-api
+  name: Lucra Sports User Score API
+  description: The User Score API from Lucra Sports — 1 operation(s) for user score.
+  humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  baseURL: https://forge.lucrasports.com
+  tags:
+  - User Score
+  properties:
+  - type: OpenAPI
+    url: openapi/lucra-sports-user-score-api-openapi.yml
+  - type: Documentation
+    url: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  - type: APIReference
+    url: https://forge.lucrasports.com/docs/
+  - type: Console
+    url: https://forge.lucrasports.com/docs/
+  - type: Authentication
+    url: authentication/lucra-sports-authentication.yml
+  - type: ErrorCatalog
+    url: errors/lucra-sports-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/lucra-sports-rate-limits.yml
+  - type: DataModel
+    url: data-model/lucra-sports-data-model.yml
+  - type: Webhooks
+    url: asyncapi/lucra-sports-webhooks.yml
+  - type: Sandbox
+    url: sandbox/lucra-sports-sandbox.yml
+- aid: lucra-sports:lucra-sports-webhooks-api
+  name: Lucra Sports Webhooks API
+  description: >-
+    Manage webhook configurations to receive real-time event notifications via HTTP POST requests.
+
+
+    ---
+
+
+    ## Available Event Types
+
+
+    | Event | Description |
+
+    |-------|-------------|
+
+    | `UserSignedUp` | New user registration |
+
+    | `UserKYCVerified` | User KYC verification completed |
+
+    | `FundsDeposited` | User deposited funds |
+
+    | `C2CWithdrawal` | Convert-to-credit withdrawal initiated |
+
+    | `TournamentCreated` | Tournament created |
+
+    | `TournamentCanceled` | Tournament canceled |
+
+    | `TournamentCompleted` | Tournament completed |
+
+    | `TournamentCompletionFailed` | Tournament completion failed (async processing error). Payload contains
+    `failure: { code, reason, requestId, attempt, willRetry }`. `willRetry: false` is terminal — subscribe
+    to be notified when a completion request cannot be processed. |
+
+    | `TournamentComplianceLimitExceeded` | Tournament completion placed on hold due to compliance payout
+    limit |
+
+    | `TournamentEdited` | Tournament modified |
+
+    | `TournamentUserJoined` | User joined tournament |
+
+    | `ScoreIngestionFailed` | Score ingestion failed (async processing error). Payload contains `failure:
+    { code, reason, requestId, attempt, willRetry }`. `willRetry: false` is terminal — subscribe to be
+    notified when a score submission cannot be processed. |
+
+    | `RecreationalGameCreated` | Recreational game created |
+
+    | `RecreationalGameJoined` | User joined recreational game |
+
+    | `RecreationalGameCanceled` | Recreational game canceled |
+
+    | `RecreationalGameCompleted` | Recreational game completed |
+
+    | `RecreationalGameStarted` | Recreational game started |
+
+    | `RecreationalGameCompletionFailed` | Recreational game completion failed (async processing error).
+    Payload contains `failure: { code, reason, requestId, attempt, willRetry }`. `willRetry: false` is
+    terminal — subscribe to be notified when a completion request cannot be processed. |
+
+
+    ---
+
+
+    ## Event Payloads
+
+
+    All events include an `event` field identifying the type. The remaining fields depend on the event.
+
+
+    ### Tournament Events
+
+
+    Applies to: `TournamentCreated`, `TournamentEdited`, `TournamentCanceled`, `TournamentCompleted`,
+    `TournamentUserJoined`, `TournamentComplianceLimitExceeded`
+
+
+    ```json
+
+    {
+      "event": "TournamentCreated",
+      "tenantId": "YOUR_TENANT_ID",
+      "matchup": { }
+    }
+
+    ```
+
+
+    The `matchup` object matches the legacy tournament response shape (equivalent to the legacy `GET /api/rest/pool-tournament/{id}`)
+
+
+    **Additional fields by event:**
+
+
+    | Event | Extra Fields |
+
+    |-------|-------------|
+
+    | `TournamentCompleted` | `mode`: `"auto"` | `"manual"` | `"admin"` — how winners were determined
+    |
+
+    | `TournamentUserJoined` | `newUserId`: UUID of the user who joined; `userMetadata`: their metadata
+    |
+
+    | `TournamentComplianceLimitExceeded` | `complianceLimits`: compliance threshold details |
+
+
+    **Failure events** — `TournamentCompletionFailed`, `ScoreIngestionFailed`:
+
+
+    ```json
+
+    {
+      "event": "TournamentCompletionFailed",
+      "tenantId": "YOUR_TENANT_ID",
+      "entityId": "uuid",
+      "failure": {
+        "code": "COMPLETION_FAILED",
+        "reason": "Human-readable description",
+        "requestId": "uuid",
+        "attempt": 1,
+        "willRetry": true
+      }
+    }
+
+    ```
+
+
+    `willRetry: false` is terminal — no further delivery attempts will be made.
+
+
+    ---
+
+
+    ### Recreational Games Events
+
+
+    Applies to: `RecreationalGameCreated`, `RecreationalGameJoined`, `RecreationalGameCanceled`, `RecreationalGameCompleted`,
+    `RecreationalGameStarted`
+
+
+    ```json
+
+    {
+      "event": "RecreationalGameCreated",
+      "id": "uuid",
+      "createdByUserId": "uuid",
+      "gameId": "external-game-id",
+      "status": "OPEN",
+      "type": "RECREATIONAL_GAME",
+      "subtype": "GROUP_VS_GROUP",
+      "buyInAmount": 10,
+      "isPublic": true,
+      "winnerGroupId": null,
+      "metadata": null,
+      "groups": [
+        {
+          "groupId": "uuid",
+          "name": "Team Alpha",
+          "users": [
+            {
+              "userId": "uuid",
+              "userMetadata": {},
+              "reward": {
+                "type": "CASH",
+                "value": "20.00",
+                "metadata": null
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+    ```
+
+
+    `reward.type` is `"CASH"` for buy-in games or `"TENANT_REWARD"` for reward-based games.
+
+
+    `RecreationalGameJoined` includes an additional `joinedByUserId` field with the UUID of the user who
+    joined.
+
+
+    **Failure events** — `RecreationalGameCompletionFailed`, `ScoreIngestionFailed`:
+
+
+    ```json
+
+    {
+      "event": "RecreationalGameCompletionFailed",
+      "tenantId": "YOUR_TENANT_ID",
+      "entityId": "uuid",
+      "failure": {
+        "code": "COMPLETION_FAILED",
+        "reason": "Human-readable description",
+        "requestId": "uuid",
+        "attempt": 1,
+        "willRetry": true
+      }
+    }
+
+    ```
+
+
+    `willRetry: false` is terminal — no further delivery attempts will be made.
+
+
+    ---
+
+
+    ## Configuration Limits
+
+
+    - **Maximum 5 webhook configurations** per account
+
+    - **Single-instance subscriptions**: Some events (e.g., `C2CWithdrawal`) can only exist in one configuration
+    at a time
+
+    - **Custom headers**: Optional headers added to each webhook request
+
+    - **Expiration**: Optionally set an expiration date for time-limited webhooks
+
+
+    ---
+
+
+    ## Request Verification
+
+
+    All webhook requests include an `X-Lucra-Signature` header containing an HMAC-SHA256 signature for
+    payload verification.
+
+
+    **Signature format:**
+
+
+    ```
+
+    X-Lucra-Signature: sha256=<hex-encoded-signature>
+
+    ```
+
+
+    **Verification steps:**
+
+
+    1. Extract signature from the `X-Lucra-Signature` header
+
+    2. Capture the raw request body (before JSON parsing)
+
+    3. Compute HMAC-SHA256 of the raw body using your sign secret
+
+    4. Compare computed signature with received signature using constant-time comparison
+
+
+    **Node.js example:**
+
+
+    ```typescript
+
+    import crypto from 'crypto';
+
+
+    function verifyWebhookSignature(
+      rawBody: Buffer, signature: string, secret: string
+    ): boolean {
+      if (!signature.startsWith('sha256=')) return false;
+      const received = signature.substring(7);
+      const computed = crypto
+        .createHmac('sha256', secret)
+        .update(rawBody)
+        .digest('hex');
+      if (received.length !== computed.length) return false;
+      return crypto.timingSafeEqual(
+        Buffer.from(received), Buffer.from(computed)
+      );
+    }
+
+    ```
+
+
+    ---
+
+
+    ## Security Best Practices
+
+
+    - **Use raw body** — verify signature against the raw request body before parsing JSON
+
+    - **Constant-time comparison** — use timing-safe comparison functions to prevent timing attacks
+
+    - **Secure secret storage** — store sign secrets in environment variables or secret managers
+
+    - **HTTPS only** — only accept webhooks over HTTPS
+
+    - **Idempotency** — handle duplicate webhook deliveries gracefully
+  humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
+  baseURL: https://forge.lucrasports.com
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/lucra-sports-webhooks-api-openapi.yml
   - type: Documentation
     url: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
   - type: APIReference
@@ -75,6 +938,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/lucra-sports-forge-overlay.yaml
 - type: Website
   url: https://www.playlucra.com/
 - type: DeveloperPortal

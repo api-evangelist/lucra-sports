@@ -9,6 +9,17 @@ description: 'Lucra (Lucra Sports, Inc.) is a competitive-loyalty and gamificati
   responsible-gaming controls behind the experience. The developer surface is a tenant-scoped
   server-to-server REST API (the Forge gateway) plus iOS, Android, React Native and JavaScript
   client SDKs, a signed webhook event stream, and a sandbox environment.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://framerusercontent.com/images/ig8OHgXmBzrkMRo5krWVBCgcrhI.png
 url: https://raw.githubusercontent.com/api-evangelist/lucra-sports/refs/heads/main/apis.yml
 x-type: company

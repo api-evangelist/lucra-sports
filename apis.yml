@@ -949,6 +949,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/lucra-sports-capability-edges.yml
+  name: Lucra Sports Business Capability Map
 - type: Overlay
   url: overlays/lucra-sports-forge-overlay.yaml
 - type: Website

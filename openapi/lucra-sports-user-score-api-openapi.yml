@@ -1,0 +1,100 @@
+openapi: 3.2.0
+info:
+  title: Lucra Forge User Score API
+  description: "See https://docs.lucrasports.com/lucra-sdk/sdks-and-apis for implementation details.\n\n---\n\n## Environments\n\n| Environment | Base URL |\n|-------------|----------|\n| Sandbox | `https://forge.sandbox.lucrasports.com` |\n| Production | `https://forge.lucrasports.com` |\n\nUse sandbox for development and testing. Production credentials are separate and should only be used in live environments.\n\n---\n\n## Authentication\n\nAll requests require an API key passed in the `X-Lucra-Api-Key` header. Keys are provisioned by the Lucra team.\n\n```bash\ncurl https://forge.sandbox.lucrasports.com/api/<endpoint> \\\n  -H \"X-Lucra-Api-Key: <your-api-key>\"\n```\n\n> **Note:** Unlike the legacy API, query parameter and request body authentication are not supported.\n\n---\n\n## Rate Limiting\n\nAll API requests are rate-limited per API key using a fixed-window strategy. Each key is allowed up to **100 requests per 10-second window**.\n\nWhen the limit is exceeded, the API responds with **429 Too Many Requests**.\n"
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+  description: Current host
+- url: https://forge.lucrasports.com
+  description: Production
+- url: https://forge.sandbox.lucrasports.com
+  description: Sandbox
+tags:
+- name: User Score
+paths:
+  /api/user-score:
+    post:
+      description: 'Submit scores for one or more users across tournaments and recreational games.
+
+
+        Resolves matching matchups of any type in parallel. Returns `202 Accepted` immediately; ingestion is processed asynchronously.'
+      operationId: ScoreIngestionController_ingestScores
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngestUserScoreDto'
+      responses:
+        '202':
+          description: ''
+      security:
+      - api-key: []
+      summary: Ingest Scores
+      tags:
+      - User Score
+components:
+  schemas:
+    IngestUserScoreDto:
+      type: object
+      properties:
+        userScores:
+          description: Array of user scores to submit
+          type: array
+          items:
+            $ref: '#/components/schemas/IngestUserScoreEntryDto'
+        matchupId:
+          type: string
+          description: Matchup UUID. One of matchupId, gameId, or matchupMetadata is required.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        matchupMetadata:
+          type: object
+          description: Metadata key-value pairs to match matchups. One of matchupId, gameId, or matchupMetadata is required.
+        gameId:
+          type: string
+          description: Game identifier to filter matchups. One of matchupId, gameId, or matchupMetadata is required.
+          example: BASKETBALL
+        locationId:
+          type: string
+          description: Location UUID to filter matchups. Applies to tournaments only.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+      required:
+      - userScores
+    IngestUserScoreEntryDto:
+      type: object
+      properties:
+        score:
+          type:
+          - object
+          - 'null'
+          description: Numeric score value. Send `null` to clear a previously submitted score.
+          example: 150
+        userId:
+          type: string
+          description: User UUID. One of userId, phoneNumber, or userMetadata is required.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        phoneNumber:
+          type: string
+          description: User phone number. One of userId, phoneNumber, or userMetadata is required.
+          example: '+15551234567'
+        userMetadata:
+          type: object
+          description: Metadata key-value pairs to match a user. One of userId, phoneNumber, or userMetadata is required.
+        metadata:
+          type: object
+          description: Arbitrary metadata to attach to the score entry
+        attemptFinished:
+          type: boolean
+          description: Marks the user's attempt as finished. Once set, further submissions for this user are ignored.
+          example: false
+      required:
+      - score
+  securitySchemes:
+    X-Lucra-Api-Key:
+      type: apiKey
+      in: header
+      name: X-Lucra-Api-Key
+      description: API key for tenant authentication

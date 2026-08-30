@@ -1,0 +1,347 @@
+openapi: 3.2.0
+info:
+  title: Lucra Forge Tenant Tag Groups API
+  description: "See https://docs.lucrasports.com/lucra-sdk/sdks-and-apis for implementation details.\n\n---\n\n## Environments\n\n| Environment | Base URL |\n|-------------|----------|\n| Sandbox | `https://forge.sandbox.lucrasports.com` |\n| Production | `https://forge.lucrasports.com` |\n\nUse sandbox for development and testing. Production credentials are separate and should only be used in live environments.\n\n---\n\n## Authentication\n\nAll requests require an API key passed in the `X-Lucra-Api-Key` header. Keys are provisioned by the Lucra team.\n\n```bash\ncurl https://forge.sandbox.lucrasports.com/api/<endpoint> \\\n  -H \"X-Lucra-Api-Key: <your-api-key>\"\n```\n\n> **Note:** Unlike the legacy API, query parameter and request body authentication are not supported.\n\n---\n\n## Rate Limiting\n\nAll API requests are rate-limited per API key using a fixed-window strategy. Each key is allowed up to **100 requests per 10-second window**.\n\nWhen the limit is exceeded, the API responds with **429 Too Many Requests**.\n"
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+  description: Current host
+- url: https://forge.lucrasports.com
+  description: Production
+- url: https://forge.sandbox.lucrasports.com
+  description: Sandbox
+tags:
+- name: TenantTagGroups
+paths:
+  /api/tenant-tag-groups:
+    post:
+      operationId: TenantTagsApiController_createTagGroup
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTenantTagGroupDto'
+      responses:
+        '201':
+          description: ''
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantTagGroupResponseDto'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Create a tenant tag group.
+      tags:
+      - TenantTagGroups
+    get:
+      operationId: TenantTagsApiController_getTagGroups
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TenantTagGroupResponseDto'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Get the tenant tag groups and their tags.
+      tags:
+      - TenantTagGroups
+  /api/tenant-tag-groups/{id}:
+    put:
+      operationId: TenantTagsApiController_updateTagGroup
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tag group id
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTenantTagGroupDto'
+      responses:
+        '200':
+          description: ''
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantTagGroupResponseDto'
+        '404':
+          description: Tag group not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Update the tag group label or selection type.
+      tags:
+      - TenantTagGroups
+    delete:
+      operationId: TenantTagsApiController_deleteTagGroup
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tag group id
+        schema:
+          type: string
+      responses:
+        '404':
+          description: Tag group not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Delete the tag group and its tags.
+      tags:
+      - TenantTagGroups
+  /api/tenant-tag-groups/{id}/tags:
+    post:
+      operationId: TenantTagsApiController_addTag
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tag group id
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTenantTagDto'
+      responses:
+        '201':
+          description: ''
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantTagGroupResponseDto'
+        '400':
+          description: Tag limit exceeded
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Tag group not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Add a tag to the group (max 5).
+      tags:
+      - TenantTagGroups
+  /api/tenant-tag-groups/{id}/tags/{tagId}:
+    delete:
+      operationId: TenantTagsApiController_removeTag
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tag group id
+        schema:
+          type: string
+      - name: tagId
+        required: true
+        in: path
+        description: Tag id
+        schema:
+          type: string
+      responses:
+        '404':
+          description: Tag group or tag not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Remove a tag from the group.
+      tags:
+      - TenantTagGroups
+components:
+  schemas:
+    TenantTagResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8b1f0000-0000-0000-0000-000000000001
+        value:
+          type: string
+          example: Pro
+        displayOrder:
+          type: number
+          example: 0
+      required:
+      - id
+      - value
+      - displayOrder
+    CreateTenantTagGroupDto:
+      type: object
+      properties:
+        label:
+          type: string
+          description: Label shown above the filter section (e.g. "Skill Level").
+          example: Skill Level
+        fieldType:
+          type: string
+          description: 'How the client renders this group in the filter UI: SINGLE_SELECT (pick one value) or MULTI_SELECT (pick several). Defaults to SINGLE_SELECT. Does not limit how many of this group''s tags a tournament can be assigned.'
+          enum:
+          - SINGLE_SELECT
+          - MULTI_SELECT
+          example: SINGLE_SELECT
+        tags:
+          description: Initial tags to create with the group. At most 5.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateTenantTagDto'
+      required:
+      - label
+    UpdateTenantTagGroupDto:
+      type: object
+      properties:
+        label:
+          type: string
+          description: Label shown above the filter section.
+          example: Skill Level
+        fieldType:
+          type: string
+          description: 'How the client renders this group in the filter UI: SINGLE_SELECT (pick one value) or MULTI_SELECT (pick several). Does not limit how many of this group''s tags a tournament can be assigned.'
+          enum:
+          - SINGLE_SELECT
+          - MULTI_SELECT
+          example: MULTI_SELECT
+    CreateTenantTagDto:
+      type: object
+      properties:
+        value:
+          type: string
+          description: Display value of the tag (e.g. "Pro").
+          example: Pro
+        displayOrder:
+          type: number
+          description: Sort order of the tag within the group. Defaults to 0.
+          example: 0
+      required:
+      - value
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable HTTP error code
+          example: NOT_FOUND
+        errCode:
+          type: string
+          description: Machine-readable business error code
+          example: TOURNAMENT_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error message
+          example: Tournament not found
+      required:
+      - code
+      - errCode
+      - message
+    TenantTagGroupResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: f1e2d3c4-0000-0000-0000-000000000001
+        label:
+          type: string
+          example: Skill Level
+        fieldType:
+          type: string
+          enum:
+          - SINGLE_SELECT
+          - MULTI_SELECT
+          example: SINGLE_SELECT
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TenantTagResponseDto'
+      required:
+      - id
+      - label
+      - fieldType
+      - tags
+  securitySchemes:
+    X-Lucra-Api-Key:
+      type: apiKey
+      in: header
+      name: X-Lucra-Api-Key
+      description: API key for tenant authentication

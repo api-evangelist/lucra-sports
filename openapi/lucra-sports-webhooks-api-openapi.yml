@@ -1,0 +1,337 @@
+openapi: 3.2.0
+info:
+  title: Lucra Forge Webhooks API
+  description: "See https://docs.lucrasports.com/lucra-sdk/sdks-and-apis for implementation details.\n\n---\n\n## Environments\n\n| Environment | Base URL |\n|-------------|----------|\n| Sandbox | `https://forge.sandbox.lucrasports.com` |\n| Production | `https://forge.lucrasports.com` |\n\nUse sandbox for development and testing. Production credentials are separate and should only be used in live environments.\n\n---\n\n## Authentication\n\nAll requests require an API key passed in the `X-Lucra-Api-Key` header. Keys are provisioned by the Lucra team.\n\n```bash\ncurl https://forge.sandbox.lucrasports.com/api/<endpoint> \\\n  -H \"X-Lucra-Api-Key: <your-api-key>\"\n```\n\n> **Note:** Unlike the legacy API, query parameter and request body authentication are not supported.\n\n---\n\n## Rate Limiting\n\nAll API requests are rate-limited per API key using a fixed-window strategy. Each key is allowed up to **100 requests per 10-second window**.\n\nWhen the limit is exceeded, the API responds with **429 Too Many Requests**.\n"
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+  description: Current host
+- url: https://forge.lucrasports.com
+  description: Production
+- url: https://forge.sandbox.lucrasports.com
+  description: Sandbox
+tags:
+- name: Webhooks
+  description: "\nManage webhook configurations to receive real-time event notifications via HTTP POST requests.\n\n---\n\n## Available Event Types\n\n| Event | Description |\n|-------|-------------|\n| `UserSignedUp` | New user registration |\n| `UserKYCVerified` | User KYC verification completed |\n| `FundsDeposited` | User deposited funds |\n| `C2CWithdrawal` | Convert-to-credit withdrawal initiated |\n| `TournamentCreated` | Tournament created |\n| `TournamentCanceled` | Tournament canceled |\n| `TournamentCompleted` | Tournament completed |\n| `TournamentCompletionFailed` | Tournament completion failed (async processing error). Payload contains `failure: { code, reason, requestId, attempt, willRetry }`. `willRetry: false` is terminal — subscribe to be notified when a completion request cannot be processed. |\n| `TournamentComplianceLimitExceeded` | Tournament completion placed on hold due to compliance payout limit |\n| `TournamentEdited` | Tournament modified |\n| `TournamentUserJoined` | User joined tournament |\n| `ScoreIngestionFailed` | Score ingestion failed (async processing error). Payload contains `failure: { code, reason, requestId, attempt, willRetry }`. `willRetry: false` is terminal — subscribe to be notified when a score submission cannot be processed. |\n| `RecreationalGameCreated` | Recreational game created |\n| `RecreationalGameJoined` | User joined recreational game |\n| `RecreationalGameCanceled` | Recreational game canceled |\n| `RecreationalGameCompleted` | Recreational game completed |\n| `RecreationalGameStarted` | Recreational game started |\n| `RecreationalGameCompletionFailed` | Recreational game completion failed (async processing error). Payload contains `failure: { code, reason, requestId, attempt, willRetry }`. `willRetry: false` is terminal — subscribe to be notified when a completion request cannot be processed. |\n\n---\n\n## Event Payloads\n\nAll events include an `event` field identifying the type. The remaining fields depend on the event.\n\n### Tournament Events\n\nApplies to: `TournamentCreated`, `TournamentEdited`, `TournamentCanceled`, `TournamentCompleted`, `TournamentUserJoined`, `TournamentComplianceLimitExceeded`\n\n```json\n{\n  \"event\": \"TournamentCreated\",\n  \"tenantId\": \"YOUR_TENANT_ID\",\n  \"matchup\": { }\n}\n```\n\nThe `matchup` object matches the legacy tournament response shape (equivalent to the legacy `GET /api/rest/pool-tournament/{id}`)\n\n**Additional fields by event:**\n\n| Event | Extra Fields |\n|-------|-------------|\n| `TournamentCompleted` | `mode`: `\"auto\"` | `\"manual\"` | `\"admin\"` — how winners were determined |\n| `TournamentUserJoined` | `newUserId`: UUID of the user who joined; `userMetadata`: their metadata |\n| `TournamentComplianceLimitExceeded` | `complianceLimits`: compliance threshold details |\n\n**Failure events** — `TournamentCompletionFailed`, `ScoreIngestionFailed`:\n\n```json\n{\n  \"event\": \"TournamentCompletionFailed\",\n  \"tenantId\": \"YOUR_TENANT_ID\",\n  \"entityId\": \"uuid\",\n  \"failure\": {\n    \"code\": \"COMPLETION_FAILED\",\n    \"reason\": \"Human-readable description\",\n    \"requestId\": \"uuid\",\n    \"attempt\": 1,\n    \"willRetry\": true\n  }\n}\n```\n\n`willRetry: false` is terminal — no further delivery attempts will be made.\n\n---\n\n### Recreational Games Events\n\nApplies to: `RecreationalGameCreated`, `RecreationalGameJoined`, `RecreationalGameCanceled`, `RecreationalGameCompleted`, `RecreationalGameStarted`\n\n```json\n{\n  \"event\": \"RecreationalGameCreated\",\n  \"id\": \"uuid\",\n  \"createdByUserId\": \"uuid\",\n  \"gameId\": \"external-game-id\",\n  \"status\": \"OPEN\",\n  \"type\": \"RECREATIONAL_GAME\",\n  \"subtype\": \"GROUP_VS_GROUP\",\n  \"buyInAmount\": 10,\n  \"isPublic\": true,\n  \"winnerGroupId\": null,\n  \"metadata\": null,\n  \"groups\": [\n    {\n      \"groupId\": \"uuid\",\n      \"name\": \"Team Alpha\",\n      \"users\": [\n        {\n          \"userId\": \"uuid\",\n          \"userMetadata\": {},\n          \"reward\": {\n            \"type\": \"CASH\",\n            \"value\": \"20.00\",\n            \"metadata\": null\n          }\n        }\n      ]\n    }\n  ]\n}\n```\n\n`reward.type` is `\"CASH\"` for buy-in games or `\"TENANT_REWARD\"` for reward-based games.\n\n`RecreationalGameJoined` includes an additional `joinedByUserId` field with the UUID of the user who joined.\n\n**Failure events** — `RecreationalGameCompletionFailed`, `ScoreIngestionFailed`:\n\n```json\n{\n  \"event\": \"RecreationalGameCompletionFailed\",\n  \"tenantId\": \"YOUR_TENANT_ID\",\n  \"entityId\": \"uuid\",\n  \"failure\": {\n    \"code\": \"COMPLETION_FAILED\",\n    \"reason\": \"Human-readable description\",\n    \"requestId\": \"uuid\",\n    \"attempt\": 1,\n    \"willRetry\": true\n  }\n}\n```\n\n`willRetry: false` is terminal — no further delivery attempts will be made.\n\n---\n\n## Configuration Limits\n\n- **Maximum 5 webhook configurations** per account\n- **Single-instance subscriptions**: Some events (e.g., `C2CWithdrawal`) can only exist in one configuration at a time\n- **Custom headers**: Optional headers added to each webhook request\n- **Expiration**: Optionally set an expiration date for time-limited webhooks\n\n---\n\n## Request Verification\n\nAll webhook requests include an `X-Lucra-Signature` header containing an HMAC-SHA256 signature for payload verification.\n\n**Signature format:**\n\n```\nX-Lucra-Signature: sha256=<hex-encoded-signature>\n```\n\n**Verification steps:**\n\n1. Extract signature from the `X-Lucra-Signature` header\n2. Capture the raw request body (before JSON parsing)\n3. Compute HMAC-SHA256 of the raw body using your sign secret\n4. Compare computed signature with received signature using constant-time comparison\n\n**Node.js example:**\n\n```typescript\nimport crypto from 'crypto';\n\nfunction verifyWebhookSignature(\n  rawBody: Buffer, signature: string, secret: string\n): boolean {\n  if (!signature.startsWith('sha256=')) return false;\n  const received = signature.substring(7);\n  const computed = crypto\n    .createHmac('sha256', secret)\n    .update(rawBody)\n    .digest('hex');\n  if (received.length !== computed.length) return false;\n  return crypto.timingSafeEqual(\n    Buffer.from(received), Buffer.from(computed)\n  );\n}\n```\n\n---\n\n## Security Best Practices\n\n- **Use raw body** — verify signature against the raw request body before parsing JSON\n- **Constant-time comparison** — use timing-safe comparison functions to prevent timing attacks\n- **Secure secret storage** — store sign secrets in environment variables or secret managers\n- **HTTPS only** — only accept webhooks over HTTPS\n- **Idempotency** — handle duplicate webhook deliveries gracefully\n"
+paths:
+  /api/rest/webhook/configs:
+    post:
+      description: 'Create a new webhook configuration for the authenticated tenant.
+
+
+        The request body is wrapped in an `object` key. Required fields are `subscriptions` and `webhookUrl`.
+
+
+        **Limits:**
+
+        - Maximum 5 webhook configurations per account
+
+        - Some events (e.g., `C2CWithdrawal`) can only exist in one configuration at a time'
+      operationId: WebhooksController_createWebhook
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookCreateDto'
+      responses:
+        '201':
+          description: Webhook configuration created successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponseDto'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Create Webhook Configuration
+      tags:
+      - Webhooks
+    get:
+      description: Returns all webhook configurations for the authenticated tenant.
+      operationId: WebhooksController_listWebhooks
+      parameters: []
+      responses:
+        '200':
+          description: Webhook configurations retrieved successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WrappedWebhookResponseDto'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: List Webhook Configurations
+      tags:
+      - Webhooks
+  /api/rest/webhook/configs/{id}:
+    put:
+      description: 'Update an existing webhook configuration.
+
+
+        All fields are optional — only the provided fields are updated.'
+      operationId: WebhooksController_updateWebhook
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Webhook configuration UUID
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookUpdateDto'
+      responses:
+        '200':
+          description: Webhook configuration updated successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponseDto'
+        '404':
+          description: Webhook configuration not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Update Webhook Configuration
+      tags:
+      - Webhooks
+    delete:
+      description: Permanently delete a webhook configuration.
+      operationId: WebhooksController_deleteWebhook
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Webhook configuration UUID
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Webhook configuration deleted successfully
+        '404':
+          description: Webhook configuration not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Delete Webhook Configuration
+      tags:
+      - Webhooks
+components:
+  schemas:
+    WebhookCreateDto:
+      type: object
+      properties:
+        object:
+          $ref: '#/components/schemas/WebhookCreateObjectDto'
+      required:
+      - object
+    WebhookUpdateDto:
+      type: object
+      properties:
+        subscriptions:
+          description: Array of event types to subscribe to (see tag description for available types)
+          example:
+          - UserSignedUp
+          - FundsDeposited
+          type: array
+          items:
+            type: string
+        webhookUrl:
+          type: string
+          description: HTTPS URL that will receive webhook POST requests
+          example: https://your-domain.com/webhooks/lucra
+        name:
+          type: string
+          description: Display name for this webhook configuration
+          example: Production Webhook
+        description:
+          type: string
+          description: Description of the webhook configuration
+          example: Main webhook endpoint
+        active:
+          type: boolean
+          description: 'Whether this configuration is active (default: true)'
+          example: true
+        headers:
+          type: string
+          description: JSON string of custom headers to include with each webhook request
+          example: '{"X-Custom-Header": "value"}'
+        expirationDate:
+          type: string
+          description: ISO 8601 timestamp after which the configuration becomes inactive
+          example: '2025-12-31T23:59:59Z'
+        signSecret:
+          type: string
+          description: 'Secret used to sign webhook payloads for HMAC-SHA256 verification (default: random uuid)'
+          example: 44c3e83c-8d8b-475b-9018-75bf831d0ade
+    WrappedWebhookResponseDto:
+      type: object
+      properties:
+        configs:
+          description: List of webhook configurations
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookResponseDto'
+      required:
+      - configs
+    WebhookCreateObjectDto:
+      type: object
+      properties:
+        subscriptions:
+          description: Array of event types to subscribe to (see tag description for available types)
+          example:
+          - UserSignedUp
+          - FundsDeposited
+          type: array
+          items:
+            type: string
+        webhookUrl:
+          type: string
+          description: HTTPS URL that will receive webhook POST requests
+          example: https://your-domain.com/webhooks/lucra
+        name:
+          type: string
+          description: Display name for this webhook configuration
+          example: Production Webhook
+        description:
+          type: string
+          description: Description of the webhook configuration
+          example: Main webhook endpoint
+        active:
+          type: boolean
+          description: 'Whether this configuration is active (default: true)'
+          example: true
+        headers:
+          type: string
+          description: JSON string of custom headers to include with each webhook request
+          example: '{"X-Custom-Header": "value"}'
+        expirationDate:
+          type: string
+          description: ISO 8601 timestamp after which the configuration becomes inactive
+          example: '2025-12-31T23:59:59Z'
+        signSecret:
+          type: string
+          description: 'Secret used to sign webhook payloads for HMAC-SHA256 verification (default: random uuid)'
+          example: 44c3e83c-8d8b-475b-9018-75bf831d0ade
+      required:
+      - subscriptions
+      - webhookUrl
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable HTTP error code
+          example: NOT_FOUND
+        errCode:
+          type: string
+          description: Machine-readable business error code
+          example: TOURNAMENT_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error message
+          example: Tournament not found
+      required:
+      - code
+      - errCode
+      - message
+    WebhookResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Webhook configuration UUID
+          example: 44c3e83c-8d8b-475b-9018-75bf831d0ade
+        name:
+          type: string
+          description: Display name for this webhook configuration
+          example: Production Webhook
+        description:
+          type: string
+          description: Description of the webhook configuration
+          example: Main webhook endpoint
+        webhookUrl:
+          type: string
+          description: HTTPS URL that receives webhook POST requests
+          example: https://your-domain.com/webhooks/lucra
+        subscriptions:
+          description: Event types this webhook is subscribed to
+          example:
+          - UserSignedUp
+          - FundsDeposited
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+          description: Whether this webhook configuration is active
+          example: true
+        headers:
+          type:
+          - object
+          - 'null'
+          description: JSON string of custom headers included in webhook requests
+          example: '{"X-Custom-Header":"value"}'
+        expirationDate:
+          type:
+          - object
+          - 'null'
+          description: ISO 8601 timestamp after which this configuration becomes inactive
+          example: '2025-12-31T23:59:59.000Z'
+      required:
+      - id
+      - name
+      - description
+      - webhookUrl
+      - subscriptions
+      - active
+      - headers
+      - expirationDate
+  securitySchemes:
+    X-Lucra-Api-Key:
+      type: apiKey
+      in: header
+      name: X-Lucra-Api-Key
+      description: API key for tenant authentication

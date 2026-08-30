@@ -1,0 +1,32 @@
+openapi: 3.2.0
+info:
+  title: Lucra Forge Health API
+  description: "See https://docs.lucrasports.com/lucra-sdk/sdks-and-apis for implementation details.\n\n---\n\n## Environments\n\n| Environment | Base URL |\n|-------------|----------|\n| Sandbox | `https://forge.sandbox.lucrasports.com` |\n| Production | `https://forge.lucrasports.com` |\n\nUse sandbox for development and testing. Production credentials are separate and should only be used in live environments.\n\n---\n\n## Authentication\n\nAll requests require an API key passed in the `X-Lucra-Api-Key` header. Keys are provisioned by the Lucra team.\n\n```bash\ncurl https://forge.sandbox.lucrasports.com/api/<endpoint> \\\n  -H \"X-Lucra-Api-Key: <your-api-key>\"\n```\n\n> **Note:** Unlike the legacy API, query parameter and request body authentication are not supported.\n\n---\n\n## Rate Limiting\n\nAll API requests are rate-limited per API key using a fixed-window strategy. Each key is allowed up to **100 requests per 10-second window**.\n\nWhen the limit is exceeded, the API responds with **429 Too Many Requests**.\n"
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+  description: Current host
+- url: https://forge.lucrasports.com
+  description: Production
+- url: https://forge.sandbox.lucrasports.com
+  description: Sandbox
+tags:
+- name: Health
+paths:
+  /health:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+      - Health
+components:
+  securitySchemes:
+    X-Lucra-Api-Key:
+      type: apiKey
+      in: header
+      name: X-Lucra-Api-Key
+      description: API key for tenant authentication

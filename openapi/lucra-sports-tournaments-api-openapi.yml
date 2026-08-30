@@ -1,0 +1,1611 @@
+openapi: 3.2.0
+info:
+  title: Lucra Forge Tournaments API
+  description: "See https://docs.lucrasports.com/lucra-sdk/sdks-and-apis for implementation details.\n\n---\n\n## Environments\n\n| Environment | Base URL |\n|-------------|----------|\n| Sandbox | `https://forge.sandbox.lucrasports.com` |\n| Production | `https://forge.lucrasports.com` |\n\nUse sandbox for development and testing. Production credentials are separate and should only be used in live environments.\n\n---\n\n## Authentication\n\nAll requests require an API key passed in the `X-Lucra-Api-Key` header. Keys are provisioned by the Lucra team.\n\n```bash\ncurl https://forge.sandbox.lucrasports.com/api/<endpoint> \\\n  -H \"X-Lucra-Api-Key: <your-api-key>\"\n```\n\n> **Note:** Unlike the legacy API, query parameter and request body authentication are not supported.\n\n---\n\n## Rate Limiting\n\nAll API requests are rate-limited per API key using a fixed-window strategy. Each key is allowed up to **100 requests per 10-second window**.\n\nWhen the limit is exceeded, the API responds with **429 Too Many Requests**.\n"
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+  description: Current host
+- url: https://forge.lucrasports.com
+  description: Production
+- url: https://forge.sandbox.lucrasports.com
+  description: Sandbox
+tags:
+- name: Tournaments
+  description: "\nModular tournament management endpoints. Unlike the legacy API which returns everything in a single call,\nthe v2 API separates concerns into dedicated resources:\n\n| Resource | Path | Purpose |\n|----------|------|---------|\n| **Tournaments** | `/tournaments` | CRUD operations, cancel, complete |\n| **Leaderboard** | `/tournaments/:id/leaderboard` | Paginated participant rankings and scores |\n| **Rewards** | `/tournaments/:id/rewards` | Prize tier configuration and winner assignment |\n\n---\n\n## Key Differences from Legacy API\n\n### Separate Resources\nThe legacy `GET /pool-tournament/:id` returns the tournament, reward structure, and full user leaderboard in one response.\nThe v2 API splits these into three independent endpoints so clients only fetch what they need.\n\n### Update and Complete are Separate\nThe legacy complete endpoint accepts tournament field updates (title, fee, etc.) in the same request body as the completion action.\nIn v2, update the tournament first via `PATCH /tournaments/:id`, then complete via `POST /tournaments/:id/complete`.\n\n### Reward Assignment is Explicit\nThe legacy complete endpoint accepts a `paymentStructure` with `userId` to assign winners and complete in one step.\nIn v2, assign rewards first via `PUT /tournaments/:id/rewards`, then complete the tournament separately.\n\n---\n\n## Tournament Types\n\n### CASH_FIXED\nPrize pool is defined upfront. Values in the reward tiers represent absolute monetary amounts.\n\n### CASH_PERCENTAGE\nPrize pool is calculated from total entry fees. Values in reward tiers represent percentages that must sum to exactly 100.\n\n---\n\n## Sign-Up Window\n\nTournaments can optionally define a sign-up window using `signUpStart` and `signUpEnd`.\nWhen set, participants can only join during this window. If omitted, sign-ups follow the\ndefault behavior (open from creation until the tournament expires).\n\n| Constraint | Rule |\n|-----------|------|\n| `signUpEnd` ≤ `expiresAt` | Sign-ups must close before tournament expiration |\n| `signUpStart` < `signUpEnd` | Window must have a positive duration |\n\n---\n\n## Simplified Status Model\n\nThe v2 API exposes three statuses instead of the full internal status set:\n\n| Status | Meaning |\n|--------|---------|\n| `ACTIVE` | Tournament is open or in progress |\n| `COMPLETED` | Tournament is closed and rewards distributed |\n| `CANCELED` | Tournament was canceled and participants refunded |\n\n---\n\n## Pagination\n\nList endpoints (`GET /tournaments`, `GET /tournaments/:id/leaderboard`) support pagination via query parameters:\n\n| Parameter | Type | Default | Description |\n|-----------|------|---------|-------------|\n| `limit` | number | 25 | Number of items per page (1–100) |\n| `offset` | number | 0 | Number of items to skip |\n\nThe response body is a **flat array** of items. Pagination metadata is returned in the `Link` HTTP header following [RFC 5988](https://tools.ietf.org/html/rfc5988).\n\n**Example response headers:**\n\n```\nLink: </api/tournaments?limit=25&offset=25>; rel=\"next\", </api/tournaments?limit=25&offset=0>; rel=\"first\"\n```\n\n**Available link relations:**\n\n| Rel | Description |\n|-----|-------------|\n| `next` | Next page of results (omitted on the last page) |\n| `prev` | Previous page of results (omitted on the first page) |\n| `first` | First page of results |\n\n**Parsing the Link header:**\n\n```typescript\nfunction parseLinkHeader(header: string): Record<string, string> {\n  return Object.fromEntries(\n    header.split(', ').map((part) => {\n      const [url, rel] = part.split('; ');\n      return [\n        rel.replace('rel=\"', '').replace('\"', ''),\n        url.slice(1, -1),\n      ];\n    }),\n  );\n}\n\n// Usage\nconst links = parseLinkHeader(response.headers.link);\nif (links.next) {\n  // fetch next page\n}\n```\n"
+paths:
+  /api/tournaments:
+    post:
+      description: 'Create a new pool tournament.
+
+
+        Required fields: `title`, `type`, `buyInAmount`. The reward structure is managed separately via the Rewards endpoint after creation.
+
+
+        Returns the created tournament. Use the returned `id` for all subsequent operations.'
+      operationId: TournamentsApiController_createTournament
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TournamentCreateDto'
+      responses:
+        '201':
+          description: Tournament created successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TournamentResponseDto'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Create Tournament
+      tags:
+      - Tournaments
+    get:
+      description: 'Returns a paginated list of tournaments for the authenticated tenant.
+
+
+        Supports filtering by `status` (ACTIVE, COMPLETED, CANCELED) and `gameId`. Standard pagination via `limit` and `offset` query parameters.'
+      operationId: TournamentsApiController_getTournaments
+      parameters:
+      - name: gameId
+        required: false
+        in: query
+        description: Identifier of the game associated with the tournament
+        schema:
+          example: BASKETBALL
+          type:
+          - string
+          - 'null'
+      - name: status
+        required: false
+        in: query
+        description: Lifecycle status of the tournament
+        schema:
+          example: OPEN
+          type: string
+          enum:
+          - ACTIVE
+          - COMPLETED
+          - CANCELED
+      - name: limit
+        required: false
+        in: query
+        description: Number of items to return per page
+        schema:
+          minimum: 1
+          maximum: 100
+          default: 25
+          type: number
+      - name: offset
+        required: false
+        in: query
+        description: Number of items to skip before returning results
+        schema:
+          minimum: 0
+          default: 0
+          type: number
+      responses:
+        '200':
+          description: Tournament list retrieved successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TournamentResponseDto'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: List Tournaments
+      tags:
+      - Tournaments
+    patch:
+      description: 'Resolve a tournament by identifiers and update its properties.
+
+
+        The `identifier` object must contain at least one of: `matchupMetadata`, `matchupId`, `gameId`, or `locationId`. The identifier must resolve to exactly one tournament — if zero or multiple match, the request fails.
+
+
+        All tournament update fields are optional — only provided fields are updated.'
+      operationId: TournamentsApiController_updateMatchingTournament
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TournamentUpdateMatchingDto'
+      responses:
+        '200':
+          description: Tournament updated successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TournamentResponseDto'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Update Tournament by Metadata
+      tags:
+      - Tournaments
+  /api/tournaments/complete:
+    post:
+      description: 'Resolve a tournament by identifiers and queue it for completion.
+
+
+        The `identifier` object must contain at least one of: `matchupMetadata`, `matchupId`, `gameId`, or `locationId`. The identifier must resolve to exactly one tournament.
+
+
+        ## Payment structure
+
+
+        If `paymentStructure` is provided, each entry identifies the recipient via `userId`, `phoneNumber`, or `userMetadata`. Each entry must resolve to exactly one user, and every resolved user must be a confirmed participant.
+
+
+        If `paymentStructure` is omitted, the system auto-completes using current standings and existing reward tiers.
+
+
+        ## Async processing
+
+
+        This endpoint returns `202 Accepted` immediately. The actual completion is processed asynchronously. Subscribe to the `TournamentCompleted` webhook event to be notified when completion finishes, to `TournamentComplianceLimitExceeded` when the tournament is placed on hold, and to `TournamentCompletionFailed` to be notified of processing errors. Failure events include a `failure` block with `code`, `reason`, `requestId`, `attempt`, and `willRetry`; `willRetry: false` indicates the request will not be retried.'
+      operationId: TournamentsApiController_completeMatchingTournament
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TournamentCompleteMatchingDto'
+      responses:
+        '202':
+          description: ''
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Complete Tournament by Metadata
+      tags:
+      - Tournaments
+  /api/tournaments/{id}:
+    patch:
+      description: 'Partially update tournament properties.
+
+
+        All fields are optional — only provided fields are updated. Some fields may have restrictions based on tournament status.'
+      operationId: TournamentsApiController_updateTournament
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tournament UUID
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TournamentUpdateDto'
+      responses:
+        '200':
+          description: Tournament updated successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TournamentResponseDto'
+        '404':
+          description: Tournament not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Update Tournament
+      tags:
+      - Tournaments
+    get:
+      description: 'Retrieve tournament details by ID.
+
+
+        Returns tournament metadata and current participant count. For the full leaderboard, use `GET /tournaments/:id/leaderboard`. For the reward structure, use `GET /tournaments/:id/rewards`.'
+      operationId: TournamentsApiController_getTournament
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tournament UUID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Tournament details retrieved successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TournamentResponseDto'
+        '404':
+          description: Tournament not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Get Tournament
+      tags:
+      - Tournaments
+  /api/tournaments/{id}/cancel:
+    post:
+      description: 'Cancel a tournament and refund all participants.
+
+
+        - All participant entry fees are refunded
+
+        - Tournament status changes to `CANCELED`
+
+        - This action is irreversible'
+      operationId: TournamentsApiController_cancelTournament
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tournament UUID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Tournament cancelled successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TournamentResponseDto'
+        '404':
+          description: Tournament not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Cancel Tournament
+      tags:
+      - Tournaments
+  /api/tournaments/{id}/complete:
+    post:
+      description: 'Finalize a tournament and distribute payouts.
+
+
+        Before completing, ensure rewards are configured via `PUT /tournaments/:id/rewards`. If users are pre-assigned to rewards, the system will auto-complete using current leaderboard standings.
+
+
+        - Tournament status changes to `COMPLETED`
+
+        - Payout distribution is triggered
+
+        - This action is irreversible
+
+
+        **Unlike the legacy endpoint**, this does not accept tournament field updates or reward assignments in the request body. Update the tournament and assign rewards first using their respective endpoints.
+
+
+        The request is processed asynchronously — this endpoint returns `202 Accepted` immediately. Subscribe to the `TournamentCompleted` webhook event to be notified when completion finishes, to `TournamentComplianceLimitExceeded` when the tournament is placed on hold, and to `TournamentCompletionFailed` to be notified of processing errors. Failure events include a `failure` block with `code`, `reason`, `requestId`, `attempt`, and `willRetry`; `willRetry: false` indicates the request will not be retried.'
+      operationId: TournamentsApiController_completeTournament
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tournament UUID
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TournamentCompleteDto'
+      responses:
+        '404':
+          description: Tournament not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Complete Tournament
+      tags:
+      - Tournaments
+  /api/tournaments/scores:
+    post:
+      description: 'Submit scores for one or more users in one or more tournaments.
+
+
+        ## How it works
+
+
+        1. **Find tournaments** matching your criteria (matchupId, matchupMetadata, gameId, or locationId)
+
+        2. **Resolve users** from the provided identifiers (userId, phoneNumber, or userMetadata)
+
+        3. **Filter tournaments** to only those where **all** submitted users are participants — if a tournament contains only some of the users, it is skipped
+
+        4. **Update scores** for each user in every matching tournament
+
+
+        ## Async processing
+
+
+        This endpoint returns `202 Accepted` immediately. The actual score ingestion is processed asynchronously. Subscribe to the `TournamentEdited` webhook event to be notified when scores are updated, and to `ScoreIngestionFailed` to be notified of processing errors. Failure events include a `failure` block with `code`, `reason`, `requestId`, `attempt`, and `willRetry`; `willRetry: false` indicates the request will not be retried.
+
+
+        ## Tournament matching
+
+
+        At least one matchup identifier is required. You can combine identifiers for precision:
+
+        - `matchupId` — direct UUID lookup (fastest, most precise)
+
+        - `matchupMetadata` — fuzzy metadata matching. Use `externalId` for deterministic matching
+
+        - `gameId` — filter by game identifier
+
+        - `locationId` — filter by location
+
+
+        ## User matching
+
+
+        Each score entry requires at least one user identifier:
+
+        - `userId` — direct UUID lookup (fastest)
+
+        - `phoneNumber` — exact phone number match
+
+        - `userMetadata` — fuzzy metadata matching. Use `externalId` for deterministic matching.
+
+
+        ## Multiple match behavior
+
+
+        Metadata matching can return multiple tournaments. Scores are updated across **all** tournaments where the criteria match and all users are participants. Use `matchupId` or `externalId` in metadata to target a single tournament.
+
+
+        ## Important notes
+
+
+        - Tournaments have no auto-settlement — they must be closed manually via the complete endpoint
+
+        - `attemptFinished` marks the user''s attempt as complete but does not trigger tournament closure
+
+        - Partial failures are possible when updating across multiple tournaments; each tournament is processed independently'
+      operationId: TournamentsApiController_ingestScores
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngestUserScoreDto'
+      responses:
+        '202':
+          description: ''
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Ingest Scores
+      tags:
+      - Tournaments
+  /api/tournaments/{id}/tags:
+    put:
+      operationId: TournamentsApiController_setTournamentTags
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tournament id
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetTournamentTagsDto'
+      responses:
+        '200':
+          description: ''
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TournamentTagsResponseDto'
+        '404':
+          description: Tournament not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Set the tags assigned to a tournament.
+      tags:
+      - Tournaments
+  /api/tournaments/{id}/leaderboard:
+    get:
+      description: 'Returns the paginated leaderboard for a tournament, ordered by position.
+
+
+        Each entry includes the participant''s user info, current position, and best score. Supports standard pagination via `limit` and `offset` query parameters.
+
+
+        Use `positionOverride ?? position` to display a participant''s final ranking.'
+      operationId: TournamentLeaderboardController_getTournamentLeaderboard
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tournament UUID
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        description: Number of items to return per page
+        schema:
+          minimum: 1
+          maximum: 100
+          default: 25
+          type: number
+      - name: offset
+        required: false
+        in: query
+        description: Number of items to skip before returning results
+        schema:
+          minimum: 0
+          default: 0
+          type: number
+      responses:
+        '200':
+          description: Tournament leaderboard retrieved successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TournamentLeaderboardEntryResponseDto'
+        '404':
+          description: Tournament not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Get Tournament Leaderboard
+      tags:
+      - Tournaments
+  /api/tournaments/rewards:
+    patch:
+      description: 'Replace the reward tier structure for a tournament located via matchup identifiers (`matchupId`, `matchupMetadata`, `gameId`, `locationId`).
+
+
+        This is a full replacement — all existing tiers are removed and replaced with the provided list.
+
+
+        - For `CASH_FIXED` tournaments, `value` is an absolute monetary amount
+
+        - For `CASH_PERCENTAGE` tournaments, `value` is a percentage (must sum to 100)
+
+        - Each tier may optionally assign a winner via `userId`, `phoneNumber`, or `userMetadata`'
+      operationId: TournamentRewardsController_updateMatching
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TournamentRewardsUpdateMatchingDto'
+      responses:
+        '200':
+          description: Tournament reward structure updated successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TournamentRewardResponseDto'
+        '404':
+          description: Tournament not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Update Tournament Rewards by Metadata
+      tags:
+      - Tournaments
+  /api/tournaments/{id}/rewards:
+    put:
+      description: 'Replace the reward tier structure for a tournament.
+
+
+        This is a full replacement — all existing tiers are removed and replaced with the provided list.
+
+
+        - For `CASH_FIXED` tournaments, `value` is an absolute monetary amount
+
+        - For `CASH_PERCENTAGE` tournaments, `value` is a percentage (must sum to 100)
+
+        - Optionally assign a `userId` to a tier to designate the winner for that position
+
+
+        Use this endpoint to assign winners before completing the tournament.'
+      operationId: TournamentRewardsController_updateTournamentRewards
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tournament UUID
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TournamentRewardsUpdateDto'
+      responses:
+        '200':
+          description: Tournament reward structure updated successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TournamentRewardResponseDto'
+        '404':
+          description: Tournament not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Update Tournament Rewards
+      tags:
+      - Tournaments
+    get:
+      description: 'Returns the current reward tier structure for a tournament.
+
+
+        Each tier includes the configured value and the calculated net/fee/total amounts based on the current pool.'
+      operationId: TournamentRewardsController_getTournamentRewards
+      parameters:
+      - name: id
+        required: true
+        in: path
+        description: Tournament UUID
+        schema:
+          example: 123e4567-e89b-12d3-a456-426614174000
+          type: string
+      responses:
+        '200':
+          description: Tournament reward structure retrieved successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TournamentRewardResponseDto'
+        '404':
+          description: Tournament not found
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - X-Lucra-Api-Key: []
+      summary: Get Tournament Rewards
+      tags:
+      - Tournaments
+components:
+  schemas:
+    CompleteMatchingPaymentRowDto:
+      type: object
+      properties:
+        position:
+          type: number
+          description: Prize tier position. Repeat the same position across rows to mark a tie — tied rows split the combined tier value.
+          example: 1
+        value:
+          type: number
+          description: Prize value for this position
+          example: 500
+        userId:
+          type: string
+          description: UUID of the user receiving this reward
+        phoneNumber:
+          type: string
+          description: User's phone number for lookup
+          example: '+15551234567'
+        userMetadata:
+          type: object
+          description: Metadata key-value pairs to match user
+          example:
+            externalId: ext-123
+      required:
+      - position
+      - value
+    TournamentRewardsUpdateDto:
+      type: object
+      properties:
+        tiers:
+          description: Array of reward tiers to replace the current structure
+          type: array
+          items:
+            $ref: '#/components/schemas/TournamentRewardTierUpdateDto'
+      required:
+      - tiers
+    TournamentRewardTierUpdateDto:
+      type: object
+      properties:
+        position:
+          type: number
+          description: Sequential prize tier position (starting from 1)
+          example: 1
+        endPosition:
+          type: number
+          description: TENANT_REWARD only. End of an inclusive place range starting at `position`. Omit for a single place.
+          example: 3
+        value:
+          type: number
+          description: Prize value — absolute amount for CASH_FIXED, percentage for CASH_PERCENTAGE
+          example: 500
+        userId:
+          type: string
+          description: UUID of the user to assign as winner for this position
+          example: 123e4567-e89b-12d3-a456-426614174000
+        catalogRewardId:
+          type: string
+          description: TENANT_REWARD only. UUID of an existing reward catalog item to assign to this place. Mutually exclusive with `reward`.
+          example: 123e4567-e89b-12d3-a456-426614174000
+        reward:
+          description: TENANT_REWARD only. Inline catalog reward definition to create and assign. Mutually exclusive with `catalogRewardId`.
+          allOf:
+          - $ref: '#/components/schemas/NewRewardDto'
+      required:
+      - position
+    IngestUserScoreDto:
+      type: object
+      properties:
+        userScores:
+          description: Array of user scores to submit
+          type: array
+          items:
+            $ref: '#/components/schemas/IngestUserScoreEntryDto'
+        matchupId:
+          type: string
+          description: Matchup UUID. One of matchupId, gameId, or matchupMetadata is required.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        matchupMetadata:
+          type: object
+          description: Metadata key-value pairs to match matchups. One of matchupId, gameId, or matchupMetadata is required.
+        gameId:
+          type: string
+          description: Game identifier to filter matchups. One of matchupId, gameId, or matchupMetadata is required.
+          example: BASKETBALL
+        locationId:
+          type: string
+          description: Location UUID to filter matchups. Applies to tournaments only.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+      required:
+      - userScores
+    NewRewardDto:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Reward catalog type
+          example: UNIQUE_DISCOUNT_CODE
+          enum:
+          - DISCOUNT_CODE
+          - FREE_ITEM
+          - UNIQUE_DISCOUNT_CODE
+        title:
+          type: string
+          description: Display title for the reward
+          example: 20% off coupon
+        descriptor:
+          type: string
+          description: Optional short descriptor
+        iconUrl:
+          type: string
+          description: Optional icon URL
+        bannerIconUrl:
+          type: string
+          description: Optional banner icon URL
+        disclaimer:
+          type: string
+          description: Optional disclaimer text
+        config:
+          type: object
+          description: Type-specific config. DISCOUNT_CODE/UNIQUE_DISCOUNT_CODE require `claimUrl`; FREE_ITEM requires `itemId`.
+          example:
+            claimUrl: https://redeem.example.com
+        entries:
+          type: string
+          description: UNIQUE_DISCOUNT_CODE only. Newline-delimited `code` or `code,claimUrl` entries used to seed the redemption pool.
+          example: 'CODE1
+
+            CODE2,https://redeem.example.com/CODE2'
+      required:
+      - type
+      - title
+      - config
+    TournamentIdentifierDto:
+      type: object
+      properties:
+        matchupMetadata:
+          type: object
+          description: Metadata key-value pairs to identify the tournament
+          example:
+            externalId: game-123
+        matchupId:
+          type: string
+          description: Tournament UUID — takes priority over all other identifiers
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        gameId:
+          type: string
+          description: External game identifier to narrow tournament search
+          example: GOLF
+        locationId:
+          type: string
+          description: Location UUID to narrow tournament search
+    TournamentTagsResponseDto:
+      type: object
+      properties:
+        tagIds:
+          description: Tag UUIDs now assigned to the tournament.
+          example:
+          - 8b1f0000-0000-0000-0000-000000000001
+          type: array
+          items:
+            type: string
+      required:
+      - tagIds
+    TournamentUpdateMatchingDto:
+      type: object
+      properties:
+        identifier:
+          description: Identifiers to locate the tournament. At least one sub-field is required.
+          allOf:
+          - $ref: '#/components/schemas/TournamentIdentifierDto'
+        title:
+          type: string
+          description: Tournament name
+          example: Weekend Golf Tournament
+        type:
+          type: string
+          description: CASH_FIXED or CASH_PERCENTAGE
+          enum:
+          - CASH_FIXED
+          - CASH_PERCENTAGE
+          - TENANT_REWARD
+          - NO_REWARD
+          example: CASH_FIXED
+        buyInAmount:
+          type: number
+          description: Entry fee per participant
+          example: 20
+        expiresAt:
+          type: string
+          description: ISO 8601 expiration timestamp
+          example: '2025-06-15T18:00:00Z'
+        startsAt:
+          type: string
+          description: ISO 8601 start timestamp
+          example: '2025-06-15T10:00:00Z'
+        signUpStart:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups open. Must be before signUpEnd if both are provided.
+          example: '2025-06-14T08:00:00Z'
+        signUpEnd:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups close. Must not be after expiresAt.
+          example: '2025-06-15T08:00:00Z'
+        visibilityLevel:
+          type: string
+          description: 'Visibility level: PUBLIC, PRIVATE_HIDDEN, or PRIVATE_VIEWABLE'
+          enum:
+          - PUBLIC
+          - PRIVATE_VIEWABLE
+          - PRIVATE_HIDDEN
+          example: PUBLIC
+        gameId:
+          type: string
+          description: External game identifier
+          example: GOLF
+        locationIds:
+          description: Array of location UUIDs
+          example: []
+          type: array
+          items:
+            type: string
+        maxParticipants:
+          type: number
+          description: Maximum participants
+          example: 100
+        scoringType:
+          type: string
+          description: 'HIGHEST_SCORE or LOWEST_SCORE (default: HIGHEST_SCORE)'
+          enum:
+          - HIGHEST_SCORE
+          - LOWEST_SCORE
+          default: HIGHEST_SCORE
+        description:
+          type: string
+          description: Tournament description
+          example: Monthly championship event
+        minPayoutAmount:
+          type:
+          - object
+          - 'null'
+          description: Minimum guaranteed prize pool
+          example: 500
+          default: null
+        fee:
+          type: number
+          description: 'Platform fee percentage (default: 0)'
+          example: 10
+          default: 0
+        metadata:
+          type:
+          - object
+          - 'null'
+          description: Arbitrary key-value data attached to the tournament
+          example:
+            customField: value
+        maxAttempts:
+          type:
+          - object
+          - 'null'
+          description: Maximum number of times a user can join/rebuy into the tournament
+          example: 3
+          default: null
+        privateCode:
+          type: string
+          description: Access code for joining a private tournament
+          example: GOLF2025
+        omitAttemptCompletedCheck:
+          type: boolean
+          description: If true, allows users to replay without finishing the previous attempt
+          default: false
+        overrideImageUrl:
+          type: string
+          description: Custom image URL for tournament banner
+          example: https://example.com/tournament-banner.jpg
+      required:
+      - identifier
+    TournamentCompleteMatchingDto:
+      type: object
+      properties:
+        identifier:
+          description: Identifiers to locate the tournament. At least one sub-field is required.
+          allOf:
+          - $ref: '#/components/schemas/TournamentIdentifierDto'
+        paymentStructure:
+          description: Manual payment structure with user identifiers. If omitted, rewards are derived from current standings (auto mode). Each row must include at least one user identifier (userId, phoneNumber, or userMetadata).
+          type: array
+          items:
+            $ref: '#/components/schemas/CompleteMatchingPaymentRowDto'
+      required:
+      - identifier
+    SetTournamentTagsDto:
+      type: object
+      properties:
+        tagIds:
+          description: Tag UUIDs to assign to the tournament, from any of the tenant tag groups. Pass [] to clear all.
+          example:
+          - 8b1f0000-0000-0000-0000-000000000001
+          type: array
+          items:
+            type: string
+      required:
+      - tagIds
+    TournamentUpdateDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Tournament name
+          example: Weekend Golf Tournament
+        type:
+          type: string
+          description: CASH_FIXED or CASH_PERCENTAGE
+          enum:
+          - CASH_FIXED
+          - CASH_PERCENTAGE
+          - TENANT_REWARD
+          - NO_REWARD
+          example: CASH_FIXED
+        buyInAmount:
+          type: number
+          description: Entry fee per participant
+          example: 20
+        expiresAt:
+          type: string
+          description: ISO 8601 expiration timestamp
+          example: '2025-06-15T18:00:00Z'
+        startsAt:
+          type: string
+          description: ISO 8601 start timestamp
+          example: '2025-06-15T10:00:00Z'
+        signUpStart:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups open. Must be before signUpEnd if both are provided.
+          example: '2025-06-14T08:00:00Z'
+        signUpEnd:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups close. Must not be after expiresAt.
+          example: '2025-06-15T08:00:00Z'
+        visibilityLevel:
+          type: string
+          description: 'Visibility level: PUBLIC, PRIVATE_HIDDEN, or PRIVATE_VIEWABLE'
+          enum:
+          - PUBLIC
+          - PRIVATE_VIEWABLE
+          - PRIVATE_HIDDEN
+          example: PUBLIC
+        gameId:
+          type: string
+          description: External game identifier
+          example: GOLF
+        locationIds:
+          description: Array of location UUIDs
+          example: []
+          type: array
+          items:
+            type: string
+        maxParticipants:
+          type: number
+          description: Maximum participants
+          example: 100
+        scoringType:
+          type: string
+          description: 'HIGHEST_SCORE or LOWEST_SCORE (default: HIGHEST_SCORE)'
+          enum:
+          - HIGHEST_SCORE
+          - LOWEST_SCORE
+          default: HIGHEST_SCORE
+        description:
+          type: string
+          description: Tournament description
+          example: Monthly championship event
+        minPayoutAmount:
+          type:
+          - object
+          - 'null'
+          description: Minimum guaranteed prize pool
+          example: 500
+          default: null
+        fee:
+          type: number
+          description: 'Platform fee percentage (default: 0)'
+          example: 10
+          default: 0
+        metadata:
+          type:
+          - object
+          - 'null'
+          description: Arbitrary key-value data attached to the tournament
+          example:
+            customField: value
+        maxAttempts:
+          type:
+          - object
+          - 'null'
+          description: Maximum number of times a user can join/rebuy into the tournament
+          example: 3
+          default: null
+        privateCode:
+          type: string
+          description: Access code for joining a private tournament
+          example: GOLF2025
+        omitAttemptCompletedCheck:
+          type: boolean
+          description: If true, allows users to replay without finishing the previous attempt
+          default: false
+        overrideImageUrl:
+          type: string
+          description: Custom image URL for tournament banner
+          example: https://example.com/tournament-banner.jpg
+    TournamentLeaderboardEntryResponseDto:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: UUID of the participant
+          example: 123e4567-e89b-12d3-a456-426614174000
+        userName:
+          type:
+          - object
+          - 'null'
+          description: Display username
+          example: john_doe
+        userMetadata:
+          type:
+          - object
+          - 'null'
+          description: Arbitrary user metadata
+          example:
+            externalId: ext-123
+        userAvatarUrl:
+          type:
+          - object
+          - 'null'
+          description: URL of the user's avatar image
+          example: https://example.com/avatar.jpg
+        position:
+          type: number
+          description: 'Calculated leaderboard position based on score (sequential: 1, 2, 3, …)'
+          example: 1
+        positionOverride:
+          type:
+          - object
+          - 'null'
+          description: Rank-based position that handles ties (1, 2, 2, 4, …). Null when equal to position
+          example: 1
+        score:
+          type:
+          - object
+          - 'null'
+          description: Participant's best score across all attempts
+          example: 72
+        lastUpdatedAt:
+          type:
+          - object
+          - 'null'
+          description: ISO-8601 time this leaderboard was last recomputed, from the projection header. Null on the live compute-on-read path, where the data is current as of the request. Use it to show data freshness ("updated Xs ago") under the refresh SLO.
+          example: '2026-07-24T15:04:05.123Z'
+      required:
+      - userId
+      - userName
+      - userMetadata
+      - userAvatarUrl
+      - position
+      - positionOverride
+      - score
+      - lastUpdatedAt
+    TournamentRewardResponseDto:
+      type: object
+      properties:
+        position:
+          type: number
+          description: Finishing position this reward tier applies to
+          example: 1
+        positionOverride:
+          type:
+          - object
+          - 'null'
+          description: Displayed finishing rank when this tier is part of a tie. Tied tiers share the same value (the rank of the first tied slot), so equal values mark tiers that split a combined prize. `null` when the tier is not tied.
+          example: 1
+        value:
+          type: string
+          description: Configured reward tier value (fixed amount or percentage)
+          example: '500.00'
+        netAmount:
+          type: string
+          description: Net payout amount after fees
+          example: '450.00'
+        feeAmount:
+          type: string
+          description: Fee amount deducted from the reward
+          example: '50.00'
+        totalAmount:
+          type: string
+          description: Total gross reward amount before fees
+          example: '500.00'
+      required:
+      - position
+      - positionOverride
+      - value
+      - netAmount
+      - feeAmount
+      - totalAmount
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable HTTP error code
+          example: NOT_FOUND
+        errCode:
+          type: string
+          description: Machine-readable business error code
+          example: TOURNAMENT_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error message
+          example: Tournament not found
+      required:
+      - code
+      - errCode
+      - message
+    IngestUserScoreEntryDto:
+      type: object
+      properties:
+        score:
+          type:
+          - object
+          - 'null'
+          description: Numeric score value. Send `null` to clear a previously submitted score.
+          example: 150
+        userId:
+          type: string
+          description: User UUID. One of userId, phoneNumber, or userMetadata is required.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        phoneNumber:
+          type: string
+          description: User phone number. One of userId, phoneNumber, or userMetadata is required.
+          example: '+15551234567'
+        userMetadata:
+          type: object
+          description: Metadata key-value pairs to match a user. One of userId, phoneNumber, or userMetadata is required.
+        metadata:
+          type: object
+          description: Arbitrary metadata to attach to the score entry
+        attemptFinished:
+          type: boolean
+          description: Marks the user's attempt as finished. Once set, further submissions for this user are ignored.
+          example: false
+      required:
+      - score
+    TournamentRewardTierUpdateMatchingDto:
+      type: object
+      properties:
+        position:
+          type: number
+          description: Sequential prize tier position (starting from 1)
+          example: 1
+        endPosition:
+          type: number
+          description: TENANT_REWARD only. End of an inclusive place range starting at `position`. Omit for a single place.
+          example: 3
+        value:
+          type: number
+          description: Prize value — absolute amount for CASH_FIXED, percentage for CASH_PERCENTAGE
+          example: 500
+        userId:
+          type: string
+          description: UUID of the user to assign as winner for this position
+          example: 123e4567-e89b-12d3-a456-426614174000
+        catalogRewardId:
+          type: string
+          description: TENANT_REWARD only. UUID of an existing reward catalog item to assign to this place. Mutually exclusive with `reward`.
+          example: 123e4567-e89b-12d3-a456-426614174000
+        reward:
+          description: TENANT_REWARD only. Inline catalog reward definition to create and assign. Mutually exclusive with `catalogRewardId`.
+          allOf:
+          - $ref: '#/components/schemas/NewRewardDto'
+        phoneNumber:
+          type: string
+          description: User's phone number for lookup
+          example: '+15551234567'
+        userMetadata:
+          type: object
+          description: Metadata key-value pairs to match user
+          example:
+            externalId: ext-123
+      required:
+      - position
+    TournamentCompleteDto:
+      type: object
+      properties:
+        paymentStructure:
+          description: Manual payment structure. If omitted, rewards are derived from current standings (auto mode).
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentStructureRowDto'
+    TournamentResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the tournament
+          example: 123e4567-e89b-12d3-a456-426614174000
+        title:
+          type: string
+          description: Display name of the tournament
+          example: Weekly Championship
+        description:
+          type:
+          - object
+          - 'null'
+          description: Detailed description of the tournament
+          example: A weekly tournament open to all players.
+        status:
+          type: string
+          description: Lifecycle status of the tournament
+          example: OPEN
+          enum:
+          - ACTIVE
+          - COMPLETED
+          - CANCELED
+        type:
+          type: string
+          description: Tournament format type
+          example: CASH_FIXED
+          enum:
+          - CASH_FIXED
+          - CASH_PERCENTAGE
+          - TENANT_REWARD
+          - NO_REWARD
+        visibility:
+          type: string
+          description: Whether the tournament is publicly discoverable or invite-only
+          example: PUBLIC
+          enum:
+          - PUBLIC
+          - PRIVATE_VIEWABLE
+          - PRIVATE_HIDDEN
+        gameId:
+          type:
+          - object
+          - 'null'
+          description: Identifier of the game associated with the tournament
+          example: BASKETBALL
+        imageUrl:
+          type:
+          - object
+          - 'null'
+          description: URL of the tournament cover image
+          example: https://example.com/tournament.png
+        buyIn:
+          type: string
+          description: Entry fee required to join the tournament as a decimal string
+          example: '10.00'
+        feePercent:
+          type: string
+          description: Platform fee as a percentage of the buy-in
+          example: '1.50'
+        maxParticipants:
+          type:
+          - object
+          - 'null'
+          description: Maximum number of participants allowed
+          example: 100
+        maxAttempts:
+          type:
+          - object
+          - 'null'
+          description: Maximum number of attempts each participant can make
+          example: 3
+        privateCode:
+          type:
+          - object
+          - 'null'
+          description: Access code required to join a private tournament
+          example: SECRET123
+        metadata:
+          type:
+          - object
+          - 'null'
+          description: Arbitrary key-value data attached to the tournament
+          example:
+            theme: dark
+        startsAt:
+          type:
+          - object
+          - 'null'
+          description: Scheduled start time of the tournament
+          example: '2025-01-15T00:00:00.000Z'
+        expiresAt:
+          type:
+          - object
+          - 'null'
+          description: Expiration time after which the tournament closes
+          example: '2025-02-01T00:00:00.000Z'
+        signUpStart:
+          type:
+          - object
+          - 'null'
+          description: Timestamp when sign-ups open for the tournament
+          example: '2025-01-14T00:00:00.000Z'
+        signUpEnd:
+          type:
+          - object
+          - 'null'
+          description: Timestamp when sign-ups close for the tournament
+          example: '2025-01-15T00:00:00.000Z'
+        createdAt:
+          type:
+          - object
+          - 'null'
+          description: Timestamp when the tournament was created
+          example: '2025-01-01T00:00:00.000Z'
+        participantsCount:
+          type: number
+          description: Current number of participants in the tournament
+          example: 12
+      required:
+      - id
+      - title
+      - description
+      - status
+      - type
+      - visibility
+      - gameId
+      - imageUrl
+      - buyIn
+      - feePercent
+      - maxParticipants
+      - maxAttempts
+      - privateCode
+      - metadata
+      - startsAt
+      - expiresAt
+      - signUpStart
+      - signUpEnd
+      - createdAt
+      - participantsCount
+    TournamentCreateDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Tournament name
+          example: Weekend Golf Tournament
+        type:
+          type: string
+          description: CASH_FIXED or CASH_PERCENTAGE
+          enum:
+          - CASH_FIXED
+          - CASH_PERCENTAGE
+          - TENANT_REWARD
+          - NO_REWARD
+          example: CASH_FIXED
+        buyInAmount:
+          type: number
+          description: Entry fee per participant
+          example: 20
+        expiresAt:
+          type: string
+          description: ISO 8601 expiration timestamp
+          example: '2025-06-15T18:00:00Z'
+        startsAt:
+          type: string
+          description: ISO 8601 start timestamp
+          example: '2025-06-15T10:00:00Z'
+        signUpStart:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups open. Must be before signUpEnd if both are provided.
+          example: '2025-06-14T08:00:00Z'
+        signUpEnd:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups close. Must not be after expiresAt.
+          example: '2025-06-15T08:00:00Z'
+        visibilityLevel:
+          type: string
+          description: 'Visibility level: PUBLIC, PRIVATE_HIDDEN, or PRIVATE_VIEWABLE'
+          enum:
+          - PUBLIC
+          - PRIVATE_VIEWABLE
+          - PRIVATE_HIDDEN
+          example: PUBLIC
+        gameId:
+          type: string
+          description: External game identifier
+          example: GOLF
+        locationIds:
+          description: Array of location UUIDs
+          example: []
+          type: array
+          items:
+            type: string
+        maxParticipants:
+          type: number
+          description: Maximum participants
+          example: 100
+        scoringType:
+          type: string
+          description: 'HIGHEST_SCORE or LOWEST_SCORE (default: HIGHEST_SCORE)'
+          enum:
+          - HIGHEST_SCORE
+          - LOWEST_SCORE
+          default: HIGHEST_SCORE
+        description:
+          type: string
+          description: Tournament description
+          example: Monthly championship event
+        minPayoutAmount:
+          type:
+          - object
+          - 'null'
+          description: Minimum guaranteed prize pool
+          example: 500
+          default: null
+        fee:
+          type: number
+          description: 'Platform fee percentage (default: 0)'
+          example: 10
+          default: 0
+        metadata:
+          type:
+          - object
+          - 'null'
+          description: Arbitrary key-value data attached to the tournament
+          example:
+            customField: value
+        maxAttempts:
+          type:
+          - object
+          - 'null'
+          description: Maximum number of times a user can join/rebuy into the tournament
+          example: 3
+          default: null
+        privateCode:
+          type: string
+          description: Access code for joining a private tournament
+          example: GOLF2025
+        omitAttemptCompletedCheck:
+          type: boolean
+          description: If true, allows users to replay without finishing the previous attempt
+          default: false
+        overrideImageUrl:
+          type: string
+          description: Custom image URL for tournament banner
+          example: https://example.com/tournament-banner.jpg
+      required:
+      - title
+      - type
+      - buyInAmount
+    PaymentStructureRowDto:
+      type: object
+      properties:
+        position:
+          type: number
+          description: Prize tier position. Repeat the same position across rows to mark a tie — tied rows split the combined tier value.
+        value:
+          type: number
+        userId:
+          type: string
+    TournamentRewardsUpdateMatchingDto:
+      type: object
+      properties:
+        identifier:
+          $ref: '#/components/schemas/TournamentIdentifierDto'
+        tiers:
+          description: Array of reward tiers to replace the current structure
+          type: array
+          items:
+            $ref: '#/components/schemas/TournamentRewardTierUpdateMatchingDto'
+      required:
+      - identifier
+      - tiers
+  securitySchemes:
+    X-Lucra-Api-Key:
+      type: apiKey
+      in: header
+      name: X-Lucra-Api-Key
+      description: API key for tenant authentication

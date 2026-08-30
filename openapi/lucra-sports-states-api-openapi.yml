@@ -1,0 +1,101 @@
+openapi: 3.2.0
+info:
+  title: Lucra Forge States API
+  description: "See https://docs.lucrasports.com/lucra-sdk/sdks-and-apis for implementation details.\n\n---\n\n## Environments\n\n| Environment | Base URL |\n|-------------|----------|\n| Sandbox | `https://forge.sandbox.lucrasports.com` |\n| Production | `https://forge.lucrasports.com` |\n\nUse sandbox for development and testing. Production credentials are separate and should only be used in live environments.\n\n---\n\n## Authentication\n\nAll requests require an API key passed in the `X-Lucra-Api-Key` header. Keys are provisioned by the Lucra team.\n\n```bash\ncurl https://forge.sandbox.lucrasports.com/api/<endpoint> \\\n  -H \"X-Lucra-Api-Key: <your-api-key>\"\n```\n\n> **Note:** Unlike the legacy API, query parameter and request body authentication are not supported.\n\n---\n\n## Rate Limiting\n\nAll API requests are rate-limited per API key using a fixed-window strategy. Each key is allowed up to **100 requests per 10-second window**.\n\nWhen the limit is exceeded, the API responds with **429 Too Many Requests**.\n"
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+  description: Current host
+- url: https://forge.lucrasports.com
+  description: Production
+- url: https://forge.sandbox.lucrasports.com
+  description: Sandbox
+tags:
+- name: States
+paths:
+  /api/v1/states:
+    get:
+      description: 'Returns a list of states with their allowed play types and derived activity status.
+
+
+        Supports optional `search` (matches name or abbreviation) and `locationId` (returns the state the given location belongs to).'
+      operationId: StatesController_findAll_v1
+      parameters:
+      - name: name
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: abbreviation
+        required: false
+        in: query
+        schema:
+          type: string
+      - name: locationId
+        required: false
+        in: query
+        description: UUID of a location. When provided, returns only the state that location belongs to.
+        schema:
+          example: 123e4567-e89b-12d3-a456-426614174000
+          type: string
+      responses:
+        '200':
+          description: State list retrieved successfully
+          headers:
+            X-Request-Id:
+              description: Unique request identifier for tracing and debugging.
+              schema:
+                type: string
+              example: req_abc123
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StateResponseDto'
+      security:
+      - api-key: []
+      summary: List States
+      tags:
+      - States
+components:
+  schemas:
+    StateResponseDto:
+      type: object
+      properties:
+        abbreviation:
+          type: string
+          description: Two-letter state abbreviation
+          example: TX
+        name:
+          type: string
+          description: Full state name
+          example: Texas
+        allowedPlayTypes:
+          description: List of permitted play types in this state. Empty array means no play types are allowed.
+          example:
+          - FREE_TO_PLAY
+          - REAL_MONEY
+          type: array
+          items:
+            type: string
+        activity:
+          type: string
+          description: Derived activity status based on allowed play types. `illegal` — no play types allowed; `free-to-play` — only FREE_TO_PLAY; `pay-to-play` — REAL_MONEY is allowed.
+          example: pay-to-play
+          enum:
+          - illegal
+          - free-to-play
+          - pay-to-play
+      required:
+      - abbreviation
+      - name
+      - allowedPlayTypes
+      - activity
+  securitySchemes:
+    X-Lucra-Api-Key:
+      type: apiKey
+      in: header
+      name: X-Lucra-Api-Key
+      description: API key for tenant authentication

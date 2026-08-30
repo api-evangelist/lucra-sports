@@ -1,0 +1,14 @@
+{
+  "repo": "lucra-sports",
+  "feeds": [
+    {
+      "source": "https://www.playlucra.com/faq",
+      "feed_url": "https://www.playlucra.com/faq",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-08-30T22:33:40Z"
+}

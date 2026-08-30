@@ -37,6 +37,19 @@ tags:
 - Payments
 - Wagering
 - Embedded Finance
+- SDK
+- Webhook
+- Compliance
+tags_raw:
+- Gaming
+- Sports
+- Gamification
+- Loyalty
+- Tournaments
+- Contests
+- Payments
+- Wagering
+- Embedded Finance
 - SDKs
 - Webhooks
 - Compliance
@@ -921,6 +934,8 @@ apis:
   humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
   baseURL: https://forge.lucrasports.com
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI

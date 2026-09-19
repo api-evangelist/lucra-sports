@@ -103,6 +103,8 @@ apis:
   humanURL: https://docs.lucrasports.com/lucra-sdk/sdks-and-apis/api-reference
   baseURL: https://forge.lucrasports.com
   tags:
+  - Location
+  tags_raw:
   - Locations
   properties:
   - type: OpenAPI

@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Lucra Forge Tenant Tag Groups API
-  description: "See https://docs.lucrasports.com/lucra-sdk/sdks-and-apis for implementation details.\n\n---\n\n## Environments\n\n| Environment | Base URL |\n|-------------|----------|\n| Sandbox | `https://forge.sandbox.lucrasports.com` |\n| Production | `https://forge.lucrasports.com` |\n\nUse sandbox for development and testing. Production credentials are separate and should only be used in live environments.\n\n---\n\n## Authentication\n\nAll requests require an API key passed in the `X-Lucra-Api-Key` header. Keys are provisioned by the Lucra team.\n\n```bash\ncurl https://forge.sandbox.lucrasports.com/api/<endpoint> \\\n  -H \"X-Lucra-Api-Key: <your-api-key>\"\n```\n\n> **Note:** Unlike the legacy API, query parameter and request body authentication are not supported.\n\n---\n\n## Rate Limiting\n\nAll API requests are rate-limited per API key using a fixed-window strategy. Each key is allowed up to **100 requests per 10-second window**.\n\nWhen the limit is exceeded, the API responds with **429 Too Many Requests**.\n"
+  description: See https://docs.lucrasports.com/lucra-sdk/sdks-and-apis for implementation details.
   version: '1.0'
   contact: {}
 servers:
@@ -39,7 +39,7 @@ paths:
                 $ref: '#/components/schemas/TenantTagGroupResponseDto'
       security:
       - X-Lucra-Api-Key: []
-      summary: Create a tenant tag group.
+      summary: Create a tenant tag group
       tags:
       - TenantTagGroups
     get:
@@ -62,7 +62,7 @@ paths:
                   $ref: '#/components/schemas/TenantTagGroupResponseDto'
       security:
       - X-Lucra-Api-Key: []
-      summary: Get the tenant tag groups and their tags.
+      summary: Get the tenant tag groups and their tags
       tags:
       - TenantTagGroups
   /api/tenant-tag-groups/{id}:
@@ -108,7 +108,7 @@ paths:
                 $ref: '#/components/schemas/Error'
       security:
       - X-Lucra-Api-Key: []
-      summary: Update the tag group label or selection type.
+      summary: Update the tag group label or selection type
       tags:
       - TenantTagGroups
     delete:
@@ -135,7 +135,7 @@ paths:
                 $ref: '#/components/schemas/Error'
       security:
       - X-Lucra-Api-Key: []
-      summary: Delete the tag group and its tags.
+      summary: Delete the tag group and its tags
       tags:
       - TenantTagGroups
   /api/tenant-tag-groups/{id}/tags:
@@ -193,7 +193,7 @@ paths:
                 $ref: '#/components/schemas/Error'
       security:
       - X-Lucra-Api-Key: []
-      summary: Add a tag to the group (max 5).
+      summary: Add a tag to the group (max 5)
       tags:
       - TenantTagGroups
   /api/tenant-tag-groups/{id}/tags/{tagId}:
@@ -227,11 +227,43 @@ paths:
                 $ref: '#/components/schemas/Error'
       security:
       - X-Lucra-Api-Key: []
-      summary: Remove a tag from the group.
+      summary: Remove a tag from the group
       tags:
       - TenantTagGroups
 components:
   schemas:
+    CreateTenantTagDto:
+      type: object
+      properties:
+        value:
+          type: string
+          description: Display value of the tag (e.g. "Pro").
+          example: Pro
+        displayOrder:
+          type: number
+          description: Sort order of the tag within the group. Defaults to 0.
+          example: 0
+      required:
+      - value
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable HTTP error code
+          example: NOT_FOUND
+        errCode:
+          type: string
+          description: Machine-readable business error code
+          example: TOURNAMENT_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error message
+          example: Tournament not found
+      required:
+      - code
+      - errCode
+      - message
     TenantTagResponseDto:
       type: object
       properties:
@@ -283,38 +315,6 @@ components:
           - SINGLE_SELECT
           - MULTI_SELECT
           example: MULTI_SELECT
-    CreateTenantTagDto:
-      type: object
-      properties:
-        value:
-          type: string
-          description: Display value of the tag (e.g. "Pro").
-          example: Pro
-        displayOrder:
-          type: number
-          description: Sort order of the tag within the group. Defaults to 0.
-          example: 0
-      required:
-      - value
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable HTTP error code
-          example: NOT_FOUND
-        errCode:
-          type: string
-          description: Machine-readable business error code
-          example: TOURNAMENT_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error message
-          example: Tournament not found
-      required:
-      - code
-      - errCode
-      - message
     TenantTagGroupResponseDto:
       type: object
       properties:

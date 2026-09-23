@@ -1,0 +1,42 @@
+{
+  "provider": "lucra-sports",
+  "sources": [
+    "_original/lucra-sports-forge-openapi.json"
+  ],
+  "outputs": [
+    "lucra-sports-health-api-openapi.yml",
+    "lucra-sports-locations-api-openapi.yml",
+    "lucra-sports-recreational-games-api-openapi.yml",
+    "lucra-sports-states-api-openapi.yml",
+    "lucra-sports-tenanttaggroups-api-openapi.yml",
+    "lucra-sports-tournaments-api-openapi.yml",
+    "lucra-sports-tournaments-legacy-api-openapi.yml",
+    "lucra-sports-user-score-api-openapi.yml",
+    "lucra-sports-webhooks-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "lucra-sports-forge-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "lucra-sports-forge-openapi.json: declared missing tag: Health",
+    "lucra-sports-forge-openapi.json: declared missing tag: Locations",
+    "lucra-sports-forge-openapi.json: declared missing tag: Recreational Games",
+    "lucra-sports-forge-openapi.json: declared missing tag: States",
+    "lucra-sports-forge-openapi.json: declared missing tag: TenantTagGroups",
+    "lucra-sports-forge-openapi.json: declared missing tag: User Score",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "lucra-sports-health-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lucra-sports-locations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lucra-sports-recreational-games-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lucra-sports-states-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lucra-sports-tenanttaggroups-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lucra-sports-tournaments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lucra-sports-tournaments-legacy-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lucra-sports-user-score-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lucra-sports-webhooks-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Lucra Forge Locations API
-  description: "See https://docs.lucrasports.com/lucra-sdk/sdks-and-apis for implementation details.\n\n---\n\n## Environments\n\n| Environment | Base URL |\n|-------------|----------|\n| Sandbox | `https://forge.sandbox.lucrasports.com` |\n| Production | `https://forge.lucrasports.com` |\n\nUse sandbox for development and testing. Production credentials are separate and should only be used in live environments.\n\n---\n\n## Authentication\n\nAll requests require an API key passed in the `X-Lucra-Api-Key` header. Keys are provisioned by the Lucra team.\n\n```bash\ncurl https://forge.sandbox.lucrasports.com/api/<endpoint> \\\n  -H \"X-Lucra-Api-Key: <your-api-key>\"\n```\n\n> **Note:** Unlike the legacy API, query parameter and request body authentication are not supported.\n\n---\n\n## Rate Limiting\n\nAll API requests are rate-limited per API key using a fixed-window strategy. Each key is allowed up to **100 requests per 10-second window**.\n\nWhen the limit is exceeded, the API responds with **429 Too Many Requests**.\n"
+  description: See https://docs.lucrasports.com/lucra-sdk/sdks-and-apis for implementation details.
   version: '1.0'
   contact: {}
 servers:
@@ -111,6 +111,59 @@ paths:
       - Locations
 components:
   schemas:
+    CreateLocationDto:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Display name of the location
+          example: Main Arena
+        streetAddress:
+          type:
+          - string
+          - 'null'
+          description: Street address
+          example: 123 Main St
+        unit:
+          type:
+          - string
+          - 'null'
+          description: Unit or suite number
+          example: Suite 400
+        city:
+          type:
+          - string
+          - 'null'
+          description: City
+          example: Austin
+        state:
+          type:
+          - string
+          - 'null'
+          description: State abbreviation
+          example: TX
+        country:
+          type:
+          - string
+          - 'null'
+          description: Country code
+          example: US
+        postalCode:
+          type:
+          - string
+          - 'null'
+          description: Postal or ZIP code
+          example: '78701'
+        displayName:
+          type:
+          - string
+          - 'null'
+          description: Human-readable display name shown in the UI
+          example: Main Arena — Austin, TX
+      required:
+      - name
     LocationResponseDto:
       type: object
       properties:
@@ -195,59 +248,6 @@ components:
       - tenantId
       - createdAt
       - updatedAt
-    CreateLocationDto:
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: Display name of the location
-          example: Main Arena
-        streetAddress:
-          type:
-          - string
-          - 'null'
-          description: Street address
-          example: 123 Main St
-        unit:
-          type:
-          - string
-          - 'null'
-          description: Unit or suite number
-          example: Suite 400
-        city:
-          type:
-          - string
-          - 'null'
-          description: City
-          example: Austin
-        state:
-          type:
-          - string
-          - 'null'
-          description: State abbreviation
-          example: TX
-        country:
-          type:
-          - string
-          - 'null'
-          description: Country code
-          example: US
-        postalCode:
-          type:
-          - string
-          - 'null'
-          description: Postal or ZIP code
-          example: '78701'
-        displayName:
-          type:
-          - string
-          - 'null'
-          description: Human-readable display name shown in the UI
-          example: Main Arena — Austin, TX
-      required:
-      - name
   securitySchemes:
     X-Lucra-Api-Key:
       type: apiKey

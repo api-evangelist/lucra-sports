@@ -731,6 +731,341 @@ paths:
       - Tournaments
 components:
   schemas:
+    TournamentRewardTierUpdateMatchingDto:
+      type: object
+      properties:
+        position:
+          type: number
+          description: Sequential prize tier position (starting from 1)
+          example: 1
+        endPosition:
+          type: number
+          description: TENANT_REWARD only. End of an inclusive place range starting at `position`. Omit for a single place.
+          example: 3
+        value:
+          type: number
+          description: Prize value — absolute amount for CASH_FIXED, percentage for CASH_PERCENTAGE
+          example: 500
+        userId:
+          type: string
+          description: UUID of the user to assign as winner for this position
+          example: 123e4567-e89b-12d3-a456-426614174000
+        catalogRewardId:
+          type: string
+          description: TENANT_REWARD only. UUID of an existing reward catalog item to assign to this place. Mutually exclusive with `reward`.
+          example: 123e4567-e89b-12d3-a456-426614174000
+        reward:
+          description: TENANT_REWARD only. Inline catalog reward definition to create and assign. Mutually exclusive with `catalogRewardId`.
+          allOf:
+          - $ref: '#/components/schemas/NewRewardDto'
+        phoneNumber:
+          type: string
+          description: User's phone number for lookup
+          example: '+15551234567'
+        userMetadata:
+          type: object
+          description: Metadata key-value pairs to match user
+          example:
+            externalId: ext-123
+      required:
+      - position
+    TournamentRewardResponseDto:
+      type: object
+      properties:
+        position:
+          type: number
+          description: Finishing position this reward tier applies to
+          example: 1
+        positionOverride:
+          type:
+          - object
+          - 'null'
+          description: Displayed finishing rank when this tier is part of a tie. Tied tiers share the same value (the rank of the first tied slot), so equal values mark tiers that split a combined prize. `null` when the tier is not tied.
+          example: 1
+        value:
+          type: string
+          description: Configured reward tier value (fixed amount or percentage)
+          example: '500.00'
+        netAmount:
+          type: string
+          description: Net payout amount after fees
+          example: '450.00'
+        feeAmount:
+          type: string
+          description: Fee amount deducted from the reward
+          example: '50.00'
+        totalAmount:
+          type: string
+          description: Total gross reward amount before fees
+          example: '500.00'
+      required:
+      - position
+      - positionOverride
+      - value
+      - netAmount
+      - feeAmount
+      - totalAmount
+    TournamentUpdateDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Tournament name
+          example: Weekend Golf Tournament
+        type:
+          type: string
+          description: CASH_FIXED or CASH_PERCENTAGE
+          enum:
+          - CASH_FIXED
+          - CASH_PERCENTAGE
+          - TENANT_REWARD
+          - NO_REWARD
+          example: CASH_FIXED
+        buyInAmount:
+          type: number
+          description: Entry fee per participant
+          example: 20
+        expiresAt:
+          type: string
+          description: ISO 8601 expiration timestamp
+          example: '2025-06-15T18:00:00Z'
+        startsAt:
+          type: string
+          description: ISO 8601 start timestamp
+          example: '2025-06-15T10:00:00Z'
+        signUpStart:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups open. Must be before signUpEnd if both are provided.
+          example: '2025-06-14T08:00:00Z'
+        signUpEnd:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups close. Must not be after expiresAt.
+          example: '2025-06-15T08:00:00Z'
+        visibilityLevel:
+          type: string
+          description: 'Visibility level: PUBLIC, PRIVATE_HIDDEN, or PRIVATE_VIEWABLE'
+          enum:
+          - PUBLIC
+          - PRIVATE_VIEWABLE
+          - PRIVATE_HIDDEN
+          example: PUBLIC
+        gameId:
+          type: string
+          description: External game identifier
+          example: GOLF
+        locationIds:
+          description: Array of location UUIDs
+          example: []
+          type: array
+          items:
+            type: string
+        maxParticipants:
+          type: number
+          description: Maximum participants
+          example: 100
+        scoringType:
+          type: string
+          description: 'HIGHEST_SCORE or LOWEST_SCORE (default: HIGHEST_SCORE)'
+          enum:
+          - HIGHEST_SCORE
+          - LOWEST_SCORE
+          default: HIGHEST_SCORE
+        description:
+          type: string
+          description: Tournament description
+          example: Monthly championship event
+        minPayoutAmount:
+          type:
+          - object
+          - 'null'
+          description: Minimum guaranteed prize pool
+          example: 500
+          default: null
+        fee:
+          type: number
+          description: 'Platform fee percentage (default: 0)'
+          example: 10
+          default: 0
+        metadata:
+          type:
+          - object
+          - 'null'
+          description: Arbitrary key-value data attached to the tournament
+          example:
+            customField: value
+        maxAttempts:
+          type:
+          - object
+          - 'null'
+          description: Maximum number of times a user can join/rebuy into the tournament
+          example: 3
+          default: null
+        privateCode:
+          type: string
+          description: Access code for joining a private tournament
+          example: GOLF2025
+        omitAttemptCompletedCheck:
+          type: boolean
+          description: If true, allows users to replay without finishing the previous attempt
+          default: false
+        overrideImageUrl:
+          type: string
+          description: Custom image URL for tournament banner
+          example: https://example.com/tournament-banner.jpg
+    TournamentRewardTierUpdateDto:
+      type: object
+      properties:
+        position:
+          type: number
+          description: Sequential prize tier position (starting from 1)
+          example: 1
+        endPosition:
+          type: number
+          description: TENANT_REWARD only. End of an inclusive place range starting at `position`. Omit for a single place.
+          example: 3
+        value:
+          type: number
+          description: Prize value — absolute amount for CASH_FIXED, percentage for CASH_PERCENTAGE
+          example: 500
+        userId:
+          type: string
+          description: UUID of the user to assign as winner for this position
+          example: 123e4567-e89b-12d3-a456-426614174000
+        catalogRewardId:
+          type: string
+          description: TENANT_REWARD only. UUID of an existing reward catalog item to assign to this place. Mutually exclusive with `reward`.
+          example: 123e4567-e89b-12d3-a456-426614174000
+        reward:
+          description: TENANT_REWARD only. Inline catalog reward definition to create and assign. Mutually exclusive with `catalogRewardId`.
+          allOf:
+          - $ref: '#/components/schemas/NewRewardDto'
+      required:
+      - position
+    TournamentCreateDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Tournament name
+          example: Weekend Golf Tournament
+        type:
+          type: string
+          description: CASH_FIXED or CASH_PERCENTAGE
+          enum:
+          - CASH_FIXED
+          - CASH_PERCENTAGE
+          - TENANT_REWARD
+          - NO_REWARD
+          example: CASH_FIXED
+        buyInAmount:
+          type: number
+          description: Entry fee per participant
+          example: 20
+        expiresAt:
+          type: string
+          description: ISO 8601 expiration timestamp
+          example: '2025-06-15T18:00:00Z'
+        startsAt:
+          type: string
+          description: ISO 8601 start timestamp
+          example: '2025-06-15T10:00:00Z'
+        signUpStart:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups open. Must be before signUpEnd if both are provided.
+          example: '2025-06-14T08:00:00Z'
+        signUpEnd:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups close. Must not be after expiresAt.
+          example: '2025-06-15T08:00:00Z'
+        visibilityLevel:
+          type: string
+          description: 'Visibility level: PUBLIC, PRIVATE_HIDDEN, or PRIVATE_VIEWABLE'
+          enum:
+          - PUBLIC
+          - PRIVATE_VIEWABLE
+          - PRIVATE_HIDDEN
+          example: PUBLIC
+        gameId:
+          type: string
+          description: External game identifier
+          example: GOLF
+        locationIds:
+          description: Array of location UUIDs
+          example: []
+          type: array
+          items:
+            type: string
+        maxParticipants:
+          type: number
+          description: Maximum participants
+          example: 100
+        scoringType:
+          type: string
+          description: 'HIGHEST_SCORE or LOWEST_SCORE (default: HIGHEST_SCORE)'
+          enum:
+          - HIGHEST_SCORE
+          - LOWEST_SCORE
+          default: HIGHEST_SCORE
+        description:
+          type: string
+          description: Tournament description
+          example: Monthly championship event
+        minPayoutAmount:
+          type:
+          - object
+          - 'null'
+          description: Minimum guaranteed prize pool
+          example: 500
+          default: null
+        fee:
+          type: number
+          description: 'Platform fee percentage (default: 0)'
+          example: 10
+          default: 0
+        metadata:
+          type:
+          - object
+          - 'null'
+          description: Arbitrary key-value data attached to the tournament
+          example:
+            customField: value
+        maxAttempts:
+          type:
+          - object
+          - 'null'
+          description: Maximum number of times a user can join/rebuy into the tournament
+          example: 3
+          default: null
+        privateCode:
+          type: string
+          description: Access code for joining a private tournament
+          example: GOLF2025
+        omitAttemptCompletedCheck:
+          type: boolean
+          description: If true, allows users to replay without finishing the previous attempt
+          default: false
+        overrideImageUrl:
+          type: string
+          description: Custom image URL for tournament banner
+          example: https://example.com/tournament-banner.jpg
+      required:
+      - title
+      - type
+      - buyInAmount
+    TournamentCompleteMatchingDto:
+      type: object
+      properties:
+        identifier:
+          description: Identifiers to locate the tournament. At least one sub-field is required.
+          allOf:
+          - $ref: '#/components/schemas/TournamentIdentifierDto'
+        paymentStructure:
+          description: Manual payment structure with user identifiers. If omitted, rewards are derived from current standings (auto mode). Each row must include at least one user identifier (userId, phoneNumber, or userMetadata).
+          type: array
+          items:
+            $ref: '#/components/schemas/CompleteMatchingPaymentRowDto'
+      required:
+      - identifier
     NewRewardDto:
       type: object
       properties:
@@ -773,128 +1108,16 @@ components:
       - type
       - title
       - config
-    TournamentCompleteMatchingDto:
-      type: object
-      properties:
-        identifier:
-          description: Identifiers to locate the tournament. At least one sub-field is required.
-          allOf:
-          - $ref: '#/components/schemas/TournamentIdentifierDto'
-        paymentStructure:
-          description: Manual payment structure with user identifiers. If omitted, rewards are derived from current standings (auto mode). Each row must include at least one user identifier (userId, phoneNumber, or userMetadata).
-          type: array
-          items:
-            $ref: '#/components/schemas/CompleteMatchingPaymentRowDto'
-      required:
-      - identifier
-    TournamentRewardsUpdateDto:
-      type: object
-      properties:
-        tiers:
-          description: Array of reward tiers to replace the current structure
-          type: array
-          items:
-            $ref: '#/components/schemas/TournamentRewardTierUpdateDto'
-      required:
-      - tiers
-    TournamentRewardTierUpdateDto:
+    PaymentStructureRowDto:
       type: object
       properties:
         position:
           type: number
-          description: Sequential prize tier position (starting from 1)
-          example: 1
-        endPosition:
-          type: number
-          description: TENANT_REWARD only. End of an inclusive place range starting at `position`. Omit for a single place.
-          example: 3
+          description: Prize tier position. Repeat the same position across rows to mark a tie — tied rows split the combined tier value.
         value:
           type: number
-          description: Prize value — absolute amount for CASH_FIXED, percentage for CASH_PERCENTAGE
-          example: 500
         userId:
           type: string
-          description: UUID of the user to assign as winner for this position
-          example: 123e4567-e89b-12d3-a456-426614174000
-        catalogRewardId:
-          type: string
-          description: TENANT_REWARD only. UUID of an existing reward catalog item to assign to this place. Mutually exclusive with `reward`.
-          example: 123e4567-e89b-12d3-a456-426614174000
-        reward:
-          description: TENANT_REWARD only. Inline catalog reward definition to create and assign. Mutually exclusive with `catalogRewardId`.
-          allOf:
-          - $ref: '#/components/schemas/NewRewardDto'
-      required:
-      - position
-    TournamentTagsResponseDto:
-      type: object
-      properties:
-        tagIds:
-          description: Tag UUIDs now assigned to the tournament.
-          example:
-          - 8b1f0000-0000-0000-0000-000000000001
-          type: array
-          items:
-            type: string
-      required:
-      - tagIds
-    TournamentLeaderboardEntryResponseDto:
-      type: object
-      properties:
-        userId:
-          type: string
-          description: UUID of the participant
-          example: 123e4567-e89b-12d3-a456-426614174000
-        userName:
-          type:
-          - object
-          - 'null'
-          description: Display username
-          example: john_doe
-        userMetadata:
-          type:
-          - object
-          - 'null'
-          description: Arbitrary user metadata
-          example:
-            externalId: ext-123
-        userAvatarUrl:
-          type:
-          - object
-          - 'null'
-          description: URL of the user's avatar image
-          example: https://example.com/avatar.jpg
-        position:
-          type: number
-          description: 'Calculated leaderboard position based on score (sequential: 1, 2, 3, …)'
-          example: 1
-        positionOverride:
-          type:
-          - object
-          - 'null'
-          description: Rank-based position that handles ties (1, 2, 2, 4, …). Null when equal to position
-          example: 1
-        score:
-          type:
-          - object
-          - 'null'
-          description: Participant's best score across all attempts
-          example: 72
-        lastUpdatedAt:
-          type:
-          - object
-          - 'null'
-          description: ISO-8601 time this leaderboard was last recomputed, from the projection header. Null on the live compute-on-read path, where the data is current as of the request. Use it to show data freshness ("updated Xs ago") under the refresh SLO.
-          example: '2026-07-24T15:04:05.123Z'
-      required:
-      - userId
-      - userName
-      - userMetadata
-      - userAvatarUrl
-      - position
-      - positionOverride
-      - score
-      - lastUpdatedAt
     TournamentRewardsUpdateMatchingDto:
       type: object
       properties:
@@ -908,25 +1131,119 @@ components:
       required:
       - identifier
       - tiers
-    TournamentIdentifierDto:
+    TournamentUpdateMatchingDto:
       type: object
       properties:
-        matchupMetadata:
-          type: object
-          description: Metadata key-value pairs to identify the tournament
-          example:
-            externalId: game-123
-        matchupId:
+        identifier:
+          description: Identifiers to locate the tournament. At least one sub-field is required.
+          allOf:
+          - $ref: '#/components/schemas/TournamentIdentifierDto'
+        title:
           type: string
-          description: Tournament UUID — takes priority over all other identifiers
-          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+          description: Tournament name
+          example: Weekend Golf Tournament
+        type:
+          type: string
+          description: CASH_FIXED or CASH_PERCENTAGE
+          enum:
+          - CASH_FIXED
+          - CASH_PERCENTAGE
+          - TENANT_REWARD
+          - NO_REWARD
+          example: CASH_FIXED
+        buyInAmount:
+          type: number
+          description: Entry fee per participant
+          example: 20
+        expiresAt:
+          type: string
+          description: ISO 8601 expiration timestamp
+          example: '2025-06-15T18:00:00Z'
+        startsAt:
+          type: string
+          description: ISO 8601 start timestamp
+          example: '2025-06-15T10:00:00Z'
+        signUpStart:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups open. Must be before signUpEnd if both are provided.
+          example: '2025-06-14T08:00:00Z'
+        signUpEnd:
+          type: string
+          description: ISO 8601 timestamp for when sign-ups close. Must not be after expiresAt.
+          example: '2025-06-15T08:00:00Z'
+        visibilityLevel:
+          type: string
+          description: 'Visibility level: PUBLIC, PRIVATE_HIDDEN, or PRIVATE_VIEWABLE'
+          enum:
+          - PUBLIC
+          - PRIVATE_VIEWABLE
+          - PRIVATE_HIDDEN
+          example: PUBLIC
         gameId:
           type: string
-          description: External game identifier to narrow tournament search
+          description: External game identifier
           example: GOLF
-        locationId:
+        locationIds:
+          description: Array of location UUIDs
+          example: []
+          type: array
+          items:
+            type: string
+        maxParticipants:
+          type: number
+          description: Maximum participants
+          example: 100
+        scoringType:
           type: string
-          description: Location UUID to narrow tournament search
+          description: 'HIGHEST_SCORE or LOWEST_SCORE (default: HIGHEST_SCORE)'
+          enum:
+          - HIGHEST_SCORE
+          - LOWEST_SCORE
+          default: HIGHEST_SCORE
+        description:
+          type: string
+          description: Tournament description
+          example: Monthly championship event
+        minPayoutAmount:
+          type:
+          - object
+          - 'null'
+          description: Minimum guaranteed prize pool
+          example: 500
+          default: null
+        fee:
+          type: number
+          description: 'Platform fee percentage (default: 0)'
+          example: 10
+          default: 0
+        metadata:
+          type:
+          - object
+          - 'null'
+          description: Arbitrary key-value data attached to the tournament
+          example:
+            customField: value
+        maxAttempts:
+          type:
+          - object
+          - 'null'
+          description: Maximum number of times a user can join/rebuy into the tournament
+          example: 3
+          default: null
+        privateCode:
+          type: string
+          description: Access code for joining a private tournament
+          example: GOLF2025
+        omitAttemptCompletedCheck:
+          type: boolean
+          description: If true, allows users to replay without finishing the previous attempt
+          default: false
+        overrideImageUrl:
+          type: string
+          description: Custom image URL for tournament banner
+          example: https://example.com/tournament-banner.jpg
+      required:
+      - identifier
     TournamentResponseDto:
       type: object
       properties:
@@ -1069,16 +1386,110 @@ components:
       - signUpEnd
       - createdAt
       - participantsCount
-    PaymentStructureRowDto:
+    TournamentRewardsUpdateDto:
+      type: object
+      properties:
+        tiers:
+          description: Array of reward tiers to replace the current structure
+          type: array
+          items:
+            $ref: '#/components/schemas/TournamentRewardTierUpdateDto'
+      required:
+      - tiers
+    IngestUserScoreDto:
+      type: object
+      properties:
+        userScores:
+          description: Array of user scores to submit
+          type: array
+          items:
+            $ref: '#/components/schemas/IngestUserScoreEntryDto'
+        matchupId:
+          type: string
+          description: Matchup UUID. One of matchupId, gameId, or matchupMetadata is required.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        matchupMetadata:
+          type: object
+          description: Metadata key-value pairs to match matchups. One of matchupId, gameId, or matchupMetadata is required.
+        gameId:
+          type: string
+          description: Game identifier to filter matchups. One of matchupId, gameId, or matchupMetadata is required.
+          example: BASKETBALL
+        locationId:
+          type: string
+          description: Location UUID to filter matchups. Applies to tournaments only.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+      required:
+      - userScores
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable HTTP error code
+          example: NOT_FOUND
+        errCode:
+          type: string
+          description: Machine-readable business error code
+          example: TOURNAMENT_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error message
+          example: Tournament not found
+      required:
+      - code
+      - errCode
+      - message
+    SetTournamentTagsDto:
+      type: object
+      properties:
+        tagIds:
+          description: Tag UUIDs to assign to the tournament, from any of the tenant tag groups. Pass [] to clear all.
+          example:
+          - 8b1f0000-0000-0000-0000-000000000001
+          type: array
+          items:
+            type: string
+      required:
+      - tagIds
+    CompleteMatchingPaymentRowDto:
       type: object
       properties:
         position:
           type: number
           description: Prize tier position. Repeat the same position across rows to mark a tie — tied rows split the combined tier value.
+          example: 1
         value:
           type: number
+          description: Prize value for this position
+          example: 500
         userId:
           type: string
+          description: UUID of the user receiving this reward
+        phoneNumber:
+          type: string
+          description: User's phone number for lookup
+          example: '+15551234567'
+        userMetadata:
+          type: object
+          description: Metadata key-value pairs to match user
+          example:
+            externalId: ext-123
+      required:
+      - position
+      - value
+    TournamentTagsResponseDto:
+      type: object
+      properties:
+        tagIds:
+          description: Tag UUIDs now assigned to the tournament.
+          example:
+          - 8b1f0000-0000-0000-0000-000000000001
+          type: array
+          items:
+            type: string
+      required:
+      - tagIds
     TournamentCompleteDto:
       type: object
       properties:
@@ -1116,493 +1527,82 @@ components:
           example: false
       required:
       - score
-    Error:
+    TournamentLeaderboardEntryResponseDto:
       type: object
       properties:
-        code:
+        userId:
           type: string
-          description: Machine-readable HTTP error code
-          example: NOT_FOUND
-        errCode:
-          type: string
-          description: Machine-readable business error code
-          example: TOURNAMENT_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error message
-          example: Tournament not found
-      required:
-      - code
-      - errCode
-      - message
-    IngestUserScoreDto:
-      type: object
-      properties:
-        userScores:
-          description: Array of user scores to submit
-          type: array
-          items:
-            $ref: '#/components/schemas/IngestUserScoreEntryDto'
-        matchupId:
-          type: string
-          description: Matchup UUID. One of matchupId, gameId, or matchupMetadata is required.
-          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-        matchupMetadata:
-          type: object
-          description: Metadata key-value pairs to match matchups. One of matchupId, gameId, or matchupMetadata is required.
-        gameId:
-          type: string
-          description: Game identifier to filter matchups. One of matchupId, gameId, or matchupMetadata is required.
-          example: BASKETBALL
-        locationId:
-          type: string
-          description: Location UUID to filter matchups. Applies to tournaments only.
-          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-      required:
-      - userScores
-    TournamentCreateDto:
-      type: object
-      properties:
-        title:
-          type: string
-          description: Tournament name
-          example: Weekend Golf Tournament
-        type:
-          type: string
-          description: CASH_FIXED or CASH_PERCENTAGE
-          enum:
-          - CASH_FIXED
-          - CASH_PERCENTAGE
-          - TENANT_REWARD
-          - NO_REWARD
-          example: CASH_FIXED
-        buyInAmount:
-          type: number
-          description: Entry fee per participant
-          example: 20
-        expiresAt:
-          type: string
-          description: ISO 8601 expiration timestamp
-          example: '2025-06-15T18:00:00Z'
-        startsAt:
-          type: string
-          description: ISO 8601 start timestamp
-          example: '2025-06-15T10:00:00Z'
-        signUpStart:
-          type: string
-          description: ISO 8601 timestamp for when sign-ups open. Must be before signUpEnd if both are provided.
-          example: '2025-06-14T08:00:00Z'
-        signUpEnd:
-          type: string
-          description: ISO 8601 timestamp for when sign-ups close. Must not be after expiresAt.
-          example: '2025-06-15T08:00:00Z'
-        visibilityLevel:
-          type: string
-          description: 'Visibility level: PUBLIC, PRIVATE_HIDDEN, or PRIVATE_VIEWABLE'
-          enum:
-          - PUBLIC
-          - PRIVATE_VIEWABLE
-          - PRIVATE_HIDDEN
-          example: PUBLIC
-        gameId:
-          type: string
-          description: External game identifier
-          example: GOLF
-        locationIds:
-          description: Array of location UUIDs
-          example: []
-          type: array
-          items:
-            type: string
-        maxParticipants:
-          type: number
-          description: Maximum participants
-          example: 100
-        scoringType:
-          type: string
-          description: 'HIGHEST_SCORE or LOWEST_SCORE (default: HIGHEST_SCORE)'
-          enum:
-          - HIGHEST_SCORE
-          - LOWEST_SCORE
-          default: HIGHEST_SCORE
-        description:
-          type: string
-          description: Tournament description
-          example: Monthly championship event
-        minPayoutAmount:
+          description: UUID of the participant
+          example: 123e4567-e89b-12d3-a456-426614174000
+        userName:
           type:
           - object
           - 'null'
-          description: Minimum guaranteed prize pool
-          example: 500
-          default: null
-        fee:
-          type: number
-          description: 'Platform fee percentage (default: 0)'
-          example: 10
-          default: 0
-        metadata:
+          description: Display username
+          example: john_doe
+        userMetadata:
           type:
           - object
           - 'null'
-          description: Arbitrary key-value data attached to the tournament
+          description: Arbitrary user metadata
           example:
-            customField: value
-        maxAttempts:
+            externalId: ext-123
+        userAvatarUrl:
           type:
           - object
           - 'null'
-          description: Maximum number of times a user can join/rebuy into the tournament
-          example: 3
-          default: null
-        privateCode:
-          type: string
-          description: Access code for joining a private tournament
-          example: GOLF2025
-        omitAttemptCompletedCheck:
-          type: boolean
-          description: If true, allows users to replay without finishing the previous attempt
-          default: false
-        overrideImageUrl:
-          type: string
-          description: Custom image URL for tournament banner
-          example: https://example.com/tournament-banner.jpg
-      required:
-      - title
-      - type
-      - buyInAmount
-    TournamentUpdateDto:
-      type: object
-      properties:
-        title:
-          type: string
-          description: Tournament name
-          example: Weekend Golf Tournament
-        type:
-          type: string
-          description: CASH_FIXED or CASH_PERCENTAGE
-          enum:
-          - CASH_FIXED
-          - CASH_PERCENTAGE
-          - TENANT_REWARD
-          - NO_REWARD
-          example: CASH_FIXED
-        buyInAmount:
-          type: number
-          description: Entry fee per participant
-          example: 20
-        expiresAt:
-          type: string
-          description: ISO 8601 expiration timestamp
-          example: '2025-06-15T18:00:00Z'
-        startsAt:
-          type: string
-          description: ISO 8601 start timestamp
-          example: '2025-06-15T10:00:00Z'
-        signUpStart:
-          type: string
-          description: ISO 8601 timestamp for when sign-ups open. Must be before signUpEnd if both are provided.
-          example: '2025-06-14T08:00:00Z'
-        signUpEnd:
-          type: string
-          description: ISO 8601 timestamp for when sign-ups close. Must not be after expiresAt.
-          example: '2025-06-15T08:00:00Z'
-        visibilityLevel:
-          type: string
-          description: 'Visibility level: PUBLIC, PRIVATE_HIDDEN, or PRIVATE_VIEWABLE'
-          enum:
-          - PUBLIC
-          - PRIVATE_VIEWABLE
-          - PRIVATE_HIDDEN
-          example: PUBLIC
-        gameId:
-          type: string
-          description: External game identifier
-          example: GOLF
-        locationIds:
-          description: Array of location UUIDs
-          example: []
-          type: array
-          items:
-            type: string
-        maxParticipants:
-          type: number
-          description: Maximum participants
-          example: 100
-        scoringType:
-          type: string
-          description: 'HIGHEST_SCORE or LOWEST_SCORE (default: HIGHEST_SCORE)'
-          enum:
-          - HIGHEST_SCORE
-          - LOWEST_SCORE
-          default: HIGHEST_SCORE
-        description:
-          type: string
-          description: Tournament description
-          example: Monthly championship event
-        minPayoutAmount:
-          type:
-          - object
-          - 'null'
-          description: Minimum guaranteed prize pool
-          example: 500
-          default: null
-        fee:
-          type: number
-          description: 'Platform fee percentage (default: 0)'
-          example: 10
-          default: 0
-        metadata:
-          type:
-          - object
-          - 'null'
-          description: Arbitrary key-value data attached to the tournament
-          example:
-            customField: value
-        maxAttempts:
-          type:
-          - object
-          - 'null'
-          description: Maximum number of times a user can join/rebuy into the tournament
-          example: 3
-          default: null
-        privateCode:
-          type: string
-          description: Access code for joining a private tournament
-          example: GOLF2025
-        omitAttemptCompletedCheck:
-          type: boolean
-          description: If true, allows users to replay without finishing the previous attempt
-          default: false
-        overrideImageUrl:
-          type: string
-          description: Custom image URL for tournament banner
-          example: https://example.com/tournament-banner.jpg
-    TournamentRewardResponseDto:
-      type: object
-      properties:
+          description: URL of the user's avatar image
+          example: https://example.com/avatar.jpg
         position:
           type: number
-          description: Finishing position this reward tier applies to
+          description: 'Calculated leaderboard position based on score (sequential: 1, 2, 3, …)'
           example: 1
         positionOverride:
           type:
           - object
           - 'null'
-          description: Displayed finishing rank when this tier is part of a tie. Tied tiers share the same value (the rank of the first tied slot), so equal values mark tiers that split a combined prize. `null` when the tier is not tied.
+          description: Rank-based position that handles ties (1, 2, 2, 4, …). Null when equal to position
           example: 1
-        value:
-          type: string
-          description: Configured reward tier value (fixed amount or percentage)
-          example: '500.00'
-        netAmount:
-          type: string
-          description: Net payout amount after fees
-          example: '450.00'
-        feeAmount:
-          type: string
-          description: Fee amount deducted from the reward
-          example: '50.00'
-        totalAmount:
-          type: string
-          description: Total gross reward amount before fees
-          example: '500.00'
+        score:
+          type:
+          - object
+          - 'null'
+          description: Participant's best score across all attempts
+          example: 72
+        lastUpdatedAt:
+          type:
+          - object
+          - 'null'
+          description: ISO-8601 time this leaderboard was last recomputed, from the projection header. Null on the live compute-on-read path, where the data is current as of the request. Use it to show data freshness ("updated Xs ago") under the refresh SLO.
+          example: '2026-07-24T15:04:05.123Z'
       required:
+      - userId
+      - userName
+      - userMetadata
+      - userAvatarUrl
       - position
       - positionOverride
-      - value
-      - netAmount
-      - feeAmount
-      - totalAmount
-    SetTournamentTagsDto:
+      - score
+      - lastUpdatedAt
+    TournamentIdentifierDto:
       type: object
       properties:
-        tagIds:
-          description: Tag UUIDs to assign to the tournament, from any of the tenant tag groups. Pass [] to clear all.
+        matchupMetadata:
+          type: object
+          description: Metadata key-value pairs to identify the tournament
           example:
-          - 8b1f0000-0000-0000-0000-000000000001
-          type: array
-          items:
-            type: string
-      required:
-      - tagIds
-    TournamentUpdateMatchingDto:
-      type: object
-      properties:
-        identifier:
-          description: Identifiers to locate the tournament. At least one sub-field is required.
-          allOf:
-          - $ref: '#/components/schemas/TournamentIdentifierDto'
-        title:
+            externalId: game-123
+        matchupId:
           type: string
-          description: Tournament name
-          example: Weekend Golf Tournament
-        type:
-          type: string
-          description: CASH_FIXED or CASH_PERCENTAGE
-          enum:
-          - CASH_FIXED
-          - CASH_PERCENTAGE
-          - TENANT_REWARD
-          - NO_REWARD
-          example: CASH_FIXED
-        buyInAmount:
-          type: number
-          description: Entry fee per participant
-          example: 20
-        expiresAt:
-          type: string
-          description: ISO 8601 expiration timestamp
-          example: '2025-06-15T18:00:00Z'
-        startsAt:
-          type: string
-          description: ISO 8601 start timestamp
-          example: '2025-06-15T10:00:00Z'
-        signUpStart:
-          type: string
-          description: ISO 8601 timestamp for when sign-ups open. Must be before signUpEnd if both are provided.
-          example: '2025-06-14T08:00:00Z'
-        signUpEnd:
-          type: string
-          description: ISO 8601 timestamp for when sign-ups close. Must not be after expiresAt.
-          example: '2025-06-15T08:00:00Z'
-        visibilityLevel:
-          type: string
-          description: 'Visibility level: PUBLIC, PRIVATE_HIDDEN, or PRIVATE_VIEWABLE'
-          enum:
-          - PUBLIC
-          - PRIVATE_VIEWABLE
-          - PRIVATE_HIDDEN
-          example: PUBLIC
+          description: Tournament UUID — takes priority over all other identifiers
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
         gameId:
           type: string
-          description: External game identifier
+          description: External game identifier to narrow tournament search
           example: GOLF
-        locationIds:
-          description: Array of location UUIDs
-          example: []
-          type: array
-          items:
-            type: string
-        maxParticipants:
-          type: number
-          description: Maximum participants
-          example: 100
-        scoringType:
+        locationId:
           type: string
-          description: 'HIGHEST_SCORE or LOWEST_SCORE (default: HIGHEST_SCORE)'
-          enum:
-          - HIGHEST_SCORE
-          - LOWEST_SCORE
-          default: HIGHEST_SCORE
-        description:
-          type: string
-          description: Tournament description
-          example: Monthly championship event
-        minPayoutAmount:
-          type:
-          - object
-          - 'null'
-          description: Minimum guaranteed prize pool
-          example: 500
-          default: null
-        fee:
-          type: number
-          description: 'Platform fee percentage (default: 0)'
-          example: 10
-          default: 0
-        metadata:
-          type:
-          - object
-          - 'null'
-          description: Arbitrary key-value data attached to the tournament
-          example:
-            customField: value
-        maxAttempts:
-          type:
-          - object
-          - 'null'
-          description: Maximum number of times a user can join/rebuy into the tournament
-          example: 3
-          default: null
-        privateCode:
-          type: string
-          description: Access code for joining a private tournament
-          example: GOLF2025
-        omitAttemptCompletedCheck:
-          type: boolean
-          description: If true, allows users to replay without finishing the previous attempt
-          default: false
-        overrideImageUrl:
-          type: string
-          description: Custom image URL for tournament banner
-          example: https://example.com/tournament-banner.jpg
-      required:
-      - identifier
-    TournamentRewardTierUpdateMatchingDto:
-      type: object
-      properties:
-        position:
-          type: number
-          description: Sequential prize tier position (starting from 1)
-          example: 1
-        endPosition:
-          type: number
-          description: TENANT_REWARD only. End of an inclusive place range starting at `position`. Omit for a single place.
-          example: 3
-        value:
-          type: number
-          description: Prize value — absolute amount for CASH_FIXED, percentage for CASH_PERCENTAGE
-          example: 500
-        userId:
-          type: string
-          description: UUID of the user to assign as winner for this position
-          example: 123e4567-e89b-12d3-a456-426614174000
-        catalogRewardId:
-          type: string
-          description: TENANT_REWARD only. UUID of an existing reward catalog item to assign to this place. Mutually exclusive with `reward`.
-          example: 123e4567-e89b-12d3-a456-426614174000
-        reward:
-          description: TENANT_REWARD only. Inline catalog reward definition to create and assign. Mutually exclusive with `catalogRewardId`.
-          allOf:
-          - $ref: '#/components/schemas/NewRewardDto'
-        phoneNumber:
-          type: string
-          description: User's phone number for lookup
-          example: '+15551234567'
-        userMetadata:
-          type: object
-          description: Metadata key-value pairs to match user
-          example:
-            externalId: ext-123
-      required:
-      - position
-    CompleteMatchingPaymentRowDto:
-      type: object
-      properties:
-        position:
-          type: number
-          description: Prize tier position. Repeat the same position across rows to mark a tie — tied rows split the combined tier value.
-          example: 1
-        value:
-          type: number
-          description: Prize value for this position
-          example: 500
-        userId:
-          type: string
-          description: UUID of the user receiving this reward
-        phoneNumber:
-          type: string
-          description: User's phone number for lookup
-          example: '+15551234567'
-        userMetadata:
-          type: object
-          description: Metadata key-value pairs to match user
-          example:
-            externalId: ext-123
-      required:
-      - position
-      - value
+          description: Location UUID to narrow tournament search
   securitySchemes:
     X-Lucra-Api-Key:
       type: apiKey

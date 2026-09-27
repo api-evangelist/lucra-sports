@@ -38,6 +38,31 @@ paths:
       - User Score
 components:
   schemas:
+    IngestUserScoreDto:
+      type: object
+      properties:
+        userScores:
+          description: Array of user scores to submit
+          type: array
+          items:
+            $ref: '#/components/schemas/IngestUserScoreEntryDto'
+        matchupId:
+          type: string
+          description: Matchup UUID. One of matchupId, gameId, or matchupMetadata is required.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        matchupMetadata:
+          type: object
+          description: Metadata key-value pairs to match matchups. One of matchupId, gameId, or matchupMetadata is required.
+        gameId:
+          type: string
+          description: Game identifier to filter matchups. One of matchupId, gameId, or matchupMetadata is required.
+          example: BASKETBALL
+        locationId:
+          type: string
+          description: Location UUID to filter matchups. Applies to tournaments only.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+      required:
+      - userScores
     IngestUserScoreEntryDto:
       type: object
       properties:
@@ -67,31 +92,6 @@ components:
           example: false
       required:
       - score
-    IngestUserScoreDto:
-      type: object
-      properties:
-        userScores:
-          description: Array of user scores to submit
-          type: array
-          items:
-            $ref: '#/components/schemas/IngestUserScoreEntryDto'
-        matchupId:
-          type: string
-          description: Matchup UUID. One of matchupId, gameId, or matchupMetadata is required.
-          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-        matchupMetadata:
-          type: object
-          description: Metadata key-value pairs to match matchups. One of matchupId, gameId, or matchupMetadata is required.
-        gameId:
-          type: string
-          description: Game identifier to filter matchups. One of matchupId, gameId, or matchupMetadata is required.
-          example: BASKETBALL
-        locationId:
-          type: string
-          description: Location UUID to filter matchups. Applies to tournaments only.
-          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-      required:
-      - userScores
   securitySchemes:
     X-Lucra-Api-Key:
       type: apiKey

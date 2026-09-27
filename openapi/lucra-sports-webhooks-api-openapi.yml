@@ -212,25 +212,6 @@ components:
       - active
       - headers
       - expirationDate
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable HTTP error code
-          example: NOT_FOUND
-        errCode:
-          type: string
-          description: Machine-readable business error code
-          example: TOURNAMENT_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error message
-          example: Tournament not found
-      required:
-      - code
-      - errCode
-      - message
     WrappedWebhookResponseDto:
       type: object
       properties:
@@ -280,13 +261,6 @@ components:
           type: string
           description: 'Secret used to sign webhook payloads for HMAC-SHA256 verification (default: random uuid)'
           example: 44c3e83c-8d8b-475b-9018-75bf831d0ade
-    WebhookCreateDto:
-      type: object
-      properties:
-        object:
-          $ref: '#/components/schemas/WebhookCreateObjectDto'
-      required:
-      - object
     WebhookCreateObjectDto:
       type: object
       properties:
@@ -329,6 +303,32 @@ components:
       required:
       - subscriptions
       - webhookUrl
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable HTTP error code
+          example: NOT_FOUND
+        errCode:
+          type: string
+          description: Machine-readable business error code
+          example: TOURNAMENT_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error message
+          example: Tournament not found
+      required:
+      - code
+      - errCode
+      - message
+    WebhookCreateDto:
+      type: object
+      properties:
+        object:
+          $ref: '#/components/schemas/WebhookCreateObjectDto'
+      required:
+      - object
   securitySchemes:
     X-Lucra-Api-Key:
       type: apiKey

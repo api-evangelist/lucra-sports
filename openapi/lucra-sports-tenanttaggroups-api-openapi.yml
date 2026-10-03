@@ -232,59 +232,6 @@ paths:
       - TenantTagGroups
 components:
   schemas:
-    CreateTenantTagGroupDto:
-      type: object
-      properties:
-        label:
-          type: string
-          description: Label shown above the filter section (e.g. "Skill Level").
-          example: Skill Level
-        fieldType:
-          type: string
-          description: 'How the client renders this group in the filter UI: SINGLE_SELECT (pick one value) or MULTI_SELECT (pick several). Defaults to SINGLE_SELECT. Does not limit how many of this group''s tags a tournament can be assigned.'
-          enum:
-          - SINGLE_SELECT
-          - MULTI_SELECT
-          example: SINGLE_SELECT
-        tags:
-          description: Initial tags to create with the group. At most 5.
-          type: array
-          items:
-            $ref: '#/components/schemas/CreateTenantTagDto'
-      required:
-      - label
-    CreateTenantTagDto:
-      type: object
-      properties:
-        value:
-          type: string
-          description: Display value of the tag (e.g. "Pro").
-          example: Pro
-        displayOrder:
-          type: number
-          description: Sort order of the tag within the group. Defaults to 0.
-          example: 0
-      required:
-      - value
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable HTTP error code
-          example: NOT_FOUND
-        errCode:
-          type: string
-          description: Machine-readable business error code
-          example: TOURNAMENT_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error message
-          example: Tournament not found
-      required:
-      - code
-      - errCode
-      - message
     TenantTagGroupResponseDto:
       type: object
       properties:
@@ -323,6 +270,27 @@ components:
           - SINGLE_SELECT
           - MULTI_SELECT
           example: MULTI_SELECT
+    CreateTenantTagGroupDto:
+      type: object
+      properties:
+        label:
+          type: string
+          description: Label shown above the filter section (e.g. "Skill Level").
+          example: Skill Level
+        fieldType:
+          type: string
+          description: 'How the client renders this group in the filter UI: SINGLE_SELECT (pick one value) or MULTI_SELECT (pick several). Defaults to SINGLE_SELECT. Does not limit how many of this group''s tags a tournament can be assigned.'
+          enum:
+          - SINGLE_SELECT
+          - MULTI_SELECT
+          example: SINGLE_SELECT
+        tags:
+          description: Initial tags to create with the group. At most 5.
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateTenantTagDto'
+      required:
+      - label
     TenantTagResponseDto:
       type: object
       properties:
@@ -339,6 +307,38 @@ components:
       - id
       - value
       - displayOrder
+    CreateTenantTagDto:
+      type: object
+      properties:
+        value:
+          type: string
+          description: Display value of the tag (e.g. "Pro").
+          example: Pro
+        displayOrder:
+          type: number
+          description: Sort order of the tag within the group. Defaults to 0.
+          example: 0
+      required:
+      - value
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable HTTP error code
+          example: NOT_FOUND
+        errCode:
+          type: string
+          description: Machine-readable business error code
+          example: TOURNAMENT_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error message
+          example: Tournament not found
+      required:
+      - code
+      - errCode
+      - message
   securitySchemes:
     X-Lucra-Api-Key:
       type: apiKey

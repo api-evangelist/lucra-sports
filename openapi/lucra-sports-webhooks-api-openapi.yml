@@ -160,7 +160,7 @@ paths:
       - Webhooks
 components:
   schemas:
-    WebhookCreateObjectDto:
+    WebhookUpdateDto:
       type: object
       properties:
         subscriptions:
@@ -199,16 +199,6 @@ components:
           type: string
           description: 'Secret used to sign webhook payloads for HMAC-SHA256 verification (default: random uuid)'
           example: 44c3e83c-8d8b-475b-9018-75bf831d0ade
-      required:
-      - subscriptions
-      - webhookUrl
-    WebhookCreateDto:
-      type: object
-      properties:
-        object:
-          $ref: '#/components/schemas/WebhookCreateObjectDto'
-      required:
-      - object
     WebhookResponseDto:
       type: object
       properties:
@@ -261,6 +251,25 @@ components:
       - active
       - headers
       - expirationDate
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable HTTP error code
+          example: NOT_FOUND
+        errCode:
+          type: string
+          description: Machine-readable business error code
+          example: TOURNAMENT_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error message
+          example: Tournament not found
+      required:
+      - code
+      - errCode
+      - message
     WrappedWebhookResponseDto:
       type: object
       properties:
@@ -271,7 +280,14 @@ components:
             $ref: '#/components/schemas/WebhookResponseDto'
       required:
       - configs
-    WebhookUpdateDto:
+    WebhookCreateDto:
+      type: object
+      properties:
+        object:
+          $ref: '#/components/schemas/WebhookCreateObjectDto'
+      required:
+      - object
+    WebhookCreateObjectDto:
       type: object
       properties:
         subscriptions:
@@ -310,25 +326,9 @@ components:
           type: string
           description: 'Secret used to sign webhook payloads for HMAC-SHA256 verification (default: random uuid)'
           example: 44c3e83c-8d8b-475b-9018-75bf831d0ade
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable HTTP error code
-          example: NOT_FOUND
-        errCode:
-          type: string
-          description: Machine-readable business error code
-          example: TOURNAMENT_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error message
-          example: Tournament not found
       required:
-      - code
-      - errCode
-      - message
+      - subscriptions
+      - webhookUrl
   securitySchemes:
     X-Lucra-Api-Key:
       type: apiKey

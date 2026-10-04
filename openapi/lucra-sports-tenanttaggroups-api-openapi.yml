@@ -232,6 +232,20 @@ paths:
       - TenantTagGroups
 components:
   schemas:
+    UpdateTenantTagGroupDto:
+      type: object
+      properties:
+        label:
+          type: string
+          description: Label shown above the filter section.
+          example: Skill Level
+        fieldType:
+          type: string
+          description: 'How the client renders this group in the filter UI: SINGLE_SELECT (pick one value) or MULTI_SELECT (pick several). Does not limit how many of this group''s tags a tournament can be assigned.'
+          enum:
+          - SINGLE_SELECT
+          - MULTI_SELECT
+          example: MULTI_SELECT
     TenantTagGroupResponseDto:
       type: object
       properties:
@@ -256,20 +270,25 @@ components:
       - label
       - fieldType
       - tags
-    UpdateTenantTagGroupDto:
+    Error:
       type: object
       properties:
-        label:
+        code:
           type: string
-          description: Label shown above the filter section.
-          example: Skill Level
-        fieldType:
+          description: Machine-readable HTTP error code
+          example: NOT_FOUND
+        errCode:
           type: string
-          description: 'How the client renders this group in the filter UI: SINGLE_SELECT (pick one value) or MULTI_SELECT (pick several). Does not limit how many of this group''s tags a tournament can be assigned.'
-          enum:
-          - SINGLE_SELECT
-          - MULTI_SELECT
-          example: MULTI_SELECT
+          description: Machine-readable business error code
+          example: TOURNAMENT_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error message
+          example: Tournament not found
+      required:
+      - code
+      - errCode
+      - message
     CreateTenantTagGroupDto:
       type: object
       properties:
@@ -320,25 +339,6 @@ components:
           example: 0
       required:
       - value
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable HTTP error code
-          example: NOT_FOUND
-        errCode:
-          type: string
-          description: Machine-readable business error code
-          example: TOURNAMENT_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error message
-          example: Tournament not found
-      required:
-      - code
-      - errCode
-      - message
   securitySchemes:
     X-Lucra-Api-Key:
       type: apiKey

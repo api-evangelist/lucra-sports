@@ -269,31 +269,54 @@ paths:
       - Recreational Games
 components:
   schemas:
-    IngestUserScoreDto:
+    IngestUserScoreEntryDto:
       type: object
       properties:
-        userScores:
-          description: Array of user scores to submit
-          type: array
-          items:
-            $ref: '#/components/schemas/IngestUserScoreEntryDto'
-        matchupId:
+        score:
+          type:
+          - object
+          - 'null'
+          description: Numeric score value. Send `null` to clear a previously submitted score.
+          example: 150
+        userId:
           type: string
-          description: Matchup UUID. One of matchupId, gameId, or matchupMetadata is required.
+          description: User UUID. One of userId, phoneNumber, or userMetadata is required.
           example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-        matchupMetadata:
+        phoneNumber:
+          type: string
+          description: User phone number. One of userId, phoneNumber, or userMetadata is required.
+          example: '+15551234567'
+        userMetadata:
           type: object
-          description: Metadata key-value pairs to match matchups. One of matchupId, gameId, or matchupMetadata is required.
-        gameId:
-          type: string
-          description: Game identifier to filter matchups. One of matchupId, gameId, or matchupMetadata is required.
-          example: BASKETBALL
-        locationId:
-          type: string
-          description: Location UUID to filter matchups. Applies to tournaments only.
-          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+          description: Metadata key-value pairs to match a user. One of userId, phoneNumber, or userMetadata is required.
+        metadata:
+          type: object
+          description: Arbitrary metadata to attach to the score entry
+        attemptFinished:
+          type: boolean
+          description: Marks the user's attempt as finished. Once set, further submissions for this user are ignored.
+          example: false
       required:
-      - userScores
+      - score
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable HTTP error code
+          example: NOT_FOUND
+        errCode:
+          type: string
+          description: Machine-readable business error code
+          example: TOURNAMENT_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error message
+          example: Tournament not found
+      required:
+      - code
+      - errCode
+      - message
     RecreationalGameUserResponseDto:
       type: object
       properties:
@@ -333,35 +356,6 @@ components:
       - groupId
       - groupName
       - outcome
-    IngestUserScoreEntryDto:
-      type: object
-      properties:
-        score:
-          type:
-          - object
-          - 'null'
-          description: Numeric score value. Send `null` to clear a previously submitted score.
-          example: 150
-        userId:
-          type: string
-          description: User UUID. One of userId, phoneNumber, or userMetadata is required.
-          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-        phoneNumber:
-          type: string
-          description: User phone number. One of userId, phoneNumber, or userMetadata is required.
-          example: '+15551234567'
-        userMetadata:
-          type: object
-          description: Metadata key-value pairs to match a user. One of userId, phoneNumber, or userMetadata is required.
-        metadata:
-          type: object
-          description: Arbitrary metadata to attach to the score entry
-        attemptFinished:
-          type: boolean
-          description: Marks the user's attempt as finished. Once set, further submissions for this user are ignored.
-          example: false
-      required:
-      - score
     CompleteRecreationalGameDto:
       type: object
       properties:
@@ -390,6 +384,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WinningUserIdentifierDto'
+    WinningUserIdentifierDto:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: User UUID (preferred when known)
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        phoneNumber:
+          type: string
+          description: User phone number in E.164 format
+          example: '+15551234567'
+        userMetadata:
+          type: object
+          description: Metadata key-value pairs to match a single user
     RecreationalGameResponseDto:
       type: object
       properties:
@@ -467,39 +475,31 @@ components:
       - metadata
       - createdAt
       - closedAt
-    WinningUserIdentifierDto:
+    IngestUserScoreDto:
       type: object
       properties:
-        userId:
+        userScores:
+          description: Array of user scores to submit
+          type: array
+          items:
+            $ref: '#/components/schemas/IngestUserScoreEntryDto'
+        matchupId:
           type: string
-          description: User UUID (preferred when known)
+          description: Matchup UUID. One of matchupId, gameId, or matchupMetadata is required.
           example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-        phoneNumber:
-          type: string
-          description: User phone number in E.164 format
-          example: '+15551234567'
-        userMetadata:
+        matchupMetadata:
           type: object
-          description: Metadata key-value pairs to match a single user
-    Error:
-      type: object
-      properties:
-        code:
+          description: Metadata key-value pairs to match matchups. One of matchupId, gameId, or matchupMetadata is required.
+        gameId:
           type: string
-          description: Machine-readable HTTP error code
-          example: NOT_FOUND
-        errCode:
+          description: Game identifier to filter matchups. One of matchupId, gameId, or matchupMetadata is required.
+          example: BASKETBALL
+        locationId:
           type: string
-          description: Machine-readable business error code
-          example: TOURNAMENT_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error message
-          example: Tournament not found
+          description: Location UUID to filter matchups. Applies to tournaments only.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
       required:
-      - code
-      - errCode
-      - message
+      - userScores
   securitySchemes:
     X-Lucra-Api-Key:
       type: apiKey

@@ -269,102 +269,6 @@ paths:
       - Recreational Games
 components:
   schemas:
-    IngestUserScoreEntryDto:
-      type: object
-      properties:
-        score:
-          type:
-          - object
-          - 'null'
-          description: Numeric score value. Send `null` to clear a previously submitted score.
-          example: 150
-        userId:
-          type: string
-          description: User UUID. One of userId, phoneNumber, or userMetadata is required.
-          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-        phoneNumber:
-          type: string
-          description: User phone number. One of userId, phoneNumber, or userMetadata is required.
-          example: '+15551234567'
-        userMetadata:
-          type: object
-          description: Metadata key-value pairs to match a user. One of userId, phoneNumber, or userMetadata is required.
-        metadata:
-          type: object
-          description: Arbitrary metadata to attach to the score entry
-        attemptFinished:
-          type: boolean
-          description: Marks the user's attempt as finished. Once set, further submissions for this user are ignored.
-          example: false
-      required:
-      - score
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Machine-readable HTTP error code
-          example: NOT_FOUND
-        errCode:
-          type: string
-          description: Machine-readable business error code
-          example: TOURNAMENT_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error message
-          example: Tournament not found
-      required:
-      - code
-      - errCode
-      - message
-    RecreationalGameUserResponseDto:
-      type: object
-      properties:
-        userId:
-          type: string
-          description: UUID of the user
-          example: user-uuid
-        userMetadata:
-          type:
-          - object
-          - 'null'
-          description: Arbitrary key-value data attached to the user
-          example:
-            externalId: user-external-id
-        groupId:
-          type: string
-          description: UUID of the group
-          example: a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d
-        groupName:
-          type:
-          - object
-          - 'null'
-          description: Display name for the group
-          example: Team A
-        outcome:
-          type:
-          - string
-          - 'null'
-          description: Outcome assigned to this group; null until completion
-          enum:
-          - WIN
-          - LOSS
-          - TIE
-      required:
-      - userId
-      - userMetadata
-      - groupId
-      - groupName
-      - outcome
-    CompleteRecreationalGameDto:
-      type: object
-      properties:
-        outcome:
-          description: Outcome details for the game
-          allOf:
-          - $ref: '#/components/schemas/CompleteRecreationalGameOutcomeDto'
-      required:
-      - outcome
     CompleteRecreationalGameOutcomeDto:
       type: object
       properties:
@@ -398,6 +302,35 @@ components:
         userMetadata:
           type: object
           description: Metadata key-value pairs to match a single user
+    IngestUserScoreEntryDto:
+      type: object
+      properties:
+        score:
+          type:
+          - object
+          - 'null'
+          description: Numeric score value. Send `null` to clear a previously submitted score.
+          example: 150
+        userId:
+          type: string
+          description: User UUID. One of userId, phoneNumber, or userMetadata is required.
+          example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        phoneNumber:
+          type: string
+          description: User phone number. One of userId, phoneNumber, or userMetadata is required.
+          example: '+15551234567'
+        userMetadata:
+          type: object
+          description: Metadata key-value pairs to match a user. One of userId, phoneNumber, or userMetadata is required.
+        metadata:
+          type: object
+          description: Arbitrary metadata to attach to the score entry
+        attemptFinished:
+          type: boolean
+          description: Marks the user's attempt as finished. Once set, further submissions for this user are ignored.
+          example: false
+      required:
+      - score
     RecreationalGameResponseDto:
       type: object
       properties:
@@ -475,6 +408,45 @@ components:
       - metadata
       - createdAt
       - closedAt
+    RecreationalGameUserResponseDto:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: UUID of the user
+          example: user-uuid
+        userMetadata:
+          type:
+          - object
+          - 'null'
+          description: Arbitrary key-value data attached to the user
+          example:
+            externalId: user-external-id
+        groupId:
+          type: string
+          description: UUID of the group
+          example: a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d
+        groupName:
+          type:
+          - object
+          - 'null'
+          description: Display name for the group
+          example: Team A
+        outcome:
+          type:
+          - string
+          - 'null'
+          description: Outcome assigned to this group; null until completion
+          enum:
+          - WIN
+          - LOSS
+          - TIE
+      required:
+      - userId
+      - userMetadata
+      - groupId
+      - groupName
+      - outcome
     IngestUserScoreDto:
       type: object
       properties:
@@ -500,6 +472,34 @@ components:
           example: a1b2c3d4-e5f6-7890-abcd-ef1234567890
       required:
       - userScores
+    CompleteRecreationalGameDto:
+      type: object
+      properties:
+        outcome:
+          description: Outcome details for the game
+          allOf:
+          - $ref: '#/components/schemas/CompleteRecreationalGameOutcomeDto'
+      required:
+      - outcome
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable HTTP error code
+          example: NOT_FOUND
+        errCode:
+          type: string
+          description: Machine-readable business error code
+          example: TOURNAMENT_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error message
+          example: Tournament not found
+      required:
+      - code
+      - errCode
+      - message
   securitySchemes:
     X-Lucra-Api-Key:
       type: apiKey

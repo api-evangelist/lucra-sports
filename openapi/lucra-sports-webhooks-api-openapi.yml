@@ -160,7 +160,7 @@ paths:
       - Webhooks
 components:
   schemas:
-    WebhookUpdateDto:
+    WebhookCreateObjectDto:
       type: object
       properties:
         subscriptions:
@@ -199,6 +199,19 @@ components:
           type: string
           description: 'Secret used to sign webhook payloads for HMAC-SHA256 verification (default: random uuid)'
           example: 44c3e83c-8d8b-475b-9018-75bf831d0ade
+      required:
+      - subscriptions
+      - webhookUrl
+    WrappedWebhookResponseDto:
+      type: object
+      properties:
+        configs:
+          description: List of webhook configurations
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookResponseDto'
+      required:
+      - configs
     WebhookResponseDto:
       type: object
       properties:
@@ -270,16 +283,6 @@ components:
       - code
       - errCode
       - message
-    WrappedWebhookResponseDto:
-      type: object
-      properties:
-        configs:
-          description: List of webhook configurations
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookResponseDto'
-      required:
-      - configs
     WebhookCreateDto:
       type: object
       properties:
@@ -287,7 +290,7 @@ components:
           $ref: '#/components/schemas/WebhookCreateObjectDto'
       required:
       - object
-    WebhookCreateObjectDto:
+    WebhookUpdateDto:
       type: object
       properties:
         subscriptions:
@@ -326,9 +329,6 @@ components:
           type: string
           description: 'Secret used to sign webhook payloads for HMAC-SHA256 verification (default: random uuid)'
           example: 44c3e83c-8d8b-475b-9018-75bf831d0ade
-      required:
-      - subscriptions
-      - webhookUrl
   securitySchemes:
     X-Lucra-Api-Key:
       type: apiKey

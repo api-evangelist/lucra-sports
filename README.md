@@ -64,5 +64,133 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Lucra Sports is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+Lucra (Lucra Sports, Inc.) is a competitive-loyalty and gamification platform that embeds real-money, free-to-play and peer-to-peer contests into third-party consumer apps and websites through a white-label SDK. Partners integrate Games You Play (head-to-head recreational matchups), Sports You Watch (prediction contests), Tournaments, Mini Games and Achievements without building the regulated infrastructure themselves: Lucra acts as merchant of record and operates the KYC, geolocation, age verification, payments, fraud monitoring, prize settlement and responsible-gaming controls behind the experience. The developer surface is a tenant-scoped server-to-server REST API (the Forge gateway) plus iOS, Android, React Native and JavaScript client SDKs, a signed webhook event stream, and a sandbox environment.
+
+**Areas:** Gaming · Sports · Gamification · Loyalty · Tournaments · Contests · Payments · Wagering · Embedded Finance · SDK · Webhook · Compliance
+
+## Lucra Sports on APIs.io
+
+Everything profiled for Lucra Sports is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/lucra-sports/](https://apis.io/providers/lucra-sports/)** — or go straight to one of the APIs or properties below.
+
+### APIs (9)
+
+- [Lucra Sports Health API](https://apis.io/apis/lucra-sports/lucra-sports-health-api/) — The Health API from Lucra Sports — 1 operation(s) for health.
+- [Lucra Sports Locations API](https://apis.io/apis/lucra-sports/lucra-sports-locations-api/) — The Locations API from Lucra Sports — 1 operation(s) for locations.
+- [Lucra Sports Recreational Games API](https://apis.io/apis/lucra-sports/lucra-sports-recreational-games-api/) — The Recreational Games API from Lucra Sports — 5 operation(s) for recreational games.
+- [Lucra Sports States API](https://apis.io/apis/lucra-sports/lucra-sports-states-api/) — The States API from Lucra Sports — 1 operation(s) for states.
+- [Lucra Sports Tenant Tag Groups API](https://apis.io/apis/lucra-sports/lucra-sports-tenanttaggroups-api/) — The TenantTagGroups API from Lucra Sports — 4 operation(s) for tenanttaggroups.
+- [Lucra Sports Tournaments API](https://apis.io/apis/lucra-sports/lucra-sports-tournaments-api/) — Modular tournament management endpoints. Unlike the legacy API which returns everything in a single call, the v2 API separates concerns into dedicated…
+- [Lucra Sports Tournaments (Legacy) API](https://apis.io/apis/lucra-sports/lucra-sports-tournaments-legacy-api/) — Drop-in replacement endpoints for the original tournament API operations. Request/response shapes are identical. --- ## Tournament Types ### CASH_FIXED The…
+- [Lucra Sports User Score API](https://apis.io/apis/lucra-sports/lucra-sports-user-score-api/) — The User Score API from Lucra Sports — 1 operation(s) for user score.
+- [Lucra Sports Webhooks API](https://apis.io/apis/lucra-sports/lucra-sports-webhooks-api/) — Manage webhook configurations to receive real-time event notifications via HTTP POST requests. --- ## Available Event Types | Event | Description |…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Lucra Sports Webhooks](https://apis.io/asyncapis/lucra-sports/lucra-sports-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [lucra-sports-mcp.yml](https://apis.io/servers/lucra-sports/lucra-sports-mcp-yml/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Lucra Sports Forge Overlay](https://apis.io/overlays/lucra-sports/lucra-sports-forge-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Lucra Sports Authentication](https://apis.io/security/lucra-sports/lucra-sports-authentication/)
+- [Lucra Sports Domain Security](https://apis.io/security/lucra-sports/lucra-sports-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Lucra Sports Plans Pricing](https://apis.io/plans/lucra-sports/lucra-sports-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Lucra Sports Rate Limits](https://apis.io/rate-limits/lucra-sports/lucra-sports-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.playlucra.com/)
+- [Documentation](https://docs.lucrasports.com/lucra-sdk/readme)
+- [Getting started](https://docs.lucrasports.com/lucra-sdk/games-you-play-gyp/gyp-sdks)
+- [API reference](https://forge.lucrasports.com/docs/)
+- [Sign up](https://www.playlucra.com/contact)
+- [Support](https://www.playlucra.com/contact)
+- [Blog](https://www.playlucra.com/newsroom)
+- [Terms of service](https://www.playlucra.com/legal/terms-of-service)
+- [Privacy policy](https://www.playlucra.com/legal/privacy-policy)
+- [GitHub](https://github.com/Lucra-Sports)
+
+## API Evangelist rating
+
+**Kin Score 53.5** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 56.6 |
+| Contract governance | 4.5 |
+| Operational transparency | 47.4 |
+| Developer ergonomics | 78.6 |
+| Access clarity | 42.1 |
+
+**Agent readiness 40.1** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | yes |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | partial |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 32.1** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/lucra-sports/](https://apis.io/providers/lucra-sports/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Lucra Sports: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/lucra-sports/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
